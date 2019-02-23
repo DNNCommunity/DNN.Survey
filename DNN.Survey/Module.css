@@ -1,0 +1,16 @@
+﻿div.SurveyFormItem {
+   margin-bottom: 1rem;
+}
+
+span.SurveyLabel {
+   font-weight: bold;
+}
+
+label.dnnBoxLabel {
+   font-weight: normal;
+}
+
+table.dnnFormRadioButtons
+{
+   width: 40%;
+}
