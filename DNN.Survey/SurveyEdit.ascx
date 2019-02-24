@@ -151,6 +151,16 @@
       </asp:Panel>
    </asp:Panel>
 
+   <asp:Panel ID="TextAnswerPanel" runat="server" Visible="false">
+      <div class="dnnFormItem">
+         <dnn:Label ID="NumberOfRowsLabel" runat="server"
+            ControlName="NumberOfRowsTextBox"
+            ResourceKey="NumberOfRows"
+            Suffix=":" />
+         <asp:TextBox ID="NumberOfRowsTextBox" runat="server" />
+      </div>
+   </asp:Panel>
+
    <ul class="dnnActions dnnClear">
       <li>
          <asp:LinkButton ID="UpdateButton" runat="server"

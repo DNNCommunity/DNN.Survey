@@ -224,8 +224,10 @@ namespace DNN.Modules.Survey
                }
                else
                {
+                  NumberOfRowsTextBox.Text = Survey.NumberOfRows.ToString();
                   RepeatDirectionPanel.Visible = false;
                   AnswersPanel.Visible = false;
+                  TextAnswerPanel.Visible = true;
                }
                AnswersGrid.DataSource = Answers;
                AnswersGrid.DataBind();
@@ -347,6 +349,7 @@ namespace DNN.Modules.Survey
                }
                survey.RepeatDirection = (RepeatDirection)Convert.ToInt32(RepeatDirectionDropDownList.SelectedValue);
                survey.RepeatColumns = (String.IsNullOrEmpty(RepeatColumnsTextBox.Text) ? (int?)null : Convert.ToInt32(RepeatColumnsTextBox.Text));
+               survey.NumberOfRows = (((String.IsNullOrEmpty(NumberOfRowsTextBox.Text)) || (NumberOfRowsTextBox.Text == "1")) ? (int?)null : Convert.ToInt32(NumberOfRowsTextBox.Text));
                SurveysController.AddOrChange(survey, XmlDataProvider.SurveyOptionsToXml(Answers), UserId);
                Response.Redirect(Globals.NavigateURL(), false);
             }
@@ -436,8 +439,18 @@ namespace DNN.Modules.Survey
       {
          DropDownList questionTypeDropDownList = (DropDownList)sender;
          QuestionType selectedQuestionType = (QuestionType)Convert.ToInt32(questionTypeDropDownList.SelectedValue);
-         RepeatDirectionPanel.Visible = ((selectedQuestionType == QuestionType.RadioButtons) || (selectedQuestionType == QuestionType.CheckBoxes));
-         AnswersPanel.Visible = ((selectedQuestionType == QuestionType.RadioButtons) || (selectedQuestionType == QuestionType.CheckBoxes));
+         if ((selectedQuestionType == QuestionType.RadioButtons) || (selectedQuestionType == QuestionType.CheckBoxes))
+         {
+            RepeatDirectionPanel.Visible = true;
+            AnswersPanel.Visible = true;
+            TextAnswerPanel.Visible = false;
+         }
+         else
+         {
+            RepeatDirectionPanel.Visible = false;
+            AnswersPanel.Visible = false;
+            TextAnswerPanel.Visible = true;
+         }
       }
       #endregion
    }

@@ -48,6 +48,7 @@ namespace DNN.Modules.Survey.Components.Controllers
                   Convert.ToInt32(survey.OptionType),
                   ((survey.RepeatDirection == null) || (survey.RepeatDirection == RepeatDirection.Horizontal) ? (int?)null : Convert.ToInt32(survey.RepeatDirection.Value)),
                   ((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1) ? (int?)null : survey.RepeatColumns.Value),
+                  ((survey.NumberOfRows == null) || (survey.NumberOfRows <= 1) ? (int?)null : survey.NumberOfRows.Value),
                   userID,
                   answersXml
                }

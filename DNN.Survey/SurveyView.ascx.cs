@@ -2,7 +2,6 @@
 using DNN.Modules.Survey.Components.Controllers;
 using DNN.Modules.Survey.Components.Entities;
 using DNN.Modules.Survey.Controls;
-using DotNetNuke.Common;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Modules.Actions;
 using DotNetNuke.Security;
@@ -10,9 +9,6 @@ using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Localization;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace DNN.Modules.Survey
@@ -197,6 +193,7 @@ namespace DNN.Modules.Survey
                   SurveyText surveyTextBox = (SurveyText)LoadControl(String.Format("{0}Controls/SurveyText.ascx", ControlPath));
                   surveyTextBox.ID = String.Format("SurveyTextBox-{0}", survey.SurveyID);
                   surveyTextBox.Label = survey.Question;
+                  surveyTextBox.NumberOfRows = (((survey.NumberOfRows.HasValue) && (survey.NumberOfRows.Value > 1)) ? survey.NumberOfRows.Value : 1);
                   surveyTextBox.EditUrl = EditUrl("SurveyID", survey.SurveyID.ToString());
                   surveyTextBox.IsEditable = IsEditable;
                   surveyTextBox.SurveyOptionID = surveyOptions[0].SurveyOptionID;

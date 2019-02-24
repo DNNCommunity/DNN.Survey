@@ -35,6 +35,26 @@ namespace DNN.Modules.Survey.Controls
          }
       }
 
+      public int NumberOfRows
+      {
+         get
+         {
+            return SurveyTextBox.Rows;
+         }
+         set
+         {
+            if (value > 1)
+            {
+               SurveyTextBox.TextMode = TextBoxMode.MultiLine;
+               SurveyTextBox.Rows = value;
+            }
+            else
+            {
+               SurveyTextBox.TextMode = TextBoxMode.SingleLine;
+            }
+         }
+      }
+
       protected void Page_Load(object sender, EventArgs e)
       {
          if (IsEditable)

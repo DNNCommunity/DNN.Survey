@@ -202,6 +202,33 @@ namespace DNN.Modules.Survey {
         protected global::System.Web.UI.WebControls.LinkButton UpdateAnswerButton;
         
         /// <summary>
+        /// TextAnswerPanel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel TextAnswerPanel;
+        
+        /// <summary>
+        /// NumberOfRowsLabel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::DotNetNuke.UI.UserControls.LabelControl NumberOfRowsLabel;
+        
+        /// <summary>
+        /// NumberOfRowsTextBox-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox NumberOfRowsTextBox;
+        
+        /// <summary>
         /// UpdateButton-Steuerelement
         /// </summary>
         /// <remarks>

@@ -54,7 +54,7 @@ namespace DNN.Modules.Survey.Components.Providers
             }
             else
             {
-               surveyBuilder.Append(String.Format("<RepeatDirection>{0}</RepeatDirection>", Convert.ToInt32(survey.RepeatColumns.Value)));
+               surveyBuilder.Append(String.Format("<RepeatDirection>{0}</RepeatDirection>", Convert.ToInt32(survey.RepeatDirection.Value)));
             }
             if ((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1))
             {
@@ -62,7 +62,15 @@ namespace DNN.Modules.Survey.Components.Providers
             }
             else
             {
-               surveyBuilder.Append(String.Format("<RepeatColumns>{0}</RepeatColumns>", Convert.ToInt32(survey.RepeatColumns.Value)));
+               surveyBuilder.Append(String.Format("<RepeatColumns>{0}</RepeatColumns>", survey.RepeatColumns.Value));
+            }
+            if ((survey.NumberOfRows == null) || (survey.NumberOfRows <= 1))
+            {
+               surveyBuilder.Append("<NumberOfRows />");
+            }
+            else
+            {
+               surveyBuilder.Append(String.Format("<NumberOfRows>{0}</NumberOfRows>", survey.NumberOfRows.Value));
             }
             surveyBuilder.Append(String.Format("<CreatedDate>{0:yyyy-MM-dd hh:mm:ss}</CreatedDate>", survey.CreatedDate));
             surveyBuilder.Append(String.Format("<CreatedByUserID>{0}</CreatedByUserID>", survey.CreatedByUserID));
@@ -133,6 +141,10 @@ namespace DNN.Modules.Survey.Components.Providers
             if ((surveyXmlNode.SelectSingleNode("RepeatColumns") != null) && (!(String.IsNullOrEmpty(surveyXmlNode.SelectSingleNode("RepeatColumns").InnerText))))
             {
                survey.RepeatColumns = Convert.ToInt32(surveyXmlNode.SelectSingleNode("RepeatColumns").InnerText);
+            }
+            if ((surveyXmlNode.SelectSingleNode("NumberOfRows") != null) && (!(String.IsNullOrEmpty(surveyXmlNode.SelectSingleNode("NumberOfRows").InnerText))))
+            {
+               survey.NumberOfRows = Convert.ToInt32(surveyXmlNode.SelectSingleNode("NumberOfRows").InnerText);
             }
             survey.CreatedDate = Convert.ToDateTime(surveyXmlNode.SelectSingleNode("CreatedDate").InnerText);
             survey.CreatedByUserID = Convert.ToInt32(surveyXmlNode.SelectSingleNode("CreatedByUserID").InnerText);
