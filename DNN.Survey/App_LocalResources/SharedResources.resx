@@ -117,28 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddQuestion.Action" xml:space="preserve">
-    <value>Add question</value>
+  <data name="DragDrop.Text" xml:space="preserve">
+    <value>Drag&amp;Drop the rows to reorder.</value>
   </data>
-  <data name="HasVoted.Text" xml:space="preserve">
-    <value>Thank you for your participation.</value>
+  <data name="QuestionType.CheckBoxes.Text" xml:space="preserve">
+    <value>Multiple choice (Checkboxes)</value>
   </data>
-  <data name="MustBeSignedIn.Text" xml:space="preserve">
-    <value>You must sign in to vote in this survey.</value>
+  <data name="QuestionType.RadioButtons.Text" xml:space="preserve">
+    <value>Single choice (Radiobuttons)</value>
   </data>
-  <data name="SortQuestions.Action" xml:space="preserve">
-    <value>Sort questions</value>
-  </data>
-  <data name="SubmitSurvey.Action" xml:space="preserve">
-    <value>Submit survey</value>
-  </data>
-  <data name="SurveyClosed.Text" xml:space="preserve">
-    <value>The survey has been closed on {0:d} at {0:t}.</value>
-  </data>
-  <data name="SurveyWillClose.Text" xml:space="preserve">
-    <value>The survey will be closed on {0:d} at {0:t}.</value>
-  </data>
-  <data name="ViewResults.Action" xml:space="preserve">
-    <value>View results</value>
+  <data name="QuestionType.Text.Text" xml:space="preserve">
+    <value>Free answer text</value>
   </data>
 </root>

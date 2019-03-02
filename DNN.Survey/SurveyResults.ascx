@@ -7,15 +7,15 @@
 </asp:Panel>
 
 <asp:Panel ID="ResultsPanel" runat="server">
-   RESULTS!
+   <asp:PlaceHolder ID="ChartPlaceHolder" runat="server" />
 </asp:Panel>
 
 <div class="dnnForm">
    <ul class="dnnActions dnnClear">
       <li>
-         <asp:LinkButton ID="ViewResultsButton" runat="server"
+         <asp:LinkButton ID="ViewSurveyButton" runat="server"
             CssClass="dnnPrimaryAction"
-            OnClick="ViewResultsButton_Click"
+            OnClick="ViewSurveyButton_Click"
             ResourceKey="ViewSurvey.Action" />
       </li>
    </ul>

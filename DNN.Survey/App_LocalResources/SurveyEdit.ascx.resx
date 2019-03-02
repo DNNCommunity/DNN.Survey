@@ -138,9 +138,6 @@
   <data name="CorrectAnswer.Text" xml:space="preserve">
     <value>Is this the correct answer?</value>
   </data>
-  <data name="DragDrop.Text" xml:space="preserve">
-    <value>Drag&amp;Drop the rows to reorder answers.</value>
-  </data>
   <data name="EditAnswer.Text" xml:space="preserve">
     <value>Edit answer</value>
   </data>
@@ -165,20 +162,11 @@
   <data name="Question.Text" xml:space="preserve">
     <value>Question</value>
   </data>
-  <data name="QuestionType.CheckBoxes.Text" xml:space="preserve">
-    <value>Multiple choice (Checkboxes)</value>
-  </data>
   <data name="QuestionType.Help" xml:space="preserve">
     <value>Select the type of the answer.</value>
   </data>
-  <data name="QuestionType.RadioButtons.Text" xml:space="preserve">
-    <value>Single choice (Radiobuttons)</value>
-  </data>
   <data name="QuestionType.Text" xml:space="preserve">
     <value>Type</value>
-  </data>
-  <data name="QuestionType.Text.Text" xml:space="preserve">
-    <value>Free answer text</value>
   </data>
   <data name="RepeatColumns.Help" xml:space="preserve">
     <value>Enter the number of columns.</value>

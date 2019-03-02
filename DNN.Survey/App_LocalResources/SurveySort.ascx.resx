@@ -117,28 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AddQuestion.Action" xml:space="preserve">
-    <value>Add question</value>
+  <data name="Question.Header" xml:space="preserve">
+    <value>Question</value>
   </data>
-  <data name="HasVoted.Text" xml:space="preserve">
-    <value>Thank you for your participation.</value>
+  <data name="QuestionType.Header" xml:space="preserve">
+    <value>Question type</value>
   </data>
-  <data name="MustBeSignedIn.Text" xml:space="preserve">
-    <value>You must sign in to vote in this survey.</value>
-  </data>
-  <data name="SortQuestions.Action" xml:space="preserve">
-    <value>Sort questions</value>
-  </data>
-  <data name="SubmitSurvey.Action" xml:space="preserve">
-    <value>Submit survey</value>
-  </data>
-  <data name="SurveyClosed.Text" xml:space="preserve">
-    <value>The survey has been closed on {0:d} at {0:t}.</value>
-  </data>
-  <data name="SurveyWillClose.Text" xml:space="preserve">
-    <value>The survey will be closed on {0:d} at {0:t}.</value>
-  </data>
-  <data name="ViewResults.Action" xml:space="preserve">
-    <value>View results</value>
+  <data name="SortHelp.Text" xml:space="preserve">
+    <value>Drag and drop the questions to sort.</value>
   </data>
 </root>

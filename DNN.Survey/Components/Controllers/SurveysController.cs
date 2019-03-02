@@ -1,4 +1,5 @@
 ﻿using DNN.Modules.Survey.Components.Entities;
+using DNN.Modules.Survey.Components.Providers;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Data;
 using System;
@@ -34,6 +35,19 @@ namespace DNN.Modules.Survey.Components.Controllers
          return surveys.OrderBy(s => s.ViewOrder).ToList<SurveysInfo>();
       }
 
+      public bool HasVoted(int moduleID, int userID)
+      {
+         bool hasVoted;
+         using (IDataContext ctx = DataContext.Instance())
+         {
+            hasVoted = ctx.ExecuteScalar<bool>(CommandType.StoredProcedure,
+               "{databaseOwner}{objectQualifier}Surveys_HasVoted",
+               moduleID,
+               userID);
+         }
+         return hasVoted;
+      }
+
       public int AddOrChange(SurveysInfo survey, string answersXml, int userID)
       {
          int id;
@@ -57,6 +71,18 @@ namespace DNN.Modules.Survey.Components.Controllers
          DataCache.ClearCache("Surveys");
          DataCache.ClearCache("SurveyOptions");
          return id;
+      }
+
+      public void Sort(List<SurveysInfo> surveys)
+      {
+         using (IDataContext ctx = DataContext.Instance())
+         {
+            ctx.Execute(CommandType.StoredProcedure,
+               "{databaseOwner}{objectQualifier}Surveys_Sort",
+               new object[] { XmlDataProvider.SurveysToXml(surveys) }
+            );
+         }
+         DataCache.ClearCache("Surveys");
       }
 
       public void Drop(SurveysInfo survey)

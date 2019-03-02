@@ -10,24 +10,24 @@
 namespace DNN.Modules.Survey.Controls {
     
     
-    public partial class SurveyText {
+    public partial class CanvasControl {
         
         /// <summary>
-        /// SurveyTextBoxLabel-Steuerelement
+        /// HeaderLabel-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
-        protected global::DotNetNuke.UI.UserControls.LabelControl SurveyTextBoxLabel;
+        protected global::System.Web.UI.WebControls.Label HeaderLabel;
         
         /// <summary>
-        /// SurveyTextBox-Steuerelement
+        /// Graph-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox SurveyTextBox;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Graph;
     }
 }

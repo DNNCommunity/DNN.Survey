@@ -1,6 +1,9 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SurveyEdit.ascx.cs" Inherits="DNN.Modules.Survey.SurveyEdit" %>
 <%@ Register TagPrefix="dnn" TagName="Label" Src="~/controls/LabelControl.ascx" %>
 <%@ Register TagPrefix="dnn" Assembly="DotNetNuke.Web" Namespace="DotNetNuke.Web.UI.WebControls" %>
+<%@ Register TagPrefix="dnn" Namespace="DotNetNuke.Web.Client.ClientResourceManagement" Assembly="DotNetNuke.Web.Client" %>
+
+<dnn:DnnCssInclude runat="server" FilePath="Module.css" PathNameAlias="SkinPath" />
 
 <div class="dnnForm" id="SurveyEditPanel">
    <div class="dnnFormItem dnnFormHelp dnnClear">
@@ -62,15 +65,15 @@
          <HeaderStyle CssClass="dnnGridHeader" VerticalAlign="Top"/>
          <ItemStyle CssClass="dnnGridItem" HorizontalAlign="Left" />
          <AlternatingItemStyle CssClass="dnnGridAltItem" />
-         <EditItemStyle CssClass="dnnFormInput" />
          <SelectedItemStyle CssClass="dnnFormError" />
-         <FooterStyle CssClass="dnnGridFooter" />
-         <PagerStyle CssClass="dnnGridPager" />
          <Columns>
             <asp:TemplateColumn>
                <ItemTemplate>
-                  <dnn:DnnImage ID="UpIcon" runat="server" IconKey="Up" ResourceKey="DragDrop" />
-                  <dnn:DnnImage ID="DnIcon" runat="server" IconKey="Dn" ResourceKey="DragDrop" />
+                  <span class="SurveyHandle">
+                     <dnn:DnnImage ID="UpIcon" runat="server" IconKey="Up" ResourceKey="DragDrop" />
+                     <dnn:DnnImage ID="DnIcon" runat="server" IconKey="Dn" ResourceKey="DragDrop" />
+                  </span>
+                  <input type="hidden" name="SurveyOptionID" value='<%# Eval("SurveyOptionID") %>' />
                </ItemTemplate>
             </asp:TemplateColumn>
             <asp:BoundColumn DataField="OptionName" HeaderText="OptionName" />
@@ -96,7 +99,6 @@
                      IconKey="Delete"
                      OnClick="DeleteImage_Click"
                      Visible='<%# (bool)(Convert.ToInt32(DataBinder.Eval(Container.DataItem, "SurveyOptionID")) > 0) %>' />
-                  <input type="hidden" name="SurveyOptionID" value='<%# Eval("SurveyOptionID") %>' />
                </ItemTemplate>
                <ItemStyle HorizontalAlign="Center" />
             </asp:TemplateColumn>

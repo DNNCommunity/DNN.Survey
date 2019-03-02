@@ -14,3 +14,8 @@ table.dnnFormRadioButtons
 {
    width: 40%;
 }
+
+span.SurveyHandle
+{
+   cursor: pointer;
+}

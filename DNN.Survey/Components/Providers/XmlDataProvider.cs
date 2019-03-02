@@ -47,6 +47,7 @@ namespace DNN.Modules.Survey.Components.Providers
             surveyBuilder.Append(String.Format("<SurveyID>{0}</SurveyID>", survey.SurveyID));
             surveyBuilder.Append(String.Format("<ModuleID>{0}</ModuleID>", survey.ModuleID));
             surveyBuilder.Append(String.Format("<Question><![CDATA[{0}]]></Question>", survey.Question));
+            surveyBuilder.Append(String.Format("<ViewOrder>{0}</ViewOrder>", survey.ViewOrder));
             surveyBuilder.Append(String.Format("<OptionType>{0}</OptionType>", Convert.ToInt32(survey.OptionType)));
             if ((survey.RepeatDirection == null) || (survey.RepeatDirection == RepeatDirection.Horizontal))
             {
@@ -76,7 +77,7 @@ namespace DNN.Modules.Survey.Components.Providers
             surveyBuilder.Append(String.Format("<CreatedByUserID>{0}</CreatedByUserID>", survey.CreatedByUserID));
             if (survey.LastModifiedByUserID == null)
             {
-               surveyBuilder.Append("<LastModifiedDate />");
+               surveyBuilder.Append("<LastModifiedByUserID />");
             }
             else
             {
@@ -118,7 +119,7 @@ namespace DNN.Modules.Survey.Components.Providers
             {
                surveysBuilder.Append(SurveyToXml(si, forExport));
             }
-            surveysBuilder.Append("<Surveys>");
+            surveysBuilder.Append("</Surveys>");
          }
          return surveysBuilder.ToString();
       }
@@ -133,6 +134,7 @@ namespace DNN.Modules.Survey.Components.Providers
             survey.SurveyID = Convert.ToInt32(surveyXmlNode.SelectSingleNode("SurveyID").InnerText);
             survey.ModuleID = Convert.ToInt32(surveyXmlNode.SelectSingleNode("ModuleID").InnerText);
             survey.Question = surveyXmlNode.SelectSingleNode("Question").InnerText;
+            survey.ViewOrder = Convert.ToInt32(surveyXmlNode.SelectSingleNode("ViewOrder").InnerText);
             survey.OptionType = (QuestionType)Convert.ToInt32(surveyXmlNode.SelectSingleNode("OptionType").InnerText);
             if ((surveyXmlNode.SelectSingleNode("RepeatDirection") != null) && (!(String.IsNullOrEmpty(surveyXmlNode.SelectSingleNode("RepeatDirection").InnerText))))
             {

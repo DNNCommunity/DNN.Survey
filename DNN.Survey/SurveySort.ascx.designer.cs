@@ -10,51 +10,42 @@
 namespace DNN.Modules.Survey {
     
     
-    public partial class SurveyResults {
+    public partial class SurveySort {
         
         /// <summary>
-        /// ResultsNotPublicPanel-Steuerelement
+        /// SortHelpLabel-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel ResultsNotPublicPanel;
+        protected global::System.Web.UI.WebControls.Label SortHelpLabel;
         
         /// <summary>
-        /// ResultsNotPublicMessage-Steuerelement
+        /// QuestionsGrid-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label ResultsNotPublicMessage;
+        protected global::System.Web.UI.WebControls.DataGrid QuestionsGrid;
         
         /// <summary>
-        /// ResultsPanel-Steuerelement
+        /// UpdateButton-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel ResultsPanel;
+        protected global::System.Web.UI.WebControls.LinkButton UpdateButton;
         
         /// <summary>
-        /// ChartPlaceHolder-Steuerelement
+        /// CancelButton-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder ChartPlaceHolder;
-        
-        /// <summary>
-        /// ViewSurveyButton-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton ViewSurveyButton;
+        protected global::System.Web.UI.WebControls.LinkButton CancelButton;
     }
 }

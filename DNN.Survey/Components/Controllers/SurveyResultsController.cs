@@ -51,6 +51,18 @@ namespace DNN.Modules.Survey.Components.Controllers
          DataCache.ClearCache("SurveyOptions");
          DataCache.ClearCache("SurveyResults");
       }
+
+      public List<SurveyResultInfo> Get(int surveyID)
+      {
+         IEnumerable<SurveyResultInfo> surveyResult;
+         using (IDataContext ctx = DataContext.Instance())
+         {
+            surveyResult = ctx.ExecuteQuery<SurveyResultInfo>(CommandType.StoredProcedure,
+               "{databaseOwner}{objectQualifier}SurveyResults_Get",
+               surveyID);
+         }
+         return surveyResult.ToList<SurveyResultInfo>();
+      }
       #endregion
    }
 }

@@ -7,6 +7,7 @@ using DotNetNuke.Entities.Modules;
 using DotNetNuke.Framework.JavaScriptLibraries;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.Localization;
+using DotNetNuke.Web.Client.ClientResourceManagement;
 using DotNetNuke.Web.UI.WebControls;
 using System;
 using System.Collections.Generic;
@@ -196,6 +197,7 @@ namespace DNN.Modules.Survey
          JavaScript.RequestRegistration(CommonJs.DnnPlugins);
          JavaScript.RequestRegistration(CommonJs.jQuery);
          JavaScript.RequestRegistration(CommonJs.jQueryUI);
+         ClientResourceManager.RegisterStyleSheet(Page, string.Format("{0}Module.css", ControlPath));
 
          ScriptManager.GetCurrent(Page).RegisterPostBackControl(UpdateButton);
          ScriptManager.GetCurrent(Page).RegisterPostBackControl(CancelButton);
@@ -241,16 +243,11 @@ namespace DNN.Modules.Survey
          StringBuilder scriptBuilder = new StringBuilder();
          scriptBuilder.Append("$(function() {\r\n");
          scriptBuilder.Append("   $(\"#" + AnswersGrid.ClientID + "\").sortable({\r\n");
-         scriptBuilder.Append("      items: 'tr:not(tr:first-child)',\r\n");
-         scriptBuilder.Append("      cursor: 'pointer',\r\n");
-         scriptBuilder.Append("      axis: 'y',\r\n");
+         scriptBuilder.Append("      items: \"tr:not(tr:first-child)\",\r\n");
+         scriptBuilder.Append("      cursor: \"move\",\r\n");
+         scriptBuilder.Append("      axis: \"y\",\r\n");
          scriptBuilder.Append("      dropOnEmpty: false,\r\n");
-         scriptBuilder.Append("      start: function(e, ui) {\r\n");
-         scriptBuilder.Append("         ui.item.addClass(\"dnnFormError\");\r\n");
-         scriptBuilder.Append("      },\r\n");
-         scriptBuilder.Append("      stop: function(e, ui) {\r\n");
-         scriptBuilder.Append("         ui.item.removeClass(\"dnnFormError\");\r\n");
-         scriptBuilder.Append("      },\r\n");
+         scriptBuilder.Append("      handle: \".SurveyHandle\",\r\n");
          scriptBuilder.Append("      update: function(e, ui){\r\n");
          scriptBuilder.Append("         $(this).find(\"tr\").each(function(index) {\r\n");
          scriptBuilder.Append("            if (index > 0){\r\n");
