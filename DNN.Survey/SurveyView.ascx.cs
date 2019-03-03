@@ -2,6 +2,8 @@
 using DNN.Modules.Survey.Components.Controllers;
 using DNN.Modules.Survey.Components.Entities;
 using DNN.Modules.Survey.Controls;
+using DotNetNuke.Common;
+using DotNetNuke.Entities.Icons;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Modules.Actions;
 using DotNetNuke.Framework.JavaScriptLibraries;
@@ -125,6 +127,8 @@ namespace DNN.Modules.Survey
             return hasVoted;
          }
       }
+
+      protected int DeleteResultsActionID { get; set; }
       #endregion
 
       #region Settings
@@ -149,13 +153,14 @@ namespace DNN.Modules.Survey
             ModuleActionCollection actions = new ModuleActionCollection();
             // Add Question
             actions.Add(GetNextActionID(), Localization.GetString("AddQuestion.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, string.Empty, EditUrl(), false, SecurityAccessLevel.Edit, true, false);
-            actions.Add(GetNextActionID(), Localization.GetString("SortQuestions.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, string.Empty, EditUrl("Sort"), false, SecurityAccessLevel.Edit, true, false);
-            actions.Add(GetNextActionID(), Localization.GetString("ViewResults.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, string.Empty, EditUrl("SurveyResults"), false, SecurityAccessLevel.View, true, false);
+            actions.Add(GetNextActionID(), Localization.GetString("SortQuestions.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, IconController.IconURL("ViewStats"), EditUrl("Sort"), false, SecurityAccessLevel.Edit, true, false);
             if (ModulePermissionController.HasModulePermission(ModulePermissionCollection, ModuleSecurity.VIEW_RESULTS_PERMISSION))
             {
                // View Results
-               actions.Add(GetNextActionID(), Localization.GetString("ViewResults.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, string.Empty, EditUrl("SurveyResults"), false, SecurityAccessLevel.View, true, false);
+               actions.Add(GetNextActionID(), Localization.GetString("ViewResults.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, IconController.IconURL("View"), EditUrl("SurveyResults"), false, SecurityAccessLevel.View, true, false);
             }
+            DeleteResultsActionID = GetNextActionID();
+            actions.Add(DeleteResultsActionID, Localization.GetString("DeleteResults.Action", LocalResourceFile), "DeleteResults", "Delete", IconController.IconURL("Delete"), string.Empty, true, SecurityAccessLevel.Edit, true, false);
             return actions;
          }
       }
@@ -164,7 +169,9 @@ namespace DNN.Modules.Survey
       #region Events
       protected override void OnInit(EventArgs e)
       {
+         JavaScript.RequestRegistration(CommonJs.DnnPlugins);
          _cookie = string.Format("_Module_{0}_Survey", ModuleId);
+         AddActionHandler(SurveyActions_Click);
          base.OnInit(e);
       }
 
@@ -218,6 +225,27 @@ namespace DNN.Modules.Survey
          {
             Exceptions.ProcessModuleLoadException(this, ex);
          }
+      }
+
+      protected override void OnPreRender(EventArgs e)
+      {
+         if (IsEditable)
+         {
+            StringBuilder confirmDeleteScriptBuilder = new StringBuilder();
+            confirmDeleteScriptBuilder.Append("$(document).ready(function() {\r\n");
+            confirmDeleteScriptBuilder.Append(string.Format("   var deleteLink = $(\"a[href='javascript: __doPostBack(\\\\\\\'dnn$ctr{0}$ModuleActions$actionButton\\\\\\\', \\\\\\\'{1}\\\\\\\')']\");\r\n", ModuleId, DeleteResultsActionID));
+            confirmDeleteScriptBuilder.Append("   deleteLink.dnnConfirm({\r\n");
+            confirmDeleteScriptBuilder.Append(string.Format("      text: \"{0}\",\r\n", Localization.GetString("ConfirmResultsDelete.Text", LocalResourceFile)));
+            confirmDeleteScriptBuilder.Append(string.Format("      yesText: \"{0}\",\r\n", Localization.GetString("Yes.Text")));
+            confirmDeleteScriptBuilder.Append(string.Format("      noText: \"{0}\",\r\n", Localization.GetString("No.Text")));
+            confirmDeleteScriptBuilder.Append(string.Format("      title: \"{0}\"\r\n", Localization.GetString("DeleteResulzs.Action", LocalResourceFile)));
+            confirmDeleteScriptBuilder.Append("   });\r\n");
+            confirmDeleteScriptBuilder.Append("});\r\n");
+
+            if (!(Page.ClientScript.IsStartupScriptRegistered("ConfirmDeleteScript")))
+               Page.ClientScript.RegisterStartupScript(GetType(), "ConfirmDeleteScript", confirmDeleteScriptBuilder.ToString(), true);
+         }
+         base.OnPreRender(e);
       }
 
       protected void ViewResultsButton_Click(object sender, EventArgs e)
@@ -329,6 +357,21 @@ namespace DNN.Modules.Survey
                default:
                   break;
             }
+         }
+      }
+
+      private void SurveyActions_Click(object sender, ActionEventArgs e)
+      {
+         switch (e.Action.CommandName)
+         {
+            case "DeleteResults":
+               if (e.Action.CommandArgument == "Delete")
+               {
+                  SurveyResultsController.DropAll(ModuleId);
+               }
+               break;
+            default:
+               break;
          }
       }
       #endregion

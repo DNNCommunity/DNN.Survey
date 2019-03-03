@@ -105,7 +105,7 @@ namespace DNN.Modules.Survey
             CanvasControl canvas = (CanvasControl)LoadControl("Controls/CanvasControl.ascx");
             canvas.Header = survey.Question;
             ChartPlaceHolder.Controls.Add(canvas);
-            CreateGraph(canvas.ClientID, labelBuilder.ToString(), dataBuilder.ToString(), bgColorsBuilder.ToString(), bColorsBuilder.ToString());
+            CreateGraph(canvas.ClientID, labelBuilder.ToString(), dataBuilder.ToString(), bgColorsBuilder.ToString(), bColorsBuilder.ToString(), survey.OptionType);
          }
 
          base.OnPreRender(e);
@@ -118,12 +118,12 @@ namespace DNN.Modules.Survey
       #endregion
 
       #region Private Methods
-      private void CreateGraph(string clientID, string labels, string data, string background, string border)
+      private void CreateGraph(string clientID, string labels, string data, string background, string border, QuestionType optionType)
       {
          StringBuilder scriptBuilder = new StringBuilder();
          scriptBuilder.Append(string.Format("var ctx = document.getElementById(\"{0}\").getContext(\"2d\");\r\n", clientID));
          scriptBuilder.Append("var myChart = new Chart(ctx, {\r\n");
-         scriptBuilder.Append("   type: \"bar\",\r\n");
+         scriptBuilder.Append(string.Format("   type: \"{0}\",\r\n", optionType == QuestionType.Text ? "horizontalBar" : "bar"));
          scriptBuilder.Append("   data: {\r\n");
          scriptBuilder.Append(string.Format("      labels: [{0}],\r\n", labels));
          scriptBuilder.Append("      datasets: [{\r\n");
@@ -137,6 +137,11 @@ namespace DNN.Modules.Survey
          scriptBuilder.Append("   options: {\r\n");
          scriptBuilder.Append("     scales: {\r\n");
          scriptBuilder.Append("        yAxes: [{\r\n");
+         scriptBuilder.Append("           ticks: {\r\n");
+         scriptBuilder.Append("              beginAtZero: true\r\n");
+         scriptBuilder.Append("           }\r\n");
+         scriptBuilder.Append("        }],\r\n");
+         scriptBuilder.Append("        xAxes: [{\r\n");
          scriptBuilder.Append("           ticks: {\r\n");
          scriptBuilder.Append("              beginAtZero: true\r\n");
          scriptBuilder.Append("           }\r\n");

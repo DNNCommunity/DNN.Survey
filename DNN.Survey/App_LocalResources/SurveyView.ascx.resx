@@ -120,6 +120,12 @@
   <data name="AddQuestion.Action" xml:space="preserve">
     <value>Add question</value>
   </data>
+  <data name="ConfirmResultsDelete.Text" xml:space="preserve">
+    <value>Are you sure you want to delete all survey results?</value>
+  </data>
+  <data name="DeleteResults.Action" xml:space="preserve">
+    <value>Delete results</value>
+  </data>
   <data name="HasVoted.Text" xml:space="preserve">
     <value>Thank you for your participation.</value>
   </data>
