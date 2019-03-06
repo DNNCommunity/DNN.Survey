@@ -29,5 +29,14 @@ namespace DNN.Modules.Survey.Controls {
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBoxList SurveyCheckBoxList;
+        
+        /// <summary>
+        /// SurveyCheckBoxListValidator-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::DNN.Modules.Survey.Components.UI.WebControls.Validators.CheckBoxListValidator SurveyCheckBoxListValidator;
     }
 }

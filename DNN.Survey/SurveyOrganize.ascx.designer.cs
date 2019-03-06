@@ -10,7 +10,7 @@
 namespace DNN.Modules.Survey {
     
     
-    public partial class SurveySort {
+    public partial class SurveyOrganize {
         
         /// <summary>
         /// SortHelpLabel-Steuerelement

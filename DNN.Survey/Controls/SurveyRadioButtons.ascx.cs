@@ -8,7 +8,6 @@ namespace DNN.Modules.Survey.Controls
 {
    public partial class SurveyRadioButtons : UserControl
    {
-      public int SurveyID { get; set; }
       public string EditUrl { get; set; }
       public bool IsEditable { get; set; }
 
@@ -103,6 +102,30 @@ namespace DNN.Modules.Survey.Controls
       public override void DataBind()
       {
          SurveyRadioButtonList.DataBind();
+      }
+
+      public string ValidationGroup
+      {
+         get
+         {
+            return SurveyRadioButtonListValidator.ValidationGroup;
+         }
+         set
+         {
+            SurveyRadioButtonListValidator.ValidationGroup = value;
+         }
+      }
+
+      public string ErrorMessage
+      {
+         get
+         {
+            return SurveyRadioButtonListValidator.ErrorMessage;
+         }
+         set
+         {
+            SurveyRadioButtonListValidator.ErrorMessage = value;
+         }
       }
 
       protected void Page_Load(object sender, EventArgs e)

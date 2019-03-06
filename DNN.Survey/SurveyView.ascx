@@ -12,8 +12,10 @@
    <ul class="dnnActions dnnClear">
       <li>
          <asp:LinkButton ID="SubmitSurveyButton" runat="server"
+            CausesValidation="true"
             CssClass="dnnPrimaryAction"
             OnClick="SubmitSurveyButton_Click"
+            OnLoad="SubmitSurveyButton_Load"
             ResourceKey="SubmitSurvey.Action" />
       </li>
       <li>

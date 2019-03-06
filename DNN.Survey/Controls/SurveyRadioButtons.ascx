@@ -7,4 +7,7 @@
       ControlName="SurveyRadioButtonList" />
    <asp:RadioButtonList ID="SurveyRadioButtonList" runat="server"
       CssClass="dnnFormRadioButtons" />
+   <asp:RequiredFieldValidator ID="SurveyRadioButtonListValidator" runat="server"
+      ControlToValidate="SurveyRadioButtonList"
+      CssClass="dnnFormMessage dnnFormError" />
 </div>

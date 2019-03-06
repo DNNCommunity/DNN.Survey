@@ -1,4 +1,5 @@
-﻿using DotNetNuke.Entities.Icons;
+﻿using DNN.Modules.Survey.Components.UI.WebControls.Validators;
+using DotNetNuke.Entities.Icons;
 using DotNetNuke.Services.Localization;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,6 @@ namespace DNN.Modules.Survey.Controls
 {
    public partial class SurveyCheckBoxes : UserControl
    {
-      public int SurveyID { get; set; }
       public string EditUrl { get; set; }
       public bool IsEditable { get; set; }
 
@@ -112,6 +112,30 @@ namespace DNN.Modules.Survey.Controls
       public override void DataBind()
       {
          SurveyCheckBoxList.DataBind();
+      }
+
+      public string ValidationGroup
+      {
+         get
+         {
+            return SurveyCheckBoxListValidator.ValidationGroup;
+         }
+         set
+         {
+            SurveyCheckBoxListValidator.ValidationGroup = value;
+         }
+      }
+
+      public string ErrorMessage
+      {
+         get
+         {
+            return SurveyCheckBoxListValidator.ErrorMessage;
+         }
+         set
+         {
+            SurveyCheckBoxListValidator.ErrorMessage = value;
+         }
       }
 
       protected void Page_Load(object sender, EventArgs e)

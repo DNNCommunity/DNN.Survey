@@ -55,6 +55,30 @@ namespace DNN.Modules.Survey.Controls
          }
       }
 
+      public string ValidationGroup
+      {
+         get
+         {
+            return SurveyTextBoxValidator.ValidationGroup;
+         }
+         set
+         {
+            SurveyTextBoxValidator.ValidationGroup = value;
+         }
+      }
+
+      public string ErrorMessage
+      {
+         get
+         {
+            return SurveyTextBoxValidator.ErrorMessage;
+         }
+         set
+         {
+            SurveyTextBoxValidator.ErrorMessage = value;
+         }
+      }
+
       protected void Page_Load(object sender, EventArgs e)
       {
          if (IsEditable)

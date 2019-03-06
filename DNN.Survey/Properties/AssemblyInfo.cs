@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Web.UI;
 
 // Allgemeine Informationen über eine Assembly werden über die folgende 
 // Attributgruppe gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
@@ -33,3 +34,7 @@ using System.Runtime.InteropServices;
 // übernehmen, indem Sie "*" eingeben:
 [assembly: AssemblyVersion("9.0.0.0")]
 [assembly: AssemblyFileVersion("9.0.0.0")]
+
+// Add assembly reference to allow for WebResource.axd access to JavaScript files
+// see: http://aspnet.4guysfromrolla.com/articles/080906-1.aspx
+[assembly: WebResource("DNN.Modules.Survey.Components.UI.WebControls.Validators.Validators.js", "text/javascript")]

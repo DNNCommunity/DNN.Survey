@@ -7,6 +7,7 @@ using DotNetNuke.Entities.Modules;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.Web.Client.ClientResourceManagement;
+using DotNetNuke.Web.UI.WebControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ using System.Web.UI.WebControls;
 
 namespace DNN.Modules.Survey
 {
-   public partial class SurveySort : PortalModuleBase
+   public partial class SurveyOrganize : PortalModuleBase
    {
       private SurveysController _surveysController = null;
 
@@ -130,6 +131,36 @@ namespace DNN.Modules.Survey
                   break;
             }
          }
+      }
+
+      protected void DeleteImage_Click(object sender, EventArgs e)
+      {
+         DnnImageButton deleteImage = (DnnImageButton)sender;
+         int surveyID = Convert.ToInt32(deleteImage.CommandArgument);
+
+         int[] surveyIDs = (from p in Request.Form["SurveyID"].Split(',')
+                            select int.Parse(p)).ToArray();
+         int viewOrder = 1;
+         List<SurveysInfo> surveys = Surveys;
+         SurveysInfo survey;
+
+         foreach (int sID in surveyIDs)
+         {
+            survey = surveys.Find(x => x.SurveyID == sID);
+            if (sID == surveyID)
+            {
+               surveys.Remove(survey);
+            }
+            else
+            {
+               survey.ViewOrder = viewOrder;
+               survey.LastModifiedByUserID = UserId;
+               viewOrder++;
+            }
+         }
+         Surveys = surveys;
+         QuestionsGrid.DataSource = Surveys;
+         QuestionsGrid.DataBind();
       }
 
       protected void CancelButton_Click(object sender, EventArgs e)

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SurveySort.ascx.cs" Inherits="DNN.Modules.Survey.SurveySort" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SurveyOrganize.ascx.cs" Inherits="DNN.Modules.Survey.SurveyOrganize" %>
 <%@ Register TagPrefix="dnn" Assembly="DotNetNuke.Web" Namespace="DotNetNuke.Web.UI.WebControls" %>
 
 <div class="dnnFormMessage dnnFormInfo"><asp:Label ID="SortHelpLabel" runat="server" ResourceKey="SortHelp" /></div>
@@ -31,6 +31,15 @@
          <ItemTemplate>
             <asp:Label ID="QuestionTypeLabel" runat="server" />
          </ItemTemplate>
+      </asp:TemplateColumn>
+      <asp:TemplateColumn HeaderText="">
+         <ItemTemplate>
+            <dnn:DnnImageButton ID="DeleteImage" runat="server"
+               CommandArgument='<%# Eval("SurveyID") %>'
+               IconKey="Delete"
+               OnClick="DeleteImage_Click" />
+         </ItemTemplate>
+         <ItemStyle HorizontalAlign="Center" />
       </asp:TemplateColumn>
    </Columns>
 </asp:DataGrid>

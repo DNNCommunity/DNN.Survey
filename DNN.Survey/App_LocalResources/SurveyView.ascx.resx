@@ -120,6 +120,9 @@
   <data name="AddQuestion.Action" xml:space="preserve">
     <value>Add question</value>
   </data>
+  <data name="CheckBoxRequired.ErrorMessage" xml:space="preserve">
+    <value>Please check at least one answer to the question "{0}".</value>
+  </data>
   <data name="ConfirmResultsDelete.Text" xml:space="preserve">
     <value>Are you sure you want to delete all survey results?</value>
   </data>
@@ -132,8 +135,11 @@
   <data name="MustBeSignedIn.Text" xml:space="preserve">
     <value>You must sign in to vote in this survey.</value>
   </data>
-  <data name="SortQuestions.Action" xml:space="preserve">
-    <value>Sort questions</value>
+  <data name="OrganizeQuestions.Action" xml:space="preserve">
+    <value>Organize questions</value>
+  </data>
+  <data name="RadioButtonRequired.ErrorMessage" xml:space="preserve">
+    <value>Please select an answer to the question "{0}".</value>
   </data>
   <data name="SubmitSurvey.Action" xml:space="preserve">
     <value>Submit survey</value>
@@ -143,6 +149,9 @@
   </data>
   <data name="SurveyWillClose.Text" xml:space="preserve">
     <value>The survey will be closed on {0:d} at {0:t}.</value>
+  </data>
+  <data name="TextBoxRequired.ErrorMessage" xml:space="preserve">
+    <value>Please answer the question "{0}".</value>
   </data>
   <data name="ViewResults.Action" xml:space="preserve">
     <value>View results</value>

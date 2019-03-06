@@ -6,4 +6,7 @@
       CssClass="SurveyLabel"
       ControlName="SurveyTextBox" />
    <asp:TextBox ID="SurveyTextBox" runat="server" />
+   <asp:RequiredFieldValidator ID="SurveyTextBoxValidator" runat="server"
+      ControlToValidate="SurveyTextBox"
+      CssClass="dnnFormMessage dnnFormError" />
 </div>

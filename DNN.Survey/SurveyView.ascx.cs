@@ -153,7 +153,7 @@ namespace DNN.Modules.Survey
             ModuleActionCollection actions = new ModuleActionCollection();
             // Add Question
             actions.Add(GetNextActionID(), Localization.GetString("AddQuestion.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, string.Empty, EditUrl(), false, SecurityAccessLevel.Edit, true, false);
-            actions.Add(GetNextActionID(), Localization.GetString("SortQuestions.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, IconController.IconURL("ViewStats"), EditUrl("Sort"), false, SecurityAccessLevel.Edit, true, false);
+            actions.Add(GetNextActionID(), Localization.GetString("OrganizeQuestions.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, IconController.IconURL("ViewStats"), EditUrl("Organize"), false, SecurityAccessLevel.Edit, true, false);
             if (ModulePermissionController.HasModulePermission(ModulePermissionCollection, ModuleSecurity.VIEW_RESULTS_PERMISSION))
             {
                // View Results
@@ -179,6 +179,7 @@ namespace DNN.Modules.Survey
       {
          try
          {
+            SubmitSurveyButton.ValidationGroup = string.Format("Survey-{0}-ValidationGroup", ModuleId);
             if (IsSurveyExpired)
             {
                SurveyMessageLabel.Text = String.Format(Localization.GetString("SurveyClosed.Text", LocalResourceFile), SurveyClosingDate);
@@ -238,7 +239,7 @@ namespace DNN.Modules.Survey
             confirmDeleteScriptBuilder.Append(string.Format("      text: \"{0}\",\r\n", Localization.GetString("ConfirmResultsDelete.Text", LocalResourceFile)));
             confirmDeleteScriptBuilder.Append(string.Format("      yesText: \"{0}\",\r\n", Localization.GetString("Yes.Text")));
             confirmDeleteScriptBuilder.Append(string.Format("      noText: \"{0}\",\r\n", Localization.GetString("No.Text")));
-            confirmDeleteScriptBuilder.Append(string.Format("      title: \"{0}\"\r\n", Localization.GetString("DeleteResulzs.Action", LocalResourceFile)));
+            confirmDeleteScriptBuilder.Append(string.Format("      title: \"{0}\"\r\n", Localization.GetString("DeleteResults.Action", LocalResourceFile)));
             confirmDeleteScriptBuilder.Append("   });\r\n");
             confirmDeleteScriptBuilder.Append("});\r\n");
 
@@ -255,56 +256,60 @@ namespace DNN.Modules.Survey
 
       protected void SubmitSurveyButton_Click(object sender, EventArgs e)
       {
-         List<SurveysInfo> surveys = SurveysController.GetAll(ModuleId);
-         List<SurveyResultsInfo> surveyResults = new List<SurveyResultsInfo>();
-
-         foreach (SurveysInfo survey in surveys)
+         Page.Validate(string.Format("Survey_{0}_ValidationGroup", ModuleId));
+         if (Page.IsValid)
          {
-            SurveyResultsInfo surveyResult;
-            switch (survey.OptionType)
+            List<SurveysInfo> surveys = SurveysController.GetAll(ModuleId);
+            List<SurveyResultsInfo> surveyResults = new List<SurveyResultsInfo>();
+
+            foreach (SurveysInfo survey in surveys)
             {
-               case QuestionType.RadioButtons:
-                  SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)FindControl(String.Format("SurveyRadiobutton-{0}", survey.SurveyID));
-                  surveyResult = new SurveyResultsInfo();
-                  surveyResult.SurveyOptionID = Convert.ToInt32(surveyRadioButtons.SelectedValue);
-                  surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
-                  surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
-                  surveyResults.Add(surveyResult);
-                  break;
-               case QuestionType.CheckBoxes:
-                  SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)FindControl(String.Format("SurveyCheckbox-{0}", survey.SurveyID));
-                  foreach (int surveyOptionID in surveyCheckBoxes.SelectedItems)
-                  {
+               SurveyResultsInfo surveyResult;
+               switch (survey.OptionType)
+               {
+                  case QuestionType.RadioButtons:
+                     SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)FindControl(String.Format("SurveyRadiobutton-{0}", survey.SurveyID));
                      surveyResult = new SurveyResultsInfo();
-                     surveyResult.SurveyOptionID = surveyOptionID;
+                     surveyResult.SurveyOptionID = Convert.ToInt32(surveyRadioButtons.SelectedValue);
                      surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
                      surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
                      surveyResults.Add(surveyResult);
-                  }
-                  break;
-               case QuestionType.Text:
-                  SurveyText surveyTextBox = (SurveyText)FindControl(String.Format("SurveyTextBox-{0}", survey.SurveyID));
-                  surveyResult = new SurveyResultsInfo();
-                  surveyResult.SurveyOptionID = surveyTextBox.SurveyOptionID;
-                  surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
-                  surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
-                  surveyResult.TextAnswer = surveyTextBox.Text;
-                  surveyResults.Add(surveyResult);
-                  break;
-               default:
-                  break;
+                     break;
+                  case QuestionType.CheckBoxes:
+                     SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)FindControl(String.Format("SurveyCheckbox-{0}", survey.SurveyID));
+                     foreach (int surveyOptionID in surveyCheckBoxes.SelectedItems)
+                     {
+                        surveyResult = new SurveyResultsInfo();
+                        surveyResult.SurveyOptionID = surveyOptionID;
+                        surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
+                        surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
+                        surveyResults.Add(surveyResult);
+                     }
+                     break;
+                  case QuestionType.Text:
+                     SurveyText surveyTextBox = (SurveyText)FindControl(String.Format("SurveyTextBox-{0}", survey.SurveyID));
+                     surveyResult = new SurveyResultsInfo();
+                     surveyResult.SurveyOptionID = surveyTextBox.SurveyOptionID;
+                     surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
+                     surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
+                     surveyResult.TextAnswer = surveyTextBox.Text;
+                     surveyResults.Add(surveyResult);
+                     break;
+                  default:
+                     break;
+               }
             }
+            SurveyResultsController.Add(surveyResults, SurveyTracking);
+            HttpCookie cookie = new HttpCookie(_cookie);
+            cookie.Value = "True";
+            cookie.Expires = (SurveyClosingDate == DateTime.MinValue ? DateTime.MaxValue : SurveyClosingDate.AddDays(1));
+            Response.AppendCookie(cookie);
+            SurveyPlaceHolder.Visible = false;
+            SubmitSurveyButton.Visible = false;
+            SurveyMessageLabel.Text = String.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
+            SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
+            SubmitSurveyButton.Visible = false;
          }
-         SurveyResultsController.Add(surveyResults, SurveyTracking);
-         HttpCookie cookie = new HttpCookie(_cookie);
-         cookie.Value = "True";
-         cookie.Expires = (SurveyClosingDate == DateTime.MinValue ? DateTime.MaxValue : SurveyClosingDate.AddDays(1));
-         Response.AppendCookie(cookie);
-         SurveyPlaceHolder.Visible = false;
-         SubmitSurveyButton.Visible = false;
-         SurveyMessageLabel.Text = String.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
-         SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
-         SubmitSurveyButton.Visible = false;
       }
       #endregion
 
@@ -318,12 +323,14 @@ namespace DNN.Modules.Survey
             {
                case QuestionType.RadioButtons:
                   SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)LoadControl(String.Format("{0}Controls/SurveyRadioButtons.ascx", ControlPath));
-                  surveyRadioButtons.ID = String.Format("SurveyRadiobutton-{0}", survey.SurveyID);
+                  surveyRadioButtons.ID = String.Format("SurveyRadiobutton_{0}", survey.SurveyID);
                   surveyRadioButtons.Label = survey.Question;
                   surveyRadioButtons.RepeatDirection = (survey.RepeatDirection.HasValue ? survey.RepeatDirection.Value : RepeatDirection.Horizontal);
                   surveyRadioButtons.RepeatColumns = (((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1)) ? 1 : survey.RepeatColumns.Value);
                   surveyRadioButtons.EditUrl = EditUrl("SurveyID", survey.SurveyID.ToString());
                   surveyRadioButtons.IsEditable = IsEditable;
+                  surveyRadioButtons.ErrorMessage = string.Format(Localization.GetString("RadioButtonRequired.ErrorMessage", LocalResourceFile), survey.Question);
+                  surveyRadioButtons.ValidationGroup = string.Format("Survey_{0}_ValidationGroup", ModuleId);
                   surveyRadioButtons.DataSource = surveyOptions;
                   surveyRadioButtons.DataTextField = "OptionName";
                   surveyRadioButtons.DataValueField = "SurveyOptionID";
@@ -332,12 +339,14 @@ namespace DNN.Modules.Survey
                   break;
                case QuestionType.CheckBoxes:
                   SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)LoadControl(String.Format("{0}Controls/SurveyCheckBoxes.ascx", ControlPath));
-                  surveyCheckBoxes.ID = String.Format("SurveyCheckbox-{0}", survey.SurveyID);
+                  surveyCheckBoxes.ID = String.Format("SurveyCheckbox_{0}", survey.SurveyID);
                   surveyCheckBoxes.Label = survey.Question;
                   surveyCheckBoxes.RepeatDirection = (survey.RepeatDirection.HasValue ? survey.RepeatDirection.Value : RepeatDirection.Horizontal);
                   surveyCheckBoxes.RepeatColumns = (((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1)) ? 1 : survey.RepeatColumns.Value);
                   surveyCheckBoxes.EditUrl = EditUrl("SurveyID", survey.SurveyID.ToString());
                   surveyCheckBoxes.IsEditable = IsEditable;
+                  surveyCheckBoxes.ErrorMessage = string.Format(Localization.GetString("CheckBoxRequired.ErrorMessage", LocalResourceFile), survey.Question);
+                  surveyCheckBoxes.ValidationGroup = string.Format("Survey_{0}_ValidationGroup", ModuleId);
                   surveyCheckBoxes.DataSource = surveyOptions;
                   surveyCheckBoxes.DataTextField = "OptionName";
                   surveyCheckBoxes.DataValueField = "SurveyOptionID";
@@ -346,11 +355,13 @@ namespace DNN.Modules.Survey
                   break;
                case QuestionType.Text:
                   SurveyText surveyTextBox = (SurveyText)LoadControl(String.Format("{0}Controls/SurveyText.ascx", ControlPath));
-                  surveyTextBox.ID = String.Format("SurveyTextBox-{0}", survey.SurveyID);
+                  surveyTextBox.ID = String.Format("SurveyTextBox_{0}", survey.SurveyID);
                   surveyTextBox.Label = survey.Question;
                   surveyTextBox.NumberOfRows = (((survey.NumberOfRows.HasValue) && (survey.NumberOfRows.Value > 1)) ? survey.NumberOfRows.Value : 1);
                   surveyTextBox.EditUrl = EditUrl("SurveyID", survey.SurveyID.ToString());
                   surveyTextBox.IsEditable = IsEditable;
+                  surveyTextBox.ErrorMessage = string.Format(Localization.GetString("TextBoxRequired.ErrorMessage", LocalResourceFile), survey.Question);
+                  surveyTextBox.ValidationGroup = string.Format("Survey_{0}_ValidationGroup", ModuleId);
                   surveyTextBox.SurveyOptionID = surveyOptions[0].SurveyOptionID;
                   SurveyPlaceHolder.Controls.Add(surveyTextBox);
                   break;
@@ -375,5 +386,11 @@ namespace DNN.Modules.Survey
          }
       }
       #endregion
+
+      protected void SubmitSurveyButton_Load(object sender, EventArgs e)
+      {
+         LinkButton submitSurveyButton = (LinkButton)sender;
+         submitSurveyButton.ValidationGroup = string.Format("Survey_{0}_ValidationGroup", ModuleId);
+      }
    }
 }

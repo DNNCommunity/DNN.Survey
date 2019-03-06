@@ -53,7 +53,7 @@
     <Content Include="Settings.ascx" />
     <Content Include="SurveyEdit.ascx" />
     <Content Include="SurveyResults.ascx" />
-    <Content Include="SurveySort.ascx" />
+    <Content Include="SurveyOrganize.ascx" />
     <Content Include="SurveyView.ascx" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +68,9 @@
     <Compile Include="Components\Entities\SurveyResultsInfo.cs" />
     <Compile Include="Components\Entities\SurveysInfo.cs" />
     <Compile Include="Components\Providers\XmlDataProvider.cs" />
+    <Compile Include="Components\UI\Helpers.cs" />
+    <Compile Include="Components\UI\WebControls\Validators\CheckBoxListValidator.cs" />
+    <Compile Include="Components\UI\WebControls\Validators\CheckBoxValidator.cs" />
     <Compile Include="Controls\CanvasControl.ascx.cs">
       <DependentUpon>CanvasControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -118,12 +121,12 @@
     <Compile Include="SurveyResults.ascx.designer.cs">
       <DependentUpon>SurveyResults.ascx</DependentUpon>
     </Compile>
-    <Compile Include="SurveySort.ascx.cs">
-      <DependentUpon>SurveySort.ascx</DependentUpon>
+    <Compile Include="SurveyOrganize.ascx.cs">
+      <DependentUpon>SurveyOrganize.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="SurveySort.ascx.designer.cs">
-      <DependentUpon>SurveySort.ascx</DependentUpon>
+    <Compile Include="SurveyOrganize.ascx.designer.cs">
+      <DependentUpon>SurveyOrganize.ascx</DependentUpon>
     </Compile>
     <Compile Include="SurveyView.ascx.cs">
       <DependentUpon>SurveyView.ascx</DependentUpon>
@@ -159,10 +162,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_LocalResources\SurveySort.ascx.resx" />
+    <Content Include="App_LocalResources\SurveyOrganize.ascx.resx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_LocalResources\SharedResources.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Providers\DataProviders\SqlDataProvider\09.00.00.SqlDataProvider" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Providers\DataProviders\SqlDataProvider\Uninstall.SqlDataProvider" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Components\UI\WebControls\Validators\Validators.js" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

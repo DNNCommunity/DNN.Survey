@@ -114,6 +114,7 @@ namespace DNN.Modules.Survey.Components.Providers
          }
          else
          {
+            surveys = surveys.OrderBy(s => s.ViewOrder).ToList();
             surveysBuilder.Append("<Surveys>");
             foreach (SurveysInfo si in surveys)
             {
@@ -234,6 +235,7 @@ namespace DNN.Modules.Survey.Components.Providers
          }
          else
          {
+            surveyOptions = surveyOptions.OrderBy(so => so.ViewOrder).ToList();
             surveyOptionsBuilder.Append("<SurveyOptions>");
             foreach (SurveyOptionsInfo soi in surveyOptions)
             {
