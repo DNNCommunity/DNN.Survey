@@ -21,33 +21,6 @@ namespace DNN.Modules.Survey
 {
    public partial class SurveyView : PortalModuleBase, IActionable
    {
-      #region Settings
-      protected TrackingMethod SurveyTracking
-      {
-         get
-         {
-            object surveyTracking = Settings["SurveyTracking"];
-            if (surveyTracking == null)
-               return TrackingMethod.Cookie;
-            else
-               return (TrackingMethod)Convert.ToInt32(surveyTracking);
-         }
-      }
-
-      protected int ResultsVersion
-      {
-         // This is: If the results are cleared, this number increases - therefore the cookie changes and users can vote again.
-         get
-         {
-            object resultsVersion = Settings["ResultsVersion"];
-            if (resultsVersion == null)
-               return 0;
-            else
-               return Convert.ToInt32(resultsVersion);
-         }
-      }
-      #endregion
-
       #region TabModuleSettings
       protected bool ShowClosingDateMessage
       {
@@ -124,24 +97,51 @@ namespace DNN.Modules.Survey
             bool hasVoted;
             if (PortalSecurity.IsInRole("Administrators"))
             {
-               hasVoted = false; // Administrators may always see the survey
+               // Administrators may always see the survey (and may vote more than once)
+               hasVoted = false;
             }
             else
             {
-               if (SurveyTracking == TrackingMethod.Cookie)
+               if ((AuthorizedUsersOnly) || (UserId > 0))
                {
-                  hasVoted = (Request.Cookies[_cookie] != null);
+                  hasVoted = (SurveysController.HasVoted(ModuleId, UserId));
                }
                else
                {
-                  hasVoted = (SurveysController.HasVoted(ModuleId, UserId));
+                  hasVoted = (Request.Cookies[_cookie] != null);
                }
             }
             return hasVoted;
          }
       }
 
+      protected bool HasViewResultsPermission
+      {
+         get
+         {
+            return ModulePermissionController.HasModulePermission(ModulePermissionCollection, ModuleSecurity.VIEW_RESULTS_PERMISSION);
+         }
+      }
+
       protected int DeleteResultsActionID { get; set; }
+
+      protected bool AuthorizedUsersOnly
+      {
+         get
+         {
+            bool authorizedUsersOnly = true;
+            ModulePermissionCollection permissions = ModulePermissionController.GetModulePermissions(ModuleId, TabId);
+            foreach (ModulePermissionInfo permission in permissions)
+            {
+               if ((permission.PermissionCode == ModuleSecurity.PERMISSION_CODE) && (permission.PermissionKey == ModuleSecurity.PARTICIPATE_PERMISSION) && ((permission.RoleID == -1) || (permission.RoleID == -3)))
+               {
+                  authorizedUsersOnly = false;
+                  break;
+               }
+            }
+            return (authorizedUsersOnly);
+         }
+      }
       #endregion
 
       #region Settings
@@ -156,6 +156,19 @@ namespace DNN.Modules.Survey
                return Convert.ToDateTime(surveyClosingDate);
          }
       }
+
+      protected int ResultsVersion
+      {
+         // This is: If the results are cleared, this number increases - therefore the cookie changes and users can vote again.
+         get
+         {
+            object resultsVersion = Settings["ResultsVersion"];
+            if (resultsVersion == null)
+               return 0;
+            else
+               return Convert.ToInt32(resultsVersion);
+         }
+      }
       #endregion
 
       #region IActionable
@@ -167,7 +180,7 @@ namespace DNN.Modules.Survey
             // Add Question
             actions.Add(GetNextActionID(), Localization.GetString("AddQuestion.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, string.Empty, EditUrl(), false, SecurityAccessLevel.Edit, true, false);
             actions.Add(GetNextActionID(), Localization.GetString("OrganizeQuestions.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, IconController.IconURL("ViewStats"), EditUrl("Organize"), false, SecurityAccessLevel.Edit, true, false);
-            if (ModulePermissionController.HasModulePermission(ModulePermissionCollection, ModuleSecurity.VIEW_RESULTS_PERMISSION))
+            if (HasViewResultsPermission)
             {
                // View Results
                actions.Add(GetNextActionID(), Localization.GetString("ViewResults.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, IconController.IconURL("View"), EditUrl("SurveyResults"), false, SecurityAccessLevel.View, true, false);
@@ -195,8 +208,16 @@ namespace DNN.Modules.Survey
             SubmitSurveyButton.ValidationGroup = string.Format("Survey-{0}-ValidationGroup", ModuleId);
             if (IsSurveyExpired)
             {
-               SurveyMessageLabel.Text = String.Format(Localization.GetString("SurveyClosed.Text", LocalResourceFile), SurveyClosingDate);
-               SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormWarning";
+               if ((HasViewResultsPermission) && (!(PortalSecurity.IsInRole("Administrators"))))
+               {
+                  Response.Redirect(EditUrl("SurveyResults"), false);
+               }
+               else
+               {
+                  SurveyMessageLabel.Text = String.Format(Localization.GetString("SurveyClosed.Text", LocalResourceFile), SurveyClosingDate);
+                  SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormWarning";
+                  SubmitSurveyButton.Visible = false;
+               }
             }
             else
             {
@@ -204,31 +225,40 @@ namespace DNN.Modules.Survey
                {
                   SurveyMessageLabel.Text = String.Format(Localization.GetString("SurveyWillClose.Text", LocalResourceFile), SurveyClosingDate);
                   SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormInfo";
+                  SurveyMessageLabel.Visible = true;
                }
 
-               if ((SurveyTracking == TrackingMethod.User) && (UserId < 1))
+               if ((AuthorizedUsersOnly) && (UserId < 1))
                {
                   SurveyMessageLabel.Text = Localization.GetString("MustBeSignedIn.Text", LocalResourceFile);
                   SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormValidationSummary";
+                  SurveyMessageLabel.Visible = true;
                   SubmitSurveyButton.Visible = false;
                }
                else
                {
                   if (HasVoted)
                   {
-                     SurveyMessageLabel.Text = String.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
-                     SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
-                     SubmitSurveyButton.Visible = false;
+                     if ((HasViewResultsPermission) && (!(PortalSecurity.IsInRole("Administrators"))))
+                     {
+                        Response.Redirect(EditUrl("SurveyResults"), false);
+                     }
+                     else
+                     {
+                        SurveyMessageLabel.Text = String.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
+                        SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
+                        SurveyMessageLabel.Visible = true;
+                        SubmitSurveyButton.Visible = false;
+                     }
                   }
                   else
                   {
                      CreateSurveyItems(SurveysController.GetAll(ModuleId));
-                     SurveyMessageLabel.Visible = false;
                   }
                }
             }
 
-            if (ModulePermissionController.HasModulePermission(ModulePermissionCollection, ModuleSecurity.VIEW_RESULTS_PERMISSION))
+            if (HasViewResultsPermission)
                ViewResultsButton.Visible = true;
             else
                ViewResultsButton.Visible = false;
@@ -312,16 +342,31 @@ namespace DNN.Modules.Survey
                      break;
                }
             }
-            SurveyResultsController.Add(surveyResults, SurveyTracking);
+            if (PortalSecurity.IsInRole("Administrators"))
+            {
+               // This is just to force the SQL Script SurveyResults_Add to add the result if the user is an administrator
+               SurveyResultsController.Add(surveyResults, false);
+            }
+            else
+            {
+               SurveyResultsController.Add(surveyResults, AuthorizedUsersOnly);
+            }
             HttpCookie cookie = new HttpCookie(_cookie);
             cookie.Value = "True";
             cookie.Expires = (SurveyClosingDate == DateTime.MinValue ? DateTime.MaxValue : SurveyClosingDate.AddDays(1));
             Response.AppendCookie(cookie);
             SurveyPlaceHolder.Visible = false;
             SubmitSurveyButton.Visible = false;
-            SurveyMessageLabel.Text = String.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
-            SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
-            SubmitSurveyButton.Visible = false;
+            if (HasViewResultsPermission)
+            {
+               Response.Redirect(EditUrl("ViewResults"), false);
+            }
+            else
+            {
+               SurveyMessageLabel.Text = String.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
+               SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
+               SurveyMessageLabel.Visible = true;
+            }
          }
       }
       #endregion

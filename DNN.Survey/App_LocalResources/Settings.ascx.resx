@@ -135,18 +135,6 @@
   <data name="SurveyResultTemplate.Text" xml:space="preserve">
     <value>Survey Result Template</value>
   </data>
-  <data name="SurveyTracking.Help" xml:space="preserve">
-    <value>Choose how to track votes.</value>
-  </data>
-  <data name="SurveyTracking.Text" xml:space="preserve">
-    <value>Vote tracking</value>
-  </data>
-  <data name="TrackingMethod.Cookie.Text" xml:space="preserve">
-    <value>Vote tracking via cookie</value>
-  </data>
-  <data name="TrackingMethod.User.Text" xml:space="preserve">
-    <value>1 vote per registered user</value>
-  </data>
   <data name="TabModuleSettingsMessage.Text" xml:space="preserve">
     <value>The following setting can differ on the same instance of the module on different pages (if you add an existing module but don't make a copy).</value>
   </data>

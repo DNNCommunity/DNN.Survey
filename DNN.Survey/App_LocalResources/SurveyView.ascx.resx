@@ -144,9 +144,6 @@
   <data name="SubmitSurvey.Action" xml:space="preserve">
     <value>Submit survey</value>
   </data>
-  <data name="SurveyClosed.Text" xml:space="preserve">
-    <value>The survey has been closed on {0:d} at {0:t}.</value>
-  </data>
   <data name="SurveyWillClose.Text" xml:space="preserve">
     <value>The survey will be closed on {0:d} at {0:t}.</value>
   </data>

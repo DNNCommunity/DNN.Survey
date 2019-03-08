@@ -1,16 +1,14 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SurveyResults.ascx.cs" Inherits="DNN.Modules.Survey.SurveyResults" %>
 
-<asp:Panel ID="ResultsNotPublicPanel" runat="server"
-   CssClass="dnnFormMessage dnnFormValidationSummary">
-   <asp:Label ID="ResultsNotPublicMessage" runat="server"
-      ResourceKey="ResultsNotPublicMessage" />
-</asp:Panel>
-
-<asp:Panel ID="ResultsPanel" runat="server">
-   <asp:PlaceHolder ID="ChartPlaceHolder" runat="server" />
-</asp:Panel>
-
 <div class="dnnForm">
+   <asp:Label ID="SurveyMessageLabel" runat="server"
+      EnableViewState="false"
+      Visible="false" />
+
+   <asp:Panel ID="ResultsPanel" runat="server">
+      <asp:PlaceHolder ID="ChartPlaceHolder" runat="server" />
+   </asp:Panel>
+
    <ul class="dnnActions dnnClear">
       <li>
          <asp:LinkButton ID="ViewSurveyButton" runat="server"

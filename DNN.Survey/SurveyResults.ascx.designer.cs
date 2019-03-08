@@ -13,22 +13,13 @@ namespace DNN.Modules.Survey {
     public partial class SurveyResults {
         
         /// <summary>
-        /// ResultsNotPublicPanel-Steuerelement
+        /// SurveyMessageLabel-Steuerelement
         /// </summary>
         /// <remarks>
         /// Automatisch generiertes Feld
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel ResultsNotPublicPanel;
-        
-        /// <summary>
-        /// ResultsNotPublicMessage-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label ResultsNotPublicMessage;
+        protected global::System.Web.UI.WebControls.Label SurveyMessageLabel;
         
         /// <summary>
         /// ResultsPanel-Steuerelement

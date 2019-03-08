@@ -18,17 +18,6 @@
          <asp:TextBox ID="SurveyClosingDateTextBox" runat="server"
             CssClass="surveyDatePicker" />
       </div>
-      <div class="dnnFormItem">
-         <dnn:Label ID="SurveyTrackingLabel" runat="server"
-            ControlName="SurveyTrackingRadioButtons"
-            ResourceKey="SurveyTracking"
-            Suffix=":" />
-         <asp:RadioButtonList ID="SurveyTrackingRadioButtons" runat="server"
-            CssClass="dnnFormRadioButtons">
-            <asp:ListItem Value="0" />
-            <asp:ListItem Value="1" />
-         </asp:RadioButtonList>
-      </div>
       <div class="dnnFormMessage dnnFormInfo surveyTabModuleMessage">
          <asp:Label ID="TabModuleSettingsMessageLabel" runat="server"
             ResourceKey="TabModuleSettingsMessage" />

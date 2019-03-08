@@ -24,13 +24,13 @@ namespace DNN.Modules.Survey.Components.Controllers
          return surveyResults.ToList<SurveyResultsInfo>();
       }
 
-      public void Add(List<SurveyResultsInfo> surveyResults, TrackingMethod trackingMethod)
+      public void Add(List<SurveyResultsInfo> surveyResults, bool authorizedUsersOnly)
       {
          using (IDataContext ctx = DataContext.Instance())
          {
             ctx.Execute(CommandType.StoredProcedure,
                "{databaseOwner}{objectQualifier}SurveyResults_Add",
-               Convert.ToInt32(trackingMethod),
+               authorizedUsersOnly,
                XmlDataProvider.SurveyResultsToXml(surveyResults)
             );
          }

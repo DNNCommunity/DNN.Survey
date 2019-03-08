@@ -73,7 +73,7 @@ namespace DNN.Modules.Survey.Components.Providers
             {
                surveyBuilder.Append(String.Format("<NumberOfRows>{0}</NumberOfRows>", survey.NumberOfRows.Value));
             }
-            if ((survey.ChartType == null) || (survey.ChartType == ChartType.Bar))
+            if (survey.ChartType == ChartType.Bar)
             {
                surveyBuilder.Append("<ChartType />");
             }

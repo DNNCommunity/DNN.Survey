@@ -29,6 +29,23 @@ namespace DNN.Modules.Survey.Controls
          }
       }
 
+      protected void Page_Load(object sender, EventArgs e)
+      {
+         string[] labels = Labels.Split(new char[] { ',' });
+         string[] data = Data.Split(new char[] { ',' });
+         int sum = 0;
+         foreach (string s in data)
+         {
+            sum += Convert.ToInt32(s);
+         }
+         for (int i = 0; i < labels.Length; i++)
+         {
+            // Let Google see the results...
+            Graph.InnerHtml += string.Format("<span>{0}: {1} ({2:0.00}%)</span>", labels[i].Substring(1, labels[i].Length - 2), data[i], Convert.ToDouble(data[i]) * 100 / sum);
+         }
+
+      }
+
       protected void Page_PreRender(object sender, EventArgs e)
       {
          StringBuilder scriptBuilder = new StringBuilder();

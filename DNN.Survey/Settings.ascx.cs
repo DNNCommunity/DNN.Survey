@@ -28,25 +28,6 @@ namespace DNN.Modules.Survey
                UpdateTextSetting("SurveyClosingDate", Globals.DateToString(value));
          }
       }
-
-      protected TrackingMethod SurveyTracking
-      {
-         get
-         {
-            object surveyTracking = ModuleSettings["SurveyTracking"];
-            if (surveyTracking == null)
-               return TrackingMethod.Cookie;
-            else
-               return (TrackingMethod)Convert.ToInt32(surveyTracking);
-         }
-         set
-         {
-            if (value == TrackingMethod.Cookie)
-               UpdateIntegerSetting("SurveyTracking", null);
-            else
-               UpdateIntegerSetting("SurveyTracking", Convert.ToInt32(value));
-         }
-      }
       #endregion
 
       #region TabModule Settings
@@ -105,11 +86,6 @@ namespace DNN.Modules.Survey
          else
             SurveyClosingDateTextBox.Text = String.Format("{0:yyyy-MM-dd HH:mm:ss}", SurveyClosingDate);
 
-         SurveyTrackingRadioButtons.SelectedValue = Convert.ToInt32(SurveyTracking).ToString();
-         string[] surveyTrackingNames = Enum.GetNames(typeof(TrackingMethod));
-         for (int i = 0; i < surveyTrackingNames.Length; i++)
-            SurveyTrackingRadioButtons.Items[i].Text = Localization.GetString(String.Format("TrackingMethod.{0}.Text", surveyTrackingNames[i]), LocalResourceFile);
-
          ShowClosingDateMessageCheckBox.Checked = ShowClosingDateMessage;
 
          if (SurveyGraphWidth == 0)
@@ -131,8 +107,6 @@ namespace DNN.Modules.Survey
             else
                SurveyClosingDate = DateTime.MinValue;
          }
-
-         SurveyTracking = (TrackingMethod)Convert.ToInt32(SurveyTrackingRadioButtons.SelectedValue);
 
          ShowClosingDateMessage = ShowClosingDateMessageCheckBox.Checked;
 

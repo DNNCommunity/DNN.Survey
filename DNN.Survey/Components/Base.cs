@@ -5,12 +5,6 @@ using System.Web;
 
 namespace DNN.Modules.Survey.Components
 {
-   public enum TrackingMethod
-   {
-      Cookie = 0,
-      User = 1
-   }
-
    public enum QuestionType
    {
       RadioButtons = 0,
@@ -54,6 +48,8 @@ namespace DNN.Modules.Survey.Components
 
    public class ModuleSecurity
    {
+      public const string PERMISSION_CODE = "DNN_SURVEY";
+      public const string PARTICIPATE_PERMISSION = "PARTICIPATE_PERMISSION";
       public const string VIEW_RESULTS_PERMISSION = "VIEW_RESULTS_PERMISSION";
    }
 }

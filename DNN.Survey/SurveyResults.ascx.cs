@@ -5,7 +5,9 @@ using DNN.Modules.Survey.Controls;
 using DotNetNuke.Common;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Framework.JavaScriptLibraries;
+using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
+using DotNetNuke.Services.Localization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +23,7 @@ namespace DNN.Modules.Survey
       private ModulePermissionCollection _modulePermissionCollection = null;
       private SurveysController _surveysController = null;
       private SurveyResultsController _surveyResultsController = null;
+      private string _cookie;
 
       protected ModulePermissionCollection ModulePermissionCollection
       {
@@ -52,27 +55,133 @@ namespace DNN.Modules.Survey
          }
       }
 
+      protected bool IsSurveyExpired
+      {
+         get
+         {
+            return ((SurveyClosingDate != DateTime.MinValue) && (SurveyClosingDate < DateTime.Now));
+         }
+      }
+
+      protected bool HasVoted
+      {
+         get
+         {
+            bool hasVoted;
+            if (PortalSecurity.IsInRole("Administrators"))
+            {
+               // Administrators may always see the survey (and may vote more than once)
+               hasVoted = false;
+            }
+            else
+            {
+               if ((AuthorizedUsersOnly) || (UserId > 0))
+               {
+                  hasVoted = (SurveysController.HasVoted(ModuleId, UserId));
+               }
+               else
+               {
+                  hasVoted = (Request.Cookies[_cookie] != null);
+               }
+            }
+            return hasVoted;
+         }
+      }
+
+      protected bool AuthorizedUsersOnly
+      {
+         get
+         {
+            bool authorizedUsersOnly = true;
+            ModulePermissionCollection permissions = ModulePermissionController.GetModulePermissions(ModuleId, TabId);
+            foreach (ModulePermissionInfo permission in permissions)
+            {
+               if ((permission.PermissionCode == ModuleSecurity.PERMISSION_CODE) && (permission.PermissionKey == ModuleSecurity.PARTICIPATE_PERMISSION) && ((permission.RoleID == -1) || (permission.RoleID == -3)))
+               {
+                  authorizedUsersOnly = false;
+                  break;
+               }
+            }
+            return (authorizedUsersOnly);
+         }
+      }
+      protected bool HasViewResultsPermission
+      {
+         get
+         {
+            return ModulePermissionController.HasModulePermission(ModulePermissionCollection, ModuleSecurity.VIEW_RESULTS_PERMISSION);
+         }
+      }
+
+      protected bool HasParticipatePermission
+      {
+         get
+         {
+            return ModulePermissionController.HasModulePermission(ModulePermissionCollection, ModuleSecurity.PARTICIPATE_PERMISSION);
+         }
+      }
+
+      #region Settings
+      protected DateTime SurveyClosingDate
+      {
+         get
+         {
+            object surveyClosingDate = Settings["SurveyClosingDate"];
+            if (surveyClosingDate == null)
+               return DateTime.MinValue;
+            else
+               return Convert.ToDateTime(surveyClosingDate);
+         }
+      }
+
+      protected int ResultsVersion
+      {
+         // This is: If the results are cleared, this number increases - therefore the cookie changes and users can vote again.
+         get
+         {
+            object resultsVersion = Settings["ResultsVersion"];
+            if (resultsVersion == null)
+               return 0;
+            else
+               return Convert.ToInt32(resultsVersion);
+         }
+      }
+      #endregion
+
       #region Control Events
       protected override void OnInit(EventArgs e)
       {
          JavaScript.RequestRegistration(CommonJs.DnnPlugins);
          JavaScript.RequestRegistration(CommonJs.jQuery);
          JavaScript.RequestRegistration("chartjs");
+         _cookie = string.Format("_Module_{0}_Survey_{1}_", ModuleId, ResultsVersion);
          base.OnInit(e);
       }
 
       protected override void OnLoad(EventArgs e)
       {
-         if (ModulePermissionController.HasModulePermission(ModulePermissionCollection, ModuleSecurity.VIEW_RESULTS_PERMISSION))
+         if (HasViewResultsPermission)
          {
-            ResultsNotPublicPanel.Visible = false;
-            ResultsPanel.Visible = true;
+            if (IsSurveyExpired)
+            {
+               SurveyMessageLabel.Text = String.Format(Localization.GetString("SurveyClosed.Text", LocalResourceFile), SurveyClosingDate);
+               SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormWarning";
+               SurveyMessageLabel.Visible = true;
+            }
          }
          else
          {
-            ResultsNotPublicPanel.Visible = true;
+            SurveyMessageLabel.Text = Localization.GetString("ResultsNotPublicMessage", LocalResourceFile);
+            SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormValidationSummary";
+            SurveyMessageLabel.Visible = true;
             ResultsPanel.Visible = false;
          }
+
+         if (((!(HasParticipatePermission)) || (IsSurveyExpired) || (HasVoted)) && (!(PortalSecurity.IsInRole("Administrators"))))
+         {
+            ViewSurveyButton.Visible = false;
+         }
+
          base.OnLoad(e);
       }
 

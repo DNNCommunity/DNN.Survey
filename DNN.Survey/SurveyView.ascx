@@ -1,7 +1,9 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SurveyView.ascx.cs" Inherits="DNN.Modules.Survey.SurveyView" %>
 
 <div class="dnnForm">
-   <asp:Label ID="SurveyMessageLabel" runat="server" />
+   <asp:Label ID="SurveyMessageLabel" runat="server"
+      EnableViewState="false"
+      Visible="false" />
 
    <div class="dnnForm">
       <fieldset>
