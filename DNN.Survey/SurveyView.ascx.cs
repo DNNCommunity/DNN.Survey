@@ -33,6 +33,19 @@ namespace DNN.Modules.Survey
                return (TrackingMethod)Convert.ToInt32(surveyTracking);
          }
       }
+
+      protected int ResultsVersion
+      {
+         // This is: If the results are cleared, this number increases - therefore the cookie changes and users can vote again.
+         get
+         {
+            object resultsVersion = Settings["ResultsVersion"];
+            if (resultsVersion == null)
+               return 0;
+            else
+               return Convert.ToInt32(resultsVersion);
+         }
+      }
       #endregion
 
       #region TabModuleSettings
@@ -170,7 +183,7 @@ namespace DNN.Modules.Survey
       protected override void OnInit(EventArgs e)
       {
          JavaScript.RequestRegistration(CommonJs.DnnPlugins);
-         _cookie = string.Format("_Module_{0}_Survey", ModuleId);
+         _cookie = string.Format("_Module_{0}_Survey_{1}_", ModuleId, ResultsVersion);
          AddActionHandler(SurveyActions_Click);
          base.OnInit(e);
       }
@@ -268,7 +281,7 @@ namespace DNN.Modules.Survey
                switch (survey.OptionType)
                {
                   case QuestionType.RadioButtons:
-                     SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)FindControl(String.Format("SurveyRadiobutton-{0}", survey.SurveyID));
+                     SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)FindControl(String.Format("SurveyRadiobutton_{0}", survey.SurveyID));
                      surveyResult = new SurveyResultsInfo();
                      surveyResult.SurveyOptionID = Convert.ToInt32(surveyRadioButtons.SelectedValue);
                      surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
@@ -276,7 +289,7 @@ namespace DNN.Modules.Survey
                      surveyResults.Add(surveyResult);
                      break;
                   case QuestionType.CheckBoxes:
-                     SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)FindControl(String.Format("SurveyCheckbox-{0}", survey.SurveyID));
+                     SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)FindControl(String.Format("SurveyCheckbox_{0}", survey.SurveyID));
                      foreach (int surveyOptionID in surveyCheckBoxes.SelectedItems)
                      {
                         surveyResult = new SurveyResultsInfo();
@@ -287,7 +300,7 @@ namespace DNN.Modules.Survey
                      }
                      break;
                   case QuestionType.Text:
-                     SurveyText surveyTextBox = (SurveyText)FindControl(String.Format("SurveyTextBox-{0}", survey.SurveyID));
+                     SurveyText surveyTextBox = (SurveyText)FindControl(String.Format("SurveyTextBox_{0}", survey.SurveyID));
                      surveyResult = new SurveyResultsInfo();
                      surveyResult.SurveyOptionID = surveyTextBox.SurveyOptionID;
                      surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
@@ -379,6 +392,7 @@ namespace DNN.Modules.Survey
                if (e.Action.CommandArgument == "Delete")
                {
                   SurveyResultsController.DropAll(ModuleId);
+                  ModuleController.Instance.UpdateModuleSetting(ModuleId, "ResultsVersion", (ResultsVersion + 1).ToString());
                }
                break;
             default:

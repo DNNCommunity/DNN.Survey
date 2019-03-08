@@ -18,6 +18,14 @@ namespace DNN.Modules.Survey.Components
       Text = 2
    }
 
+   public enum ChartType
+   {
+      Bar = 0,
+      HorizontalBar = 1,
+      Pie = 2,
+      Doughnut = 3
+   }
+
    public static class Base
    {
       public const string DEFAULT_SURVEY_RESULTS_TEMPLATE = "[SURVEY_OPTION_NAME]&nbsp;([SURVEY_OPTION_VOTES])&nbsp;<img src=\"[SURVEY_OPTION_IMAGEPATH]/red.gif\" width=\"[SURVEY_OPTION_GRAPH_WIDTH]\" border=\"0\" height=\"15\" alt=\"\" />&nbsp;[SURVEY_OPTION_PERCENTAGE]%<br />";
@@ -33,6 +41,14 @@ namespace DNN.Modules.Survey.Components
       public static string GetColor(int index, bool isBackGround)
       {
          return string.Format("rgba({0},{1})", defaultSurveyChartColors[index % defaultSurveyChartColors.Length], (isBackGround ? 0.2 : 1));
+      }
+
+      public static string ToChartJSChartType(ChartType chartType)
+      {
+         string chartTypeName = Enum.GetName(typeof(ChartType), chartType);
+         // lower first character
+         chartTypeName = string.Format("{0}{1}", chartTypeName.Substring(0, 1).ToLower(), chartTypeName.Substring(1));
+         return chartTypeName;
       }
    }
 

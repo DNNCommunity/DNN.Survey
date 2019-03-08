@@ -189,6 +189,23 @@ namespace DNN.Modules.Survey
             ViewState["AnswersXml"] = XmlDataProvider.SurveyOptionsToXml(value);
          }
       }
+
+      protected bool ChartTypeChanged
+      {
+         get
+         {
+            bool chartTypeChanged;
+            if (ViewState["ChartTypeChanged"] == null)
+               chartTypeChanged = false;
+            else
+               chartTypeChanged = Convert.ToBoolean(ViewState["ChartTypeChanged"]);
+            return chartTypeChanged;
+         }
+         set
+         {
+            ViewState["ChartTypeChanged"] = value;
+         }
+      }
       #endregion
 
       #region Events
@@ -212,6 +229,7 @@ namespace DNN.Modules.Survey
          {
             CreateQuestionTypeEntries();
             CreateRepeatDirectionEntries();
+            CreateChartTypeEntries();
 
             if (SurveyID > 0)
             {
@@ -219,6 +237,7 @@ namespace DNN.Modules.Survey
                Answers = SurveyOptionsController.GetAll(SurveyID);
                QuestionTextBox.Text = Survey.Question;
                QuestionTypeDropDownList.SelectedValue = Convert.ToInt32(Survey.OptionType).ToString();
+               ChartTypeDropDownList.SelectedValue = Convert.ToInt32(Survey.ChartType).ToString();
                if (Survey.OptionType == QuestionType.RadioButtons || Survey.OptionType == QuestionType.CheckBoxes)
                {
                   RepeatDirectionDropDownList.SelectedValue = Convert.ToInt32(Survey.RepeatDirection).ToString();
@@ -234,6 +253,7 @@ namespace DNN.Modules.Survey
                AnswersGrid.DataSource = Answers;
                AnswersGrid.DataBind();
                MaxViewOrder = Answers.Count;
+               ChartTypeChanged = true;
             }
          }
       }
@@ -302,6 +322,18 @@ namespace DNN.Modules.Survey
          RepeatDirectionDropDownList.DataBind();
       }
 
+      private void CreateChartTypeEntries()
+      {
+         string[] chartTypeNames = Enum.GetNames(typeof(ChartType));
+         Dictionary<int, string> chartTypeEntries = new Dictionary<int, string>();
+         for (int i = 0; i < chartTypeNames.Length; i++)
+            chartTypeEntries.Add(Convert.ToInt32(Enum.GetValues(typeof(ChartType)).GetValue(i)), Localization.GetString(String.Format("ChartType.{0}.Text", chartTypeNames[i]), LocalResourceFile));
+         ChartTypeDropDownList.DataSource = chartTypeEntries;
+         ChartTypeDropDownList.DataTextField = "Value";
+         ChartTypeDropDownList.DataValueField = "Key";
+         ChartTypeDropDownList.DataBind();
+      }
+
       protected void UpdateButton_Click(object sender, EventArgs e)
       {
          if (Page.IsValid)
@@ -347,6 +379,9 @@ namespace DNN.Modules.Survey
                survey.RepeatDirection = (RepeatDirection)Convert.ToInt32(RepeatDirectionDropDownList.SelectedValue);
                survey.RepeatColumns = (String.IsNullOrEmpty(RepeatColumnsTextBox.Text) ? (int?)null : Convert.ToInt32(RepeatColumnsTextBox.Text));
                survey.NumberOfRows = (((String.IsNullOrEmpty(NumberOfRowsTextBox.Text)) || (NumberOfRowsTextBox.Text == "1")) ? (int?)null : Convert.ToInt32(NumberOfRowsTextBox.Text));
+
+               survey.ChartType = (ChartType)Convert.ToInt32(ChartTypeDropDownList.SelectedValue);
+
                SurveysController.AddOrChange(survey, XmlDataProvider.SurveyOptionsToXml(Answers), UserId);
                Response.Redirect(Globals.NavigateURL(), false);
             }
@@ -441,13 +476,29 @@ namespace DNN.Modules.Survey
             RepeatDirectionPanel.Visible = true;
             AnswersPanel.Visible = true;
             TextAnswerPanel.Visible = false;
+            if (!(ChartTypeChanged))
+            {
+               ChartTypeDropDownList.SelectedValue = Convert.ToInt32(ChartType.Bar).ToString();
+               ChartTypeChanged = false;
+            }
          }
          else
          {
             RepeatDirectionPanel.Visible = false;
             AnswersPanel.Visible = false;
             TextAnswerPanel.Visible = true;
+            if (!(ChartTypeChanged))
+            {
+               ChartTypeDropDownList.SelectedValue = Convert.ToInt32(ChartType.HorizontalBar).ToString();
+               ChartTypeChanged = false;
+            }
          }
+      }
+
+      protected void ChartTypeDropDownList_SelectedIndexChanged(object sender, EventArgs e)
+      {
+         DropDownList chartTypeDropList = (DropDownList)sender;
+         ChartTypeChanged = true;
       }
       #endregion
    }

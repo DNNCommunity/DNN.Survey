@@ -34,6 +34,15 @@
             AutoPostBack="true"
             OnSelectedIndexChanged="QuestionTypeDropDownList_SelectedIndexChanged" />
       </div>
+      <div class="dnnFormItem">
+         <dnn:Label ID="ChartTypeLabel" runat="server"
+            ControlName="ChartTypeDropDownList"
+            ResourceKey="ChartType"
+            Suffix=":" />
+         <asp:DropDownList ID="ChartTypeDropDownList" runat="server"
+            AutoPostBack="true"
+            OnSelectedIndexChanged="ChartTypeDropDownList_SelectedIndexChanged" />
+      </div>
       <asp:Panel ID="RepeatDirectionPanel" runat="server">
          <div class="dnnFormItem">
             <dnn:Label ID="RepeatDirectionLabel" runat="server"
@@ -182,6 +191,3 @@
    </ul>
 </div>
 
-<div class="dnnFormMessage dnnFormInfo" id="TestMessage" runat="server">
-   <asp:Label ID="TestMessageLabel" runat="server" />
-</div>

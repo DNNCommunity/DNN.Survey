@@ -104,8 +104,12 @@ namespace DNN.Modules.Survey
 
             CanvasControl canvas = (CanvasControl)LoadControl("Controls/CanvasControl.ascx");
             canvas.Header = survey.Question;
+            canvas.Labels = labelBuilder.ToString();
+            canvas.Data = dataBuilder.ToString();
+            canvas.BackgroundColors = bgColorsBuilder.ToString();
+            canvas.BorderColors = bColorsBuilder.ToString();
+            canvas.ChartType = survey.ChartType;
             ChartPlaceHolder.Controls.Add(canvas);
-            CreateGraph(canvas.ClientID, labelBuilder.ToString(), dataBuilder.ToString(), bgColorsBuilder.ToString(), bColorsBuilder.ToString(), survey.OptionType);
          }
 
          base.OnPreRender(e);
@@ -114,49 +118,6 @@ namespace DNN.Modules.Survey
       protected void ViewSurveyButton_Click(object sender, EventArgs e)
       {
          Response.Redirect(Globals.NavigateURL(), false);
-      }
-      #endregion
-
-      #region Private Methods
-      private void CreateGraph(string clientID, string labels, string data, string background, string border, QuestionType optionType)
-      {
-         StringBuilder scriptBuilder = new StringBuilder();
-         scriptBuilder.Append(string.Format("var ctx = document.getElementById(\"{0}\").getContext(\"2d\");\r\n", clientID));
-         scriptBuilder.Append("var myChart = new Chart(ctx, {\r\n");
-         scriptBuilder.Append(string.Format("   type: \"{0}\",\r\n", optionType == QuestionType.Text ? "horizontalBar" : "bar"));
-         scriptBuilder.Append("   data: {\r\n");
-         scriptBuilder.Append(string.Format("      labels: [{0}],\r\n", labels));
-         scriptBuilder.Append("      datasets: [{\r\n");
-         scriptBuilder.Append("         label: \"# of Votes\",\r\n");
-         scriptBuilder.Append(string.Format("         data: [{0}],\r\n", data));
-         scriptBuilder.Append(string.Format("         backgroundColor: [{0}],\r\n", background));
-         scriptBuilder.Append(string.Format("         borderColor: [{0}],\r\n", border));
-         scriptBuilder.Append("         borderWidth: 1\r\n");
-         scriptBuilder.Append("      }]\r\n");
-         scriptBuilder.Append("   },\r\n");
-         scriptBuilder.Append("   options: {\r\n");
-         scriptBuilder.Append("     scales: {\r\n");
-         scriptBuilder.Append("        yAxes: [{\r\n");
-         scriptBuilder.Append("           ticks: {\r\n");
-         scriptBuilder.Append("              beginAtZero: true\r\n");
-         scriptBuilder.Append("           }\r\n");
-         scriptBuilder.Append("        }],\r\n");
-         scriptBuilder.Append("        xAxes: [{\r\n");
-         scriptBuilder.Append("           ticks: {\r\n");
-         scriptBuilder.Append("              beginAtZero: true\r\n");
-         scriptBuilder.Append("           }\r\n");
-         scriptBuilder.Append("        }],\r\n");
-         scriptBuilder.Append("        plugins: {\r\n");
-         scriptBuilder.Append("           datalabels: {\r\n");
-         scriptBuilder.Append("              display: \"true\"\r\n");
-         scriptBuilder.Append("           }\r\n");
-         scriptBuilder.Append("        }\r\n");
-         scriptBuilder.Append("     }\r\n");
-         scriptBuilder.Append("  }\r\n");
-         scriptBuilder.Append("});\r\n");
-
-         if (!(Page.ClientScript.IsStartupScriptRegistered(string.Format("Graph-{0}", clientID))))
-            Page.ClientScript.RegisterStartupScript(GetType(), string.Format("Graph-{0}", clientID), scriptBuilder.ToString(), true);
       }
       #endregion
    }

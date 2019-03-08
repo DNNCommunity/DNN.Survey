@@ -22,6 +22,7 @@ namespace DNN.Modules.Survey.Components.Entities
       public RepeatDirection? RepeatDirection { get; set; }
       public int? RepeatColumns { get; set; }
       public int? NumberOfRows { get; set; }
+      public ChartType ChartType { get; set; }
       public DateTime CreatedDate { get; set; }
       public int CreatedByUserID { get; set; }
       public DateTime? LastModifiedDate { get; set; }

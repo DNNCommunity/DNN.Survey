@@ -73,6 +73,14 @@ namespace DNN.Modules.Survey.Components.Providers
             {
                surveyBuilder.Append(String.Format("<NumberOfRows>{0}</NumberOfRows>", survey.NumberOfRows.Value));
             }
+            if ((survey.ChartType == null) || (survey.ChartType == ChartType.Bar))
+            {
+               surveyBuilder.Append("<ChartType />");
+            }
+            else
+            {
+               surveyBuilder.Append(string.Format("<ChartType>{0}</ChartType>", survey.ChartType));
+            }
             surveyBuilder.Append(String.Format("<CreatedDate>{0:yyyy-MM-dd hh:mm:ss}</CreatedDate>", survey.CreatedDate));
             surveyBuilder.Append(String.Format("<CreatedByUserID>{0}</CreatedByUserID>", survey.CreatedByUserID));
             if (survey.LastModifiedByUserID == null)
@@ -148,6 +156,10 @@ namespace DNN.Modules.Survey.Components.Providers
             if ((surveyXmlNode.SelectSingleNode("NumberOfRows") != null) && (!(String.IsNullOrEmpty(surveyXmlNode.SelectSingleNode("NumberOfRows").InnerText))))
             {
                survey.NumberOfRows = Convert.ToInt32(surveyXmlNode.SelectSingleNode("NumberOfRows").InnerText);
+            }
+            if ((surveyXmlNode.SelectSingleNode("ChartType") != null) && (!(string.IsNullOrEmpty(surveyXmlNode.SelectSingleNode("ChartType").InnerText))))
+            {
+               survey.ChartType = (ChartType)Convert.ToInt32(surveyXmlNode.SelectSingleNode("ChartType").InnerText);
             }
             survey.CreatedDate = Convert.ToDateTime(surveyXmlNode.SelectSingleNode("CreatedDate").InnerText);
             survey.CreatedByUserID = Convert.ToInt32(surveyXmlNode.SelectSingleNode("CreatedByUserID").InnerText);

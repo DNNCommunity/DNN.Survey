@@ -29,15 +29,6 @@
             <asp:ListItem Value="1" />
          </asp:RadioButtonList>
       </div>
-      <div class="dnnFormItem">
-         <dnn:Label ID="SurveyResultTemplateLabel" runat="server"
-            ControlName="SurveyResultTemplateTextBox"
-            ResourceKey="SurveyResultTemplate"
-            Suffix=":" />
-         <asp:TextBox ID="SurveyResultTemplateTextBox" runat="server"
-            TextMode="MultiLine"
-            Rows="8" />
-      </div>
       <div class="dnnFormMessage dnnFormInfo surveyTabModuleMessage">
          <asp:Label ID="TabModuleSettingsMessageLabel" runat="server"
             ResourceKey="TabModuleSettingsMessage" />

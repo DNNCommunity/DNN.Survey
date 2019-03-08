@@ -58,6 +58,24 @@ namespace DNN.Modules.Survey {
         protected global::System.Web.UI.WebControls.DropDownList QuestionTypeDropDownList;
         
         /// <summary>
+        /// ChartTypeLabel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::DotNetNuke.UI.UserControls.LabelControl ChartTypeLabel;
+        
+        /// <summary>
+        /// ChartTypeDropDownList-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ChartTypeDropDownList;
+        
+        /// <summary>
         /// RepeatDirectionPanel-Steuerelement
         /// </summary>
         /// <remarks>
@@ -245,23 +263,5 @@ namespace DNN.Modules.Survey {
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton CancelButton;
-        
-        /// <summary>
-        /// TestMessage-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl TestMessage;
-        
-        /// <summary>
-        /// TestMessageLabel-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label TestMessageLabel;
     }
 }

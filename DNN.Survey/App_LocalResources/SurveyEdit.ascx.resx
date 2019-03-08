@@ -132,6 +132,24 @@
   <data name="Answers.Text" xml:space="preserve">
     <value>Answers</value>
   </data>
+  <data name="ChartType.Bar.Text" xml:space="preserve">
+    <value>Bar</value>
+  </data>
+  <data name="ChartType.Doughnut.Text" xml:space="preserve">
+    <value>Doughnut</value>
+  </data>
+  <data name="ChartType.Help" xml:space="preserve">
+    <value>Select the chart to display in the survey results.</value>
+  </data>
+  <data name="ChartType.HorizontalBar.Text" xml:space="preserve">
+    <value>Horizontal Bar</value>
+  </data>
+  <data name="ChartType.Pie.Text" xml:space="preserve">
+    <value>Pie</value>
+  </data>
+  <data name="ChartType.Text" xml:space="preserve">
+    <value>Chart</value>
+  </data>
   <data name="CorrectAnswer.Help" xml:space="preserve">
     <value>If it is the correct answer, activate the checkbox.</value>
   </data>

@@ -58,24 +58,6 @@ namespace DNN.Modules.Survey {
         protected global::System.Web.UI.WebControls.RadioButtonList SurveyTrackingRadioButtons;
         
         /// <summary>
-        /// SurveyResultTemplateLabel-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::DotNetNuke.UI.UserControls.LabelControl SurveyResultTemplateLabel;
-        
-        /// <summary>
-        /// SurveyResultTemplateTextBox-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox SurveyResultTemplateTextBox;
-        
-        /// <summary>
         /// TabModuleSettingsMessageLabel-Steuerelement
         /// </summary>
         /// <remarks>

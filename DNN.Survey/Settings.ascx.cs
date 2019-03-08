@@ -47,25 +47,6 @@ namespace DNN.Modules.Survey
                UpdateIntegerSetting("SurveyTracking", Convert.ToInt32(value));
          }
       }
-
-      protected string SurveyResultTemplate
-      {
-         get
-         {
-            object surveyResultTemplate = ModuleSettings["SurveyResultTemplate"];
-            if (surveyResultTemplate == null)
-               return Base.DEFAULT_SURVEY_RESULTS_TEMPLATE;
-            else
-               return surveyResultTemplate.ToString();
-         }
-         set
-         {
-            if (value == Base.DEFAULT_SURVEY_RESULTS_TEMPLATE)
-               UpdateTextSetting("SurveyResultTemplate", String.Empty);
-            else
-               UpdateTextSetting("SurveyResultTemplate", value);
-         }
-      }
       #endregion
 
       #region TabModule Settings
@@ -129,8 +110,6 @@ namespace DNN.Modules.Survey
          for (int i = 0; i < surveyTrackingNames.Length; i++)
             SurveyTrackingRadioButtons.Items[i].Text = Localization.GetString(String.Format("TrackingMethod.{0}.Text", surveyTrackingNames[i]), LocalResourceFile);
 
-         SurveyResultTemplateTextBox.Text = SurveyResultTemplate;
-
          ShowClosingDateMessageCheckBox.Checked = ShowClosingDateMessage;
 
          if (SurveyGraphWidth == 0)
@@ -154,8 +133,6 @@ namespace DNN.Modules.Survey
          }
 
          SurveyTracking = (TrackingMethod)Convert.ToInt32(SurveyTrackingRadioButtons.SelectedValue);
-
-         SurveyResultTemplate = SurveyResultTemplateTextBox.Text;
 
          ShowClosingDateMessage = ShowClosingDateMessageCheckBox.Checked;
 
