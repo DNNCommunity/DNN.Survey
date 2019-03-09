@@ -28,6 +28,22 @@ namespace DNN.Modules.Survey
                UpdateTextSetting("SurveyClosingDate", Globals.DateToString(value));
          }
       }
+
+      protected bool PrivacyConfirmation
+      {
+         get
+         {
+            object privacyConfirmation = ModuleSettings["PrivacyConfirmation"];
+            if (privacyConfirmation == null)
+               return false;
+            else
+               return Convert.ToBoolean(privacyConfirmation);
+         }
+         set
+         {
+            UpdateBooleanSetting("PrivacyConfirmation", value);
+         }
+      }
       #endregion
 
       #region TabModule Settings
@@ -86,6 +102,7 @@ namespace DNN.Modules.Survey
          else
             SurveyClosingDateTextBox.Text = String.Format("{0:yyyy-MM-dd HH:mm:ss}", SurveyClosingDate);
 
+         PrivacyConfirmationCheckBox.Checked = PrivacyConfirmation;
          ShowClosingDateMessageCheckBox.Checked = ShowClosingDateMessage;
 
          if (SurveyGraphWidth == 0)
@@ -108,6 +125,7 @@ namespace DNN.Modules.Survey
                SurveyClosingDate = DateTime.MinValue;
          }
 
+         PrivacyConfirmation = PrivacyConfirmationCheckBox.Checked;
          ShowClosingDateMessage = ShowClosingDateMessageCheckBox.Checked;
 
          if (String.IsNullOrEmpty(SurveyGraphWidthTextBox.Text))

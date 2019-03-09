@@ -3,6 +3,7 @@ using DNN.Modules.Survey.Components.Controllers;
 using DNN.Modules.Survey.Components.Entities;
 using DNN.Modules.Survey.Controls;
 using DotNetNuke.Common;
+using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Icons;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Modules.Actions;
@@ -157,6 +158,18 @@ namespace DNN.Modules.Survey
          }
       }
 
+      protected bool PrivacyConfirmation
+      {
+         get
+         {
+            object privacyConfirmation = Settings["PrivacyConfirmation"];
+            if (privacyConfirmation == null)
+               return false;
+            else
+               return Convert.ToBoolean(privacyConfirmation);
+         }
+      }
+
       protected int ResultsVersion
       {
          // This is: If the results are cleared, this number increases - therefore the cookie changes and users can vote again.
@@ -214,7 +227,7 @@ namespace DNN.Modules.Survey
                }
                else
                {
-                  SurveyMessageLabel.Text = String.Format(Localization.GetString("SurveyClosed.Text", LocalResourceFile), SurveyClosingDate);
+                  SurveyMessageLabel.Text = string.Format(Localization.GetString("SurveyClosed.Text", LocalResourceFile), SurveyClosingDate);
                   SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormWarning";
                   SubmitSurveyButton.Visible = false;
                }
@@ -223,7 +236,7 @@ namespace DNN.Modules.Survey
             {
                if (ShowClosingDateMessage)
                {
-                  SurveyMessageLabel.Text = String.Format(Localization.GetString("SurveyWillClose.Text", LocalResourceFile), SurveyClosingDate);
+                  SurveyMessageLabel.Text = string.Format(Localization.GetString("SurveyWillClose.Text", LocalResourceFile), SurveyClosingDate);
                   SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormInfo";
                   SurveyMessageLabel.Visible = true;
                }
@@ -245,7 +258,7 @@ namespace DNN.Modules.Survey
                      }
                      else
                      {
-                        SurveyMessageLabel.Text = String.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
+                        SurveyMessageLabel.Text = string.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
                         SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
                         SurveyMessageLabel.Visible = true;
                         SubmitSurveyButton.Visible = false;
@@ -311,7 +324,7 @@ namespace DNN.Modules.Survey
                switch (survey.OptionType)
                {
                   case QuestionType.RadioButtons:
-                     SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)FindControl(String.Format("SurveyRadiobutton_{0}", survey.SurveyID));
+                     SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)FindControl(string.Format("SurveyRadiobutton_{0}", survey.SurveyID));
                      surveyResult = new SurveyResultsInfo();
                      surveyResult.SurveyOptionID = Convert.ToInt32(surveyRadioButtons.SelectedValue);
                      surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
@@ -319,7 +332,7 @@ namespace DNN.Modules.Survey
                      surveyResults.Add(surveyResult);
                      break;
                   case QuestionType.CheckBoxes:
-                     SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)FindControl(String.Format("SurveyCheckbox_{0}", survey.SurveyID));
+                     SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)FindControl(string.Format("SurveyCheckbox_{0}", survey.SurveyID));
                      foreach (int surveyOptionID in surveyCheckBoxes.SelectedItems)
                      {
                         surveyResult = new SurveyResultsInfo();
@@ -330,7 +343,7 @@ namespace DNN.Modules.Survey
                      }
                      break;
                   case QuestionType.Text:
-                     SurveyText surveyTextBox = (SurveyText)FindControl(String.Format("SurveyTextBox_{0}", survey.SurveyID));
+                     SurveyText surveyTextBox = (SurveyText)FindControl(string.Format("SurveyTextBox_{0}", survey.SurveyID));
                      surveyResult = new SurveyResultsInfo();
                      surveyResult.SurveyOptionID = surveyTextBox.SurveyOptionID;
                      surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
@@ -363,7 +376,7 @@ namespace DNN.Modules.Survey
             }
             else
             {
-               SurveyMessageLabel.Text = String.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
+               SurveyMessageLabel.Text = string.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
                SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
                SurveyMessageLabel.Visible = true;
             }
@@ -380,8 +393,8 @@ namespace DNN.Modules.Survey
             switch (survey.OptionType)
             {
                case QuestionType.RadioButtons:
-                  SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)LoadControl(String.Format("{0}Controls/SurveyRadioButtons.ascx", ControlPath));
-                  surveyRadioButtons.ID = String.Format("SurveyRadiobutton_{0}", survey.SurveyID);
+                  SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)LoadControl(string.Format("{0}Controls/SurveyRadioButtons.ascx", ControlPath));
+                  surveyRadioButtons.ID = string.Format("SurveyRadiobutton_{0}", survey.SurveyID);
                   surveyRadioButtons.Label = survey.Question;
                   surveyRadioButtons.RepeatDirection = (survey.RepeatDirection.HasValue ? survey.RepeatDirection.Value : RepeatDirection.Horizontal);
                   surveyRadioButtons.RepeatColumns = (((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1)) ? 1 : survey.RepeatColumns.Value);
@@ -396,8 +409,8 @@ namespace DNN.Modules.Survey
                   SurveyPlaceHolder.Controls.Add(surveyRadioButtons);
                   break;
                case QuestionType.CheckBoxes:
-                  SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)LoadControl(String.Format("{0}Controls/SurveyCheckBoxes.ascx", ControlPath));
-                  surveyCheckBoxes.ID = String.Format("SurveyCheckbox_{0}", survey.SurveyID);
+                  SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)LoadControl(string.Format("{0}Controls/SurveyCheckBoxes.ascx", ControlPath));
+                  surveyCheckBoxes.ID = string.Format("SurveyCheckbox_{0}", survey.SurveyID);
                   surveyCheckBoxes.Label = survey.Question;
                   surveyCheckBoxes.RepeatDirection = (survey.RepeatDirection.HasValue ? survey.RepeatDirection.Value : RepeatDirection.Horizontal);
                   surveyCheckBoxes.RepeatColumns = (((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1)) ? 1 : survey.RepeatColumns.Value);
@@ -412,8 +425,8 @@ namespace DNN.Modules.Survey
                   SurveyPlaceHolder.Controls.Add(surveyCheckBoxes);
                   break;
                case QuestionType.Text:
-                  SurveyText surveyTextBox = (SurveyText)LoadControl(String.Format("{0}Controls/SurveyText.ascx", ControlPath));
-                  surveyTextBox.ID = String.Format("SurveyTextBox_{0}", survey.SurveyID);
+                  SurveyText surveyTextBox = (SurveyText)LoadControl(string.Format("{0}Controls/SurveyText.ascx", ControlPath));
+                  surveyTextBox.ID = string.Format("SurveyTextBox_{0}", survey.SurveyID);
                   surveyTextBox.Label = survey.Question;
                   surveyTextBox.NumberOfRows = (((survey.NumberOfRows.HasValue) && (survey.NumberOfRows.Value > 1)) ? survey.NumberOfRows.Value : 1);
                   surveyTextBox.EditUrl = EditUrl("SurveyID", survey.SurveyID.ToString());
@@ -426,6 +439,23 @@ namespace DNN.Modules.Survey
                default:
                   break;
             }
+         }
+
+         if (PrivacyConfirmation)
+         {
+            // This is DNN 9.2.2 code...
+            string privacyUrl = Globals.NavigateURL(PortalSettings.ActiveTab.TabID, "Privacy");
+            string termsUrl = Globals.NavigateURL(PortalSettings.ActiveTab.TabID, "Terms");
+            // For DNN 9.3.0 use this code then...
+            //string privacyUrl = (PortalSettings.PrivacyTabId == Null.NullInteger ? Globals.NavigateURL(PortalSettings.ActiveTab.TabID, "Privacy") : Globals.NavigateURL(PortalSettings.PrivacyTabId));
+            //string termsUrl = (PortalSettings.TermsTabId == Null.NullInteger ? Globals.NavigateURL(PortalSettings.ActiveTab.TabID, "Terms") : Globals.NavigateURL(PortalSettings.TermsTabId));
+
+            PrivacyConfirmationCheckBox privacyConfirmation = (PrivacyConfirmationCheckBox)LoadControl(string.Format("{0}Controls/PrivacyConfirmationCheckBox.ascx", ControlPath));
+            privacyConfirmation.ID = string.Format("PrivacyConfirmationCheckBox_{0}", ModuleId);
+            privacyConfirmation.Label = string.Format(Localization.GetString("PrivacyConfirmation.Text", LocalResourceFile), privacyUrl, termsUrl);
+            privacyConfirmation.ErrorMessage = Localization.GetString("PrivacyConfirmation.ErrorMessage", LocalResourceFile);
+            privacyConfirmation.ValidationGroup = string.Format("Survey_{0}_ValidationGroup", ModuleId);
+            SurveyPlaceHolder.Controls.Add(privacyConfirmation);
          }
       }
 

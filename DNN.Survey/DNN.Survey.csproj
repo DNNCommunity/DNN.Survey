@@ -45,6 +45,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Controls\CanvasControl.ascx" />
+    <Content Include="Controls\PrivacyConfirmationCheckBox.ascx" />
     <Content Include="Controls\SurveyCheckBoxes.ascx" />
     <Content Include="Controls\SurveyRadioButtons.ascx" />
     <Content Include="Controls\SurveyText.ascx" />
@@ -77,6 +78,13 @@
     </Compile>
     <Compile Include="Controls\CanvasControl.ascx.designer.cs">
       <DependentUpon>CanvasControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PrivacyConfirmationCheckBox.ascx.cs">
+      <DependentUpon>PrivacyConfirmationCheckBox.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\PrivacyConfirmationCheckBox.ascx.designer.cs">
+      <DependentUpon>PrivacyConfirmationCheckBox.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controls\SurveyCheckBoxes.ascx.cs">
       <DependentUpon>SurveyCheckBoxes.ascx</DependentUpon>

@@ -18,6 +18,12 @@
          <asp:TextBox ID="SurveyClosingDateTextBox" runat="server"
             CssClass="surveyDatePicker" />
       </div>
+      <div class="dnnFormItem">
+         <dnn:Label ID="PrivacyConfirmationLabel" runat="server"
+            ControlName="PrivacyConfirmationCheckBox"
+            ResourceKey="PrivacyConfirmation" />
+         <asp:CheckBox ID="PrivacyConfirmationCheckBox" runat="server" />
+      </div>
       <div class="dnnFormMessage dnnFormInfo surveyTabModuleMessage">
          <asp:Label ID="TabModuleSettingsMessageLabel" runat="server"
             ResourceKey="TabModuleSettingsMessage" />

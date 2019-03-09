@@ -147,4 +147,10 @@
   <data name="ShowClosingDateMessage.Text" xml:space="preserve">
     <value>Show closing date message</value>
   </data>
+  <data name="PrivacyConfirmation.Help" xml:space="preserve">
+    <value>Activate this option to display a checkbox at the end of the survey to accept the privacy statement and terms of use.</value>
+  </data>
+  <data name="PrivacyConfirmation.Text" xml:space="preserve">
+    <value>Add consent checkbox?</value>
+  </data>
 </root>

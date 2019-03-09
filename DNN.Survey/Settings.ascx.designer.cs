@@ -40,6 +40,24 @@ namespace DNN.Modules.Survey {
         protected global::System.Web.UI.WebControls.TextBox SurveyClosingDateTextBox;
         
         /// <summary>
+        /// PrivacyConfirmationLabel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::DotNetNuke.UI.UserControls.LabelControl PrivacyConfirmationLabel;
+        
+        /// <summary>
+        /// PrivacyConfirmationCheckBox-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox PrivacyConfirmationCheckBox;
+        
+        /// <summary>
         /// TabModuleSettingsMessageLabel-Steuerelement
         /// </summary>
         /// <remarks>
