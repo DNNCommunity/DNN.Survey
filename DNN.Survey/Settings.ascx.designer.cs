@@ -58,6 +58,24 @@ namespace DNN.Modules.Survey {
         protected global::System.Web.UI.WebControls.CheckBox PrivacyConfirmationCheckBox;
         
         /// <summary>
+        /// UseCaptchaLabel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::DotNetNuke.UI.UserControls.LabelControl UseCaptchaLabel;
+        
+        /// <summary>
+        /// UseCaptchaRadioButtonList-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList UseCaptchaRadioButtonList;
+        
+        /// <summary>
         /// TabModuleSettingsMessageLabel-Steuerelement
         /// </summary>
         /// <remarks>

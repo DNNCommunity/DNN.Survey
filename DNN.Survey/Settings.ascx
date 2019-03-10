@@ -24,6 +24,20 @@
             ResourceKey="PrivacyConfirmation" />
          <asp:CheckBox ID="PrivacyConfirmationCheckBox" runat="server" />
       </div>
+      <div class="dnnFormItem">
+         <dnn:Label ID="UseCaptchaLabel" runat="server"
+            ControlName="UseCaptchaRadioButtonList"
+            ResourceKey="UseCaptcha" />
+         <asp:RadioButtonList ID="UseCaptchaRadioButtonList" runat="server"
+            CssClass="dnnFormRadioButtons"
+            RepeatDirection="Horizontal"
+            RepeatColumns="3">
+            <asp:ListItem Value="0" />
+            <asp:ListItem Value="1" />
+            <asp:ListItem Value="2" />
+         </asp:RadioButtonList>
+      </div>
+      <div class="dnnClear"></div>
       <div class="dnnFormMessage dnnFormInfo surveyTabModuleMessage">
          <asp:Label ID="TabModuleSettingsMessageLabel" runat="server"
             ResourceKey="TabModuleSettingsMessage" />

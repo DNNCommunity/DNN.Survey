@@ -4,6 +4,7 @@ using DotNetNuke.Entities.Modules;
 using DotNetNuke.Services.Localization;
 using System;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace DNN.Modules.Survey
 {
@@ -42,6 +43,22 @@ namespace DNN.Modules.Survey
          set
          {
             UpdateBooleanSetting("PrivacyConfirmation", value);
+         }
+      }
+
+      protected UseCaptcha UseCaptcha
+      {
+         get
+         {
+            object useCaptcha = ModuleSettings["UseCaptcha"];
+            if (useCaptcha == null)
+               return UseCaptcha.Never;
+            else
+               return (UseCaptcha)Convert.ToInt32(useCaptcha);
+         }
+         set
+         {
+            UpdateIntegerSetting("UseCaptcha", Convert.ToInt32(value));
          }
       }
       #endregion
@@ -105,6 +122,12 @@ namespace DNN.Modules.Survey
          PrivacyConfirmationCheckBox.Checked = PrivacyConfirmation;
          ShowClosingDateMessageCheckBox.Checked = ShowClosingDateMessage;
 
+         foreach (ListItem li in UseCaptchaRadioButtonList.Items)
+         {
+            li.Text = Localization.GetString(string.Format("UseCaptcha.{0}.Text", Enum.GetName(typeof(UseCaptcha), Convert.ToInt32(li.Value))), LocalResourceFile);
+         }
+         UseCaptchaRadioButtonList.SelectedValue = Convert.ToInt32(UseCaptcha).ToString();
+
          if (SurveyGraphWidth == 0)
             SurveyGraphWidthTextBox.Text = String.Empty;
          else
@@ -127,6 +150,7 @@ namespace DNN.Modules.Survey
 
          PrivacyConfirmation = PrivacyConfirmationCheckBox.Checked;
          ShowClosingDateMessage = ShowClosingDateMessageCheckBox.Checked;
+         UseCaptcha = (UseCaptcha)Convert.ToInt32(UseCaptchaRadioButtonList.SelectedValue);
 
          if (String.IsNullOrEmpty(SurveyGraphWidthTextBox.Text))
             SurveyGraphWidth = 0;

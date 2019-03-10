@@ -120,11 +120,23 @@
   <data name="AddQuestion.Action" xml:space="preserve">
     <value>Add question</value>
   </data>
+  <data name="Captcha.ErrorMessage" xml:space="preserve">
+    <value>The code was not correctly entered.</value>
+  </data>
+  <data name="Captcha.Text" xml:space="preserve">
+    <value>Please enter the code above.</value>
+  </data>
   <data name="CheckBoxRequired.ErrorMessage" xml:space="preserve">
     <value>Please check at least one answer to the question "{0}".</value>
   </data>
   <data name="ConfirmResultsDelete.Text" xml:space="preserve">
     <value>Are you sure you want to delete all survey results?</value>
+  </data>
+  <data name="ContactByFaxOnly.Help" xml:space="preserve">
+    <value>Activate this to allow contact only by fax messages.</value>
+  </data>
+  <data name="ContactByFaxOnly.Text" xml:space="preserve">
+    <value>Contact by fax only</value>
   </data>
   <data name="DeleteResults.Action" xml:space="preserve">
     <value>Delete results</value>

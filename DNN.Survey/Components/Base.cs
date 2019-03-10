@@ -20,6 +20,13 @@ namespace DNN.Modules.Survey.Components
       Doughnut = 3
    }
 
+   public enum UseCaptcha
+   {
+      Never = 0,
+      UnauthorizedUsersOnly = 1,
+      Always = 2
+   }
+
    public static class Base
    {
       public const string DEFAULT_SURVEY_RESULTS_TEMPLATE = "[SURVEY_OPTION_NAME]&nbsp;([SURVEY_OPTION_VOTES])&nbsp;<img src=\"[SURVEY_OPTION_IMAGEPATH]/red.gif\" width=\"[SURVEY_OPTION_GRAPH_WIDTH]\" border=\"0\" height=\"15\" alt=\"\" />&nbsp;[SURVEY_OPTION_PERCENTAGE]%<br />";

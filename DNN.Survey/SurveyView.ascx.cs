@@ -12,6 +12,7 @@ using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.Localization;
+using DotNetNuke.UI.WebControls;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -170,6 +171,18 @@ namespace DNN.Modules.Survey
          }
       }
 
+      protected UseCaptcha UseCaptcha
+      {
+         get
+         {
+            object useCaptcha = Settings["UseCaptcha"];
+            if (useCaptcha == null)
+               return UseCaptcha.Never;
+            else
+               return (UseCaptcha)Convert.ToInt32(useCaptcha);
+         }
+      }
+
       protected int ResultsVersion
       {
          // This is: If the results are cleared, this number increases - therefore the cookie changes and users can vote again.
@@ -312,75 +325,98 @@ namespace DNN.Modules.Survey
 
       protected void SubmitSurveyButton_Click(object sender, EventArgs e)
       {
-         Page.Validate(string.Format("Survey_{0}_ValidationGroup", ModuleId));
-         if (Page.IsValid)
+         // First, check CAPTCHA
+         CaptchaControl captcha = (CaptchaControl)FindControl(string.Format("Captcha_{0}", ModuleId));
+         if (((captcha != null) && (captcha.IsValid)) || (captcha == null))
          {
-            List<SurveysInfo> surveys = SurveysController.GetAll(ModuleId);
-            List<SurveyResultsInfo> surveyResults = new List<SurveyResultsInfo>();
-
-            foreach (SurveysInfo survey in surveys)
+            // Then validate page...
+            Page.Validate(string.Format("Survey_{0}_ValidationGroup", ModuleId));
+            if (Page.IsValid)
             {
-               SurveyResultsInfo surveyResult;
-               switch (survey.OptionType)
+               if (ContactByFaxOnlyCheckBox.Checked)
                {
-                  case QuestionType.RadioButtons:
-                     SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)FindControl(string.Format("SurveyRadiobutton_{0}", survey.SurveyID));
-                     surveyResult = new SurveyResultsInfo();
-                     surveyResult.SurveyOptionID = Convert.ToInt32(surveyRadioButtons.SelectedValue);
-                     surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
-                     surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
-                     surveyResults.Add(surveyResult);
-                     break;
-                  case QuestionType.CheckBoxes:
-                     SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)FindControl(string.Format("SurveyCheckbox_{0}", survey.SurveyID));
-                     foreach (int surveyOptionID in surveyCheckBoxes.SelectedItems)
-                     {
+                  // if someone activates this checkbox send him home :-)
+                  Response.Redirect("http://localhost/");
+               }
+               List<SurveysInfo> surveys = SurveysController.GetAll(ModuleId);
+               List<SurveyResultsInfo> surveyResults = new List<SurveyResultsInfo>();
+
+               foreach (SurveysInfo survey in surveys)
+               {
+                  SurveyResultsInfo surveyResult;
+                  switch (survey.OptionType)
+                  {
+                     case QuestionType.RadioButtons:
+                        SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)FindControl(string.Format("SurveyRadiobutton_{0}", survey.SurveyID));
                         surveyResult = new SurveyResultsInfo();
-                        surveyResult.SurveyOptionID = surveyOptionID;
+                        surveyResult.SurveyOptionID = Convert.ToInt32(surveyRadioButtons.SelectedValue);
                         surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
                         surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
                         surveyResults.Add(surveyResult);
-                     }
-                     break;
-                  case QuestionType.Text:
-                     SurveyText surveyTextBox = (SurveyText)FindControl(string.Format("SurveyTextBox_{0}", survey.SurveyID));
-                     surveyResult = new SurveyResultsInfo();
-                     surveyResult.SurveyOptionID = surveyTextBox.SurveyOptionID;
-                     surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
-                     surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
-                     surveyResult.TextAnswer = surveyTextBox.Text;
-                     surveyResults.Add(surveyResult);
-                     break;
-                  default:
-                     break;
+                        break;
+                     case QuestionType.CheckBoxes:
+                        SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)FindControl(string.Format("SurveyCheckbox_{0}", survey.SurveyID));
+                        foreach (int surveyOptionID in surveyCheckBoxes.SelectedItems)
+                        {
+                           surveyResult = new SurveyResultsInfo();
+                           surveyResult.SurveyOptionID = surveyOptionID;
+                           surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
+                           surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
+                           surveyResults.Add(surveyResult);
+                        }
+                        break;
+                     case QuestionType.Text:
+                        SurveyText surveyTextBox = (SurveyText)FindControl(string.Format("SurveyTextBox_{0}", survey.SurveyID));
+                        surveyResult = new SurveyResultsInfo();
+                        surveyResult.SurveyOptionID = surveyTextBox.SurveyOptionID;
+                        surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
+                        surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
+                        surveyResult.TextAnswer = surveyTextBox.Text;
+                        surveyResults.Add(surveyResult);
+                        break;
+                     default:
+                        break;
+                  }
+               }
+               if (PortalSecurity.IsInRole("Administrators"))
+               {
+                  // This is just to force the SQL Script SurveyResults_Add to add the result if the user is an administrator
+                  SurveyResultsController.Add(surveyResults, false);
+               }
+               else
+               {
+                  SurveyResultsController.Add(surveyResults, AuthorizedUsersOnly);
+               }
+               HttpCookie cookie = new HttpCookie(_cookie);
+               cookie.Value = "True";
+               cookie.Expires = (SurveyClosingDate == DateTime.MinValue ? DateTime.MaxValue : SurveyClosingDate.AddDays(1));
+               Response.AppendCookie(cookie);
+               SurveyPlaceHolder.Visible = false;
+               SubmitSurveyButton.Visible = false;
+               if (HasViewResultsPermission)
+               {
+                  Response.Redirect(EditUrl("SurveyResults"), false);
+               }
+               else
+               {
+                  SurveyMessageLabel.Text = string.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
+                  SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
+                  SurveyMessageLabel.Visible = true;
                }
             }
-            if (PortalSecurity.IsInRole("Administrators"))
-            {
-               // This is just to force the SQL Script SurveyResults_Add to add the result if the user is an administrator
-               SurveyResultsController.Add(surveyResults, false);
-            }
-            else
-            {
-               SurveyResultsController.Add(surveyResults, AuthorizedUsersOnly);
-            }
-            HttpCookie cookie = new HttpCookie(_cookie);
-            cookie.Value = "True";
-            cookie.Expires = (SurveyClosingDate == DateTime.MinValue ? DateTime.MaxValue : SurveyClosingDate.AddDays(1));
-            Response.AppendCookie(cookie);
-            SurveyPlaceHolder.Visible = false;
-            SubmitSurveyButton.Visible = false;
-            if (HasViewResultsPermission)
-            {
-               Response.Redirect(EditUrl("ViewResults"), false);
-            }
-            else
-            {
-               SurveyMessageLabel.Text = string.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
-               SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
-               SurveyMessageLabel.Visible = true;
-            }
          }
+      }
+
+      protected void SubmitSurveyButton_Load(object sender, EventArgs e)
+      {
+         LinkButton submitSurveyButton = (LinkButton)sender;
+         submitSurveyButton.ValidationGroup = string.Format("Survey_{0}_ValidationGroup", ModuleId);
+      }
+
+      protected void ContactByFaxOnlyCheckBox_CheckedChanged(object sender, EventArgs e)
+      {
+         // if someone activates this checkbox send him home :-)
+         Response.Redirect("http://localhost/", true);
       }
       #endregion
 
@@ -457,6 +493,18 @@ namespace DNN.Modules.Survey
             privacyConfirmation.ValidationGroup = string.Format("Survey_{0}_ValidationGroup", ModuleId);
             SurveyPlaceHolder.Controls.Add(privacyConfirmation);
          }
+
+         if ((UseCaptcha == UseCaptcha.Always) || ((UseCaptcha == UseCaptcha.UnauthorizedUsersOnly) && (UserId < 1)))
+         {
+            CaptchaControl captcha = new CaptchaControl();
+            captcha.ID = string.Format("Captcha_{0}", ModuleId);
+            captcha.Text = Localization.GetString("Captcha.Text", LocalResourceFile);
+            captcha.CaptchaLength = 8;
+            captcha.ErrorMessage = Localization.GetString("Captcha.ErrorMessage", LocalResourceFile);
+            captcha.CaptchaChars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+            captcha.ErrorStyle.CssClass = "dnnFormMessage dnnFormError";
+            SurveyPlaceHolder.Controls.Add(captcha);
+         }
       }
 
       private void SurveyActions_Click(object sender, ActionEventArgs e)
@@ -475,11 +523,5 @@ namespace DNN.Modules.Survey
          }
       }
       #endregion
-
-      protected void SubmitSurveyButton_Load(object sender, EventArgs e)
-      {
-         LinkButton submitSurveyButton = (LinkButton)sender;
-         submitSurveyButton.ValidationGroup = string.Format("Survey_{0}_ValidationGroup", ModuleId);
-      }
    }
 }

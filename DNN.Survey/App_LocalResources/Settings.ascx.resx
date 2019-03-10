@@ -153,4 +153,19 @@
   <data name="PrivacyConfirmation.Text" xml:space="preserve">
     <value>Add consent checkbox?</value>
   </data>
+  <data name="UseCaptcha.Always.Text" xml:space="preserve">
+    <value>Always</value>
+  </data>
+  <data name="UseCaptcha.Help" xml:space="preserve">
+    <value>You may include a captcha in the survey to avoid spammers. Select the option you like.&lt;br /&gt;NOTE: There is another anti-spam feature included, which is not visible for the user.</value>
+  </data>
+  <data name="UseCaptcha.Never.Text" xml:space="preserve">
+    <value>Never</value>
+  </data>
+  <data name="UseCaptcha.Text" xml:space="preserve">
+    <value>Use Captcha?</value>
+  </data>
+  <data name="UseCaptcha.UnauthorizedUsersOnly.Text" xml:space="preserve">
+    <value>For unauthorized users only</value>
+  </data>
 </root>

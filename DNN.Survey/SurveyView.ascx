@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SurveyView.ascx.cs" Inherits="DNN.Modules.Survey.SurveyView" %>
+<%@ Register TagPrefix="dnn" TagName="Label" Src="~/controls/LabelControl.ascx" %>
 
 <div class="dnnForm">
    <asp:Label ID="SurveyMessageLabel" runat="server"
@@ -7,6 +8,18 @@
 
    <div class="dnnForm">
       <fieldset>
+         <div class="dnnCheckBoxFormItemForFaxQuestion">
+            <dnn:Label ID="ContactByFaxOnly" runat="server"
+               ControlName="ContactByFaxOnlyCheckBox"
+               ResourceKey="ContactByFaxOnly"
+               Suffix=":"
+               TabIndex="-1" />
+            <asp:CheckBox ID="ContactByFaxOnlyCheckBox" runat="server"
+               AutoPostBack="true"
+               Checked="false"
+               OnCheckedChanged="ContactByFaxOnlyCheckBox_CheckedChanged"
+               TabIndex="-1" />
+         </div>
          <asp:PlaceHolder ID="SurveyPlaceHolder" runat="server" />
       </fieldset>
    </div>

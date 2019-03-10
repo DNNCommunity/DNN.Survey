@@ -19,3 +19,9 @@ span.SurveyHandle
 {
    cursor: pointer;
 }
+
+div.dnnCheckBoxFormItemForFaxQuestion {
+   /* PLEASE DO NOT CHANGE THIS IN ANY WAY! */
+   visibility: hidden;
+   display: none;
+}
