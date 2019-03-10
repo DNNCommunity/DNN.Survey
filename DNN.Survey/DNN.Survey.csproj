@@ -50,6 +50,8 @@
     <Content Include="Controls\SurveyRadioButtons.ascx" />
     <Content Include="Controls\SurveyText.ascx" />
     <Content Include="css\Settings.css" />
+    <Content Include="images\correct.png" />
+    <Content Include="images\not-correct.png" />
     <Content Include="Module.css" />
     <Content Include="Settings.ascx" />
     <Content Include="SurveyEdit.ascx" />

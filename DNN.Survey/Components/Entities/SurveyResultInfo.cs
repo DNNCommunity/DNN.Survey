@@ -9,5 +9,6 @@ namespace DNN.Modules.Survey.Components.Entities
    {
       public string OptionName { get; set; }
       public int Votes { get; set; }
+      public bool IsCorrect { get; set; }
    }
 }

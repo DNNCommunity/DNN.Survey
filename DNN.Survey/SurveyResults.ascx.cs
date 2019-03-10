@@ -198,10 +198,10 @@ namespace DNN.Modules.Survey
             StringBuilder bColorsBuilder = new StringBuilder();
             foreach (SurveyResultInfo r in result)
             {
-               labelBuilder.Append(string.Format("\"{0}\"", r.OptionName));
+               labelBuilder.Append(string.Format("\"{0}\"", String.Format("{0}{1}", r.OptionName, r.IsCorrect ? string.Format(" {0}", Localization.GetString("CorrectAnswer.Text", LocalResourceFile)) : string.Empty)));
                dataBuilder.Append(r.Votes);
-               bgColorsBuilder.Append(string.Format("\"{0}\"", Base.GetColor(result.IndexOf(r), true)));
-               bColorsBuilder.Append(string.Format("\"{0}\"", Base.GetColor(result.IndexOf(r), false)));
+               bgColorsBuilder.Append(string.Format("\"{0}\"", Base.GetColor(result.IndexOf(r), (!(r.IsCorrect)))));
+               bColorsBuilder.Append(string.Format("\"{0}\"", r.IsCorrect ? "rgba(0,170,0,1)" : Base.GetColor(result.IndexOf(r), false)));
                if (result.IndexOf(r) < result.Count - 1)
                {
                   labelBuilder.Append(",");

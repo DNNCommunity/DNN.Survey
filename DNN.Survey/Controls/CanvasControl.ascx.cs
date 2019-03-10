@@ -72,6 +72,11 @@ namespace DNN.Modules.Survey.Controls
                scriptBuilder.Append("               beginAtZero: true\r\n");
                scriptBuilder.Append("            }\r\n");
                scriptBuilder.Append("         }],\r\n");
+               scriptBuilder.Append("        xAxes: [{\r\n");
+               scriptBuilder.Append("           ticks: {\r\n");
+               scriptBuilder.Append("              autoSkip: false\r\n");
+               scriptBuilder.Append("           }\r\n");
+               scriptBuilder.Append("        }],\r\n");
                break;
             case ChartType.HorizontalBar:
                scriptBuilder.Append("        xAxes: [{\r\n");

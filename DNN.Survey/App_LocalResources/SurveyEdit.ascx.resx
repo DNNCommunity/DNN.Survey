@@ -162,11 +162,20 @@
   <data name="IsCorrect.Header" xml:space="preserve">
     <value>Correct answer?</value>
   </data>
+  <data name="NoAnswersProvided.Text" xml:space="preserve">
+    <value>You can't add a single- or multiple-choice questions and don't provide an answer.</value>
+  </data>
+  <data name="NoCorrectAnswersProvided.Text" xml:space="preserve">
+    <value>You have to provide at least one correct answer in a quiz.</value>
+  </data>
   <data name="NumberOfRows.Help" xml:space="preserve">
     <value>Enter a number of rows (lines) for the textbox if you want a multi-line text box (textarea).</value>
   </data>
   <data name="NumberOfRows.Text" xml:space="preserve">
     <value>Rows</value>
+  </data>
+  <data name="OnlyOneCorrectAnswerAllowed.Text" xml:space="preserve">
+    <value>Only one correct answer is allowed in a single-choice question.</value>
   </data>
   <data name="OptionName.Header" xml:space="preserve">
     <value>Answer</value>

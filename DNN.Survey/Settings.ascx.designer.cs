@@ -22,6 +22,24 @@ namespace DNN.Modules.Survey {
         protected global::System.Web.UI.WebControls.Label SurveyResultsTypeMovedLabel;
         
         /// <summary>
+        /// SurveyTypeLabel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::DotNetNuke.UI.UserControls.LabelControl SurveyTypeLabel;
+        
+        /// <summary>
+        /// SurveyTypeRadioButtonList-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList SurveyTypeRadioButtonList;
+        
+        /// <summary>
         /// SurveyClosingDateLabel-Steuerelement
         /// </summary>
         /// <remarks>

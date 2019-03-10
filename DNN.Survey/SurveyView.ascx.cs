@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace DNN.Modules.Survey
@@ -147,6 +148,18 @@ namespace DNN.Modules.Survey
       #endregion
 
       #region Settings
+      protected SurveyType SurveyType
+      {
+         get
+         {
+            object surveyType = Settings["SurveyType"];
+            if (surveyType == null)
+               return SurveyType.Survey;
+            else
+               return (SurveyType)Convert.ToInt32(surveyType);
+         }
+      }
+
       protected DateTime SurveyClosingDate
       {
          get
@@ -352,6 +365,7 @@ namespace DNN.Modules.Survey
                         surveyResult.SurveyOptionID = Convert.ToInt32(surveyRadioButtons.SelectedValue);
                         surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
                         surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
+                        surveyResult.IsCorrect = SurveyOptionsController.GetAll(survey.SurveyID).Find(x => x.SurveyOptionID == surveyResult.SurveyOptionID).IsCorrect;
                         surveyResults.Add(surveyResult);
                         break;
                      case QuestionType.CheckBoxes:
@@ -362,6 +376,7 @@ namespace DNN.Modules.Survey
                            surveyResult.SurveyOptionID = surveyOptionID;
                            surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
                            surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
+                           surveyResult.IsCorrect = SurveyOptionsController.GetAll(survey.SurveyID).Find(x => x.SurveyOptionID == surveyResult.SurveyOptionID).IsCorrect;
                            surveyResults.Add(surveyResult);
                         }
                         break;
@@ -372,6 +387,7 @@ namespace DNN.Modules.Survey
                         surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
                         surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
                         surveyResult.TextAnswer = surveyTextBox.Text;
+                        surveyResult.IsCorrect = true;
                         surveyResults.Add(surveyResult);
                         break;
                      default:
@@ -391,17 +407,28 @@ namespace DNN.Modules.Survey
                cookie.Value = "True";
                cookie.Expires = (SurveyClosingDate == DateTime.MinValue ? DateTime.MaxValue : SurveyClosingDate.AddDays(1));
                Response.AppendCookie(cookie);
-               SurveyPlaceHolder.Visible = false;
                SubmitSurveyButton.Visible = false;
-               if (HasViewResultsPermission)
+               if (SurveyType == SurveyType.Survey)
                {
-                  Response.Redirect(EditUrl("SurveyResults"), false);
+                  SurveyPlaceHolder.Visible = false;
+                  if (HasViewResultsPermission)
+                  {
+                     Response.Redirect(EditUrl("SurveyResults"), false);
+                  }
+                  else
+                  {
+                     SurveyMessageLabel.Text = Localization.GetString("HasVoted.Text", LocalResourceFile);
+                     SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
+                     SurveyMessageLabel.Visible = true;
+                  }
                }
                else
                {
-                  SurveyMessageLabel.Text = string.Format(Localization.GetString("HasVoted.Text", LocalResourceFile), SurveyClosingDate);
+                  SurveyMessageLabel.Text = Localization.GetString("QuizResults.Text", LocalResourceFile);
                   SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormSuccess";
                   SurveyMessageLabel.Visible = true;
+                  SurveyPlaceHolder.Controls.Clear();
+                  DisplayQuizResults(surveys, surveyResults);
                }
             }
          }
@@ -505,6 +532,55 @@ namespace DNN.Modules.Survey
             captcha.ErrorStyle.CssClass = "dnnFormMessage dnnFormError";
             SurveyPlaceHolder.Controls.Add(captcha);
          }
+      }
+
+      private void DisplayQuizResults(List<SurveysInfo> surveys, List<SurveyResultsInfo> surveyResults)
+      {
+         int score = 0;
+         foreach (SurveysInfo survey in surveys)
+         {
+            SurveyPlaceHolder.Controls.Add(new LiteralControl(string.Format("<h2>{0}</h2>", survey.Question)));
+            List<SurveyOptionsInfo> answers = SurveyOptionsController.GetAll(survey.SurveyID);
+            int correctAnswersCount = answers.FindAll(a => a.IsCorrect).Count;
+            StringBuilder yourAnswers = new StringBuilder();
+            StringBuilder correctAnswers = new StringBuilder();
+            int yourAnswersCount = 0;
+            int yourCorrectAnswers = 0;
+            List<SurveyResultsInfo> yourAnswersList = new List<SurveyResultsInfo>();
+            foreach (SurveyOptionsInfo answer in answers)
+            {
+               yourAnswersList = surveyResults.FindAll(r => r.SurveyOptionID == answer.SurveyOptionID);
+               yourAnswersCount += yourAnswersList.Count;
+               foreach (SurveyResultsInfo yourAnswer in yourAnswersList)
+               {
+                  if (yourAnswer.IsCorrect)
+                  {
+                     yourCorrectAnswers++;
+                     yourAnswers.Append(string.Format("<img src=\"{0}images/correct.png\" class=\"surveyImageLeft\" />{1}<br />", ControlPath, answer.OptionName));
+                  }
+                  else
+                  {
+                     yourAnswers.Append(string.Format("<img src=\"{0}images/not-correct.png\" class=\"surveyImageLeft\" />{1}<br />", ControlPath, answer.OptionName));
+                  }
+               }
+               if (answer.IsCorrect)
+               {
+                  correctAnswers.Append(string.Format("<img src=\"{0}images/correct.png\" class=\"surveyImageLeft\" />{1}<br />", ControlPath, answer.OptionName));
+               }
+            }
+            string answerClass = (yourCorrectAnswers == correctAnswersCount ? "dnnFormSuccess" : "dnnFormValidationSummary");
+            SurveyPlaceHolder.Controls.Add(new LiteralControl(string.Format("<h3>{0}:</h3><div class=\"dnnFormMessage {1}\">{2}</div>", Localization.GetString((yourAnswersCount == 1 ? "YourAnswer.Text" : "YourAnswers.Text"), LocalResourceFile), answerClass, yourAnswers.Remove(yourAnswers.Length - 6, 6).ToString())));
+            if ((yourCorrectAnswers < correctAnswersCount))
+            {
+               SurveyPlaceHolder.Controls.Add(new LiteralControl(string.Format("<h4>{0}:</h4><div class=\"dnnFormMessage dnnFrormSuccess\">{1}</div>", Localization.GetString((correctAnswersCount == 1 ? "CorrectAnswer.Text" : "CorrectAnswers.Text"), LocalResourceFile), correctAnswers.Remove(correctAnswers.Length - 6, 6).ToString())));
+            }
+            else
+            {
+               score++;
+            }
+         }
+         string scoreClass = (score == surveys.Count ? "dnnFormSuccess" : (score == 0 ? "dnnFormValidationSummary" : "dnnFormWarning"));
+         SurveyPlaceHolder.Controls.Add(new LiteralControl(string.Format("<div class=\"dnnFormMessage {0} surveyQuizResult\">{1}: {2}/{3} - {4:0.00}%</div>", scoreClass, Localization.GetString("YourResult.Text", LocalResourceFile), score, surveys.Count, Convert.ToDouble(score) / Convert.ToDouble(surveys.Count) * 100.00)));
       }
 
       private void SurveyActions_Click(object sender, ActionEventArgs e)

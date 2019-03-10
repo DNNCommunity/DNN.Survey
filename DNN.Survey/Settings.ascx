@@ -11,6 +11,19 @@
    </div>
    <fieldset>
       <div class="dnnFormItem">
+         <dnn:Label ID="SurveyTypeLabel" runat="server"
+            ControlName="SurveyTypeRadioButtonList"
+            ResourceKey="SurveyType"
+            Suffix=":" />
+         <asp:RadioButtonList ID="SurveyTypeRadioButtonList" runat="server"
+            CssClass="dnnFormRadioButtons"
+            RepeatDirection="Horizontal"
+            RepeatColumns="2">
+            <asp:ListItem Value="0" />
+            <asp:ListItem Value="1" />
+         </asp:RadioButtonList>
+      </div>
+      <div class="dnnFormItem">
          <dnn:Label ID="SurveyClosingDateLabel" runat="server"
             ControlName="SurveyClosingDateTextBox"
             ResourceKey="SurveyClosingDate"

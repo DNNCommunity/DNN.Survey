@@ -114,6 +114,13 @@
          </Columns>
       </asp:DataGrid>
 
+      <asp:Panel ID="ErrorMessagePanel" runat="server"
+         CssClass="dnnFormMessage dnnFormValidationSummary"
+         EnableViewState="false"
+         Visible="false">
+         <asp:Label ID="ErrorMessageLabel" runat="server" />
+      </asp:Panel>
+
       <asp:Panel ID="AddEditAnswerPanel" runat="server">
          <div class="dnnForm">
             <fieldset>
@@ -132,12 +139,13 @@
                      ResourceKey="Answer.Required"
                      ValidationGroup="AnswerValidation" />
                </div>
-               <div class="dnnFormItem">
+               <asp:Panel ID="CorrectAnswerPanel" runat="server"
+                  CssClass="dnnFormItem">
                   <dnn:Label ID="CorrectAnswerLabel" runat="server"
                      ControlName="CorrectAnswerCheckBox"
                      ResourceKey="CorrectAnswer" />
                   <asp:CheckBox ID="CorrectAnswerCheckBox" runat="server" />
-               </div>
+               </asp:Panel>
             </fieldset>
             <ul class="dnnActions dnnClear">
                <li>

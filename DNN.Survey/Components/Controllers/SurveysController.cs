@@ -63,7 +63,7 @@ namespace DNN.Modules.Survey.Components.Controllers
                   ((survey.RepeatDirection == null) || (survey.RepeatDirection == RepeatDirection.Horizontal) ? (int?)null : Convert.ToInt32(survey.RepeatDirection.Value)),
                   ((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1) ? (int?)null : survey.RepeatColumns.Value),
                   ((survey.NumberOfRows == null) || (survey.NumberOfRows <= 1) ? (int?)null : survey.NumberOfRows.Value),
-                  ((survey.ChartType == null) || (survey.ChartType == ChartType.Bar) ? (int?)null : Convert.ToInt32(survey.ChartType)),
+                  Convert.ToInt32(survey.ChartType),
                   userID,
                   answersXml
                }

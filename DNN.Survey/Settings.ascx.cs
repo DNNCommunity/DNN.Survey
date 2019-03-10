@@ -11,6 +11,22 @@ namespace DNN.Modules.Survey
    public partial class Settings : ModuleSettingsBase
    {
       #region Module Settings
+      protected SurveyType SurveyType
+      {
+         get
+         {
+            object surveyType = ModuleSettings["SurveyType"];
+            if (surveyType == null)
+               return SurveyType.Survey;
+            else
+               return (SurveyType)Convert.ToInt32(surveyType);
+         }
+         set
+         {
+            UpdateIntegerSetting("SurveyType", Convert.ToInt32(value));
+         }
+      }
+
       protected DateTime SurveyClosingDate
       {
          get
@@ -114,6 +130,12 @@ namespace DNN.Modules.Survey
       #region Settings Events
       public override void LoadSettings()
       {
+         foreach (ListItem li in SurveyTypeRadioButtonList.Items)
+         {
+            li.Text = Localization.GetString(string.Format("SurveyType.{0}.Text", Enum.GetName(typeof(SurveyType), Convert.ToInt32(li.Value))), LocalResourceFile);
+         }
+         SurveyTypeRadioButtonList.SelectedValue = Convert.ToInt32(SurveyType).ToString();
+
          if (SurveyClosingDate == DateTime.MinValue)
             SurveyClosingDateTextBox.Text = String.Empty;
          else
@@ -138,6 +160,7 @@ namespace DNN.Modules.Survey
 
       public override void UpdateSettings()
       {
+         SurveyType = (SurveyType)Convert.ToInt32(SurveyTypeRadioButtonList.SelectedValue);
          if (String.IsNullOrEmpty(SurveyClosingDateTextBox.Text))
             SurveyClosingDate = DateTime.MinValue;
          else

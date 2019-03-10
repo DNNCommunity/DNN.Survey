@@ -138,6 +138,12 @@
   <data name="ContactByFaxOnly.Text" xml:space="preserve">
     <value>Contact by fax only</value>
   </data>
+  <data name="CorrectAnswer.Text" xml:space="preserve">
+    <value>Correct answer</value>
+  </data>
+  <data name="CorrectAnswers.Text" xml:space="preserve">
+    <value>Correct answers</value>
+  </data>
   <data name="DeleteResults.Action" xml:space="preserve">
     <value>Delete results</value>
   </data>
@@ -156,6 +162,9 @@
   <data name="PrivacyConfirmation.Text" xml:space="preserve">
     <value>I have read, understood and accepted the &lt;a href="0" target="_blank" rel="nofollow"&gt;Privacy Statement&lt;/a&gt; and the &lt;a href="{1}" target="_blank" rel="nofollow"&gt;Terms of use&lt;/a&gt;.</value>
   </data>
+  <data name="QuizResults.Text" xml:space="preserve">
+    <value>Thank you for your participation. Here are your results:</value>
+  </data>
   <data name="RadioButtonRequired.ErrorMessage" xml:space="preserve">
     <value>Please select an answer to the question "{0}".</value>
   </data>
@@ -170,5 +179,14 @@
   </data>
   <data name="ViewResults.Action" xml:space="preserve">
     <value>View results</value>
+  </data>
+  <data name="YourAnswer.Text" xml:space="preserve">
+    <value>Your answer</value>
+  </data>
+  <data name="YourAnswers.Text" xml:space="preserve">
+    <value>Your answers</value>
+  </data>
+  <data name="YourResult.Text" xml:space="preserve">
+    <value>Your result</value>
   </data>
 </root>

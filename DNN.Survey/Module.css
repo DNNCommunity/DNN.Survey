@@ -25,3 +25,17 @@ div.dnnCheckBoxFormItemForFaxQuestion {
    visibility: hidden;
    display: none;
 }
+
+img.surveyImageLeft
+{
+   width: 32px;
+   height: 32px;
+   visibility: visible;
+   display: inline-block;
+}
+
+div.surveyQuizResult
+{
+   font-size: 18px !important;
+   font-weight: bold;
+}

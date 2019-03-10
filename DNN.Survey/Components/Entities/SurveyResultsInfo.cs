@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotNetNuke.ComponentModel.DataAnnotations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,5 +14,7 @@ namespace DNN.Modules.Survey.Components.Entities
       public string IPAddress { get; set; }
       public string TextAnswer { get; set; }
       public DateTime CreatedDate { get; set; }
+      [IgnoreColumn]
+      public bool IsCorrect { get; set; }
    }
 }

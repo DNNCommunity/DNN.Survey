@@ -44,18 +44,18 @@ namespace DNN.Modules.Survey.Components.Providers
          else
          {
             surveyBuilder.Append("<Survey>");
-            surveyBuilder.Append(String.Format("<SurveyID>{0}</SurveyID>", survey.SurveyID));
-            surveyBuilder.Append(String.Format("<ModuleID>{0}</ModuleID>", survey.ModuleID));
-            surveyBuilder.Append(String.Format("<Question><![CDATA[{0}]]></Question>", survey.Question));
-            surveyBuilder.Append(String.Format("<ViewOrder>{0}</ViewOrder>", survey.ViewOrder));
-            surveyBuilder.Append(String.Format("<OptionType>{0}</OptionType>", Convert.ToInt32(survey.OptionType)));
+            surveyBuilder.Append(string.Format("<SurveyID>{0}</SurveyID>", survey.SurveyID));
+            surveyBuilder.Append(string.Format("<ModuleID>{0}</ModuleID>", survey.ModuleID));
+            surveyBuilder.Append(string.Format("<Question><![CDATA[{0}]]></Question>", survey.Question));
+            surveyBuilder.Append(string.Format("<ViewOrder>{0}</ViewOrder>", survey.ViewOrder));
+            surveyBuilder.Append(string.Format("<OptionType>{0}</OptionType>", Convert.ToInt32(survey.OptionType)));
             if ((survey.RepeatDirection == null) || (survey.RepeatDirection == RepeatDirection.Horizontal))
             {
                surveyBuilder.Append("<RepeatDirection />");
             }
             else
             {
-               surveyBuilder.Append(String.Format("<RepeatDirection>{0}</RepeatDirection>", Convert.ToInt32(survey.RepeatDirection.Value)));
+               surveyBuilder.Append(string.Format("<RepeatDirection>{0}</RepeatDirection>", Convert.ToInt32(survey.RepeatDirection.Value)));
             }
             if ((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1))
             {
@@ -63,7 +63,7 @@ namespace DNN.Modules.Survey.Components.Providers
             }
             else
             {
-               surveyBuilder.Append(String.Format("<RepeatColumns>{0}</RepeatColumns>", survey.RepeatColumns.Value));
+               surveyBuilder.Append(string.Format("<RepeatColumns>{0}</RepeatColumns>", survey.RepeatColumns.Value));
             }
             if ((survey.NumberOfRows == null) || (survey.NumberOfRows <= 1))
             {
@@ -71,7 +71,7 @@ namespace DNN.Modules.Survey.Components.Providers
             }
             else
             {
-               surveyBuilder.Append(String.Format("<NumberOfRows>{0}</NumberOfRows>", survey.NumberOfRows.Value));
+               surveyBuilder.Append(string.Format("<NumberOfRows>{0}</NumberOfRows>", survey.NumberOfRows.Value));
             }
             if (survey.ChartType == ChartType.Bar)
             {
@@ -79,17 +79,17 @@ namespace DNN.Modules.Survey.Components.Providers
             }
             else
             {
-               surveyBuilder.Append(string.Format("<ChartType>{0}</ChartType>", survey.ChartType));
+               surveyBuilder.Append(string.Format("<ChartType>{0}</ChartType>", Convert.ToInt32(survey.ChartType)));
             }
-            surveyBuilder.Append(String.Format("<CreatedDate>{0:yyyy-MM-dd hh:mm:ss}</CreatedDate>", survey.CreatedDate));
-            surveyBuilder.Append(String.Format("<CreatedByUserID>{0}</CreatedByUserID>", survey.CreatedByUserID));
+            surveyBuilder.Append(string.Format("<CreatedDate>{0:yyyy-MM-dd hh:mm:ss}</CreatedDate>", survey.CreatedDate));
+            surveyBuilder.Append(string.Format("<CreatedByUserID>{0}</CreatedByUserID>", survey.CreatedByUserID));
             if (survey.LastModifiedByUserID == null)
             {
                surveyBuilder.Append("<LastModifiedByUserID />");
             }
             else
             {
-               surveyBuilder.Append(String.Format("<LastModifiedByUserID>{0}</LastModifiedByUserID>", survey.LastModifiedByUserID.Value));
+               surveyBuilder.Append(string.Format("<LastModifiedByUserID>{0}</LastModifiedByUserID>", survey.LastModifiedByUserID.Value));
             }
             if (survey.LastModifiedDate == null)
             {
@@ -97,7 +97,7 @@ namespace DNN.Modules.Survey.Components.Providers
             }
             else
             {
-               surveyBuilder.Append(String.Format("<LastModifiedDate>{0:yyyy-MM-dd hh:mm:ss}</LastModifiedDate>", survey.LastModifiedDate.Value));
+               surveyBuilder.Append(string.Format("<LastModifiedDate>{0:yyyy-MM-dd hh:mm:ss}</LastModifiedDate>", survey.LastModifiedDate.Value));
             }
             if (forExport)
             {
@@ -210,20 +210,20 @@ namespace DNN.Modules.Survey.Components.Providers
          else
          {
             surveyOptionBuilder.Append("<SurveyOption>");
-            surveyOptionBuilder.Append(String.Format("<SurveyOptionID>{0}</SurveyOptionID>", surveyOption.SurveyOptionID));
-            surveyOptionBuilder.Append(String.Format("<ViewOrder>{0}</ViewOrder>", surveyOption.ViewOrder));
-            surveyOptionBuilder.Append(String.Format("<OptionName><![CDATA[{0}]]></OptionName>", surveyOption.OptionName));
-            surveyOptionBuilder.Append(String.Format("<Votes>{0}</Votes>", surveyOption.Votes));
-            surveyOptionBuilder.Append(String.Format("<IsCorrect>{0}</IsCorrect>", surveyOption.IsCorrect));
-            surveyOptionBuilder.Append(String.Format("<CreatedDate>{0:yyyy-MM-dd hh:mm:ss}</CreatedDate>", surveyOption.CreatedDate));
-            surveyOptionBuilder.Append(String.Format("<CreatedByUserID>{0}</CreatedByUserID>", surveyOption.CreatedByUserID));
+            surveyOptionBuilder.Append(string.Format("<SurveyOptionID>{0}</SurveyOptionID>", surveyOption.SurveyOptionID));
+            surveyOptionBuilder.Append(string.Format("<ViewOrder>{0}</ViewOrder>", surveyOption.ViewOrder));
+            surveyOptionBuilder.Append(string.Format("<OptionName><![CDATA[{0}]]></OptionName>", surveyOption.OptionName));
+            surveyOptionBuilder.Append(string.Format("<Votes>{0}</Votes>", surveyOption.Votes));
+            surveyOptionBuilder.Append(string.Format("<IsCorrect>{0}</IsCorrect>", surveyOption.IsCorrect));
+            surveyOptionBuilder.Append(string.Format("<CreatedDate>{0:yyyy-MM-dd hh:mm:ss}</CreatedDate>", surveyOption.CreatedDate));
+            surveyOptionBuilder.Append(string.Format("<CreatedByUserID>{0}</CreatedByUserID>", surveyOption.CreatedByUserID));
             if (surveyOption.LastModifiedDate == null)
             {
                surveyOptionBuilder.Append("<LastModifiedDate />");
             }
             else
             {
-               surveyOptionBuilder.Append(String.Format("<LastModifiedDate>{0:yyyy-MM-dd hh:mm:ss}</LastModifiedDate>", surveyOption.LastModifiedDate.Value));
+               surveyOptionBuilder.Append(string.Format("<LastModifiedDate>{0:yyyy-MM-dd hh:mm:ss}</LastModifiedDate>", surveyOption.LastModifiedDate.Value));
             }
             if (surveyOption.LastModifiedByUserID == null)
             {
@@ -231,7 +231,7 @@ namespace DNN.Modules.Survey.Components.Providers
             }
             else
             {
-               surveyOptionBuilder.Append(String.Format("<LastModifiedByUserID>{0}</LastModifiedByUserID>", surveyOption.LastModifiedByUserID.Value));
+               surveyOptionBuilder.Append(string.Format("<LastModifiedByUserID>{0}</LastModifiedByUserID>", surveyOption.LastModifiedByUserID.Value));
             }
             surveyOptionBuilder.Append("</SurveyOption>");
          }
@@ -314,15 +314,15 @@ namespace DNN.Modules.Survey.Components.Providers
          else
          {
             surveyResultBuilder.Append("<SurveyResult>");
-            surveyResultBuilder.Append(String.Format("<SurveyResultID>{0}</SurveyResultID>", surveyResult.SurveyResultID));
-            surveyResultBuilder.Append(String.Format("<SurveyOptionID>{0}</SurveyOptionID>", surveyResult.SurveyOptionID));
+            surveyResultBuilder.Append(string.Format("<SurveyResultID>{0}</SurveyResultID>", surveyResult.SurveyResultID));
+            surveyResultBuilder.Append(string.Format("<SurveyOptionID>{0}</SurveyOptionID>", surveyResult.SurveyOptionID));
             if (surveyResult.UserID == null)
             {
                surveyResultBuilder.Append("<UserID />");
             }
             else
             {
-               surveyResultBuilder.Append(String.Format("<UserID>{0}</UserID>", surveyResult.UserID.Value));
+               surveyResultBuilder.Append(string.Format("<UserID>{0}</UserID>", surveyResult.UserID.Value));
             }
             if (String.IsNullOrEmpty(surveyResult.IPAddress))
             {
@@ -330,7 +330,7 @@ namespace DNN.Modules.Survey.Components.Providers
             }
             else
             {
-               surveyResultBuilder.Append(String.Format("<IPAddress>{0}</IPAddress>", surveyResult.IPAddress));
+               surveyResultBuilder.Append(string.Format("<IPAddress>{0}</IPAddress>", surveyResult.IPAddress));
             }
             if (String.IsNullOrEmpty(surveyResult.TextAnswer))
             {
@@ -338,9 +338,10 @@ namespace DNN.Modules.Survey.Components.Providers
             }
             else
             {
-               surveyResultBuilder.Append(String.Format("<TextAnswer><![CDATA[{0}]]></TextAnswer>", surveyResult.TextAnswer));
+               surveyResultBuilder.Append(string.Format("<TextAnswer><![CDATA[{0}]]></TextAnswer>", surveyResult.TextAnswer));
             }
-            surveyResultBuilder.Append(String.Format("<CreatedDate>{0:yyyy-MM-dd hh:mm:ss}</CreatedDate>", surveyResult.CreatedDate));
+            surveyResultBuilder.Append(string.Format("<CreatedDate>{0:yyyy-MM-dd hh:mm:ss}</CreatedDate>", surveyResult.CreatedDate));
+            surveyResultBuilder.Append(string.Format("<IsCorrect>{0}</IsCorrect>", surveyResult.IsCorrect));
             surveyResultBuilder.Append("</SurveyResult>");
          }
          return surveyResultBuilder.ToString();
@@ -399,6 +400,7 @@ namespace DNN.Modules.Survey.Components.Providers
                surveyResult.TextAnswer = String.Empty;
             }
             surveyResult.CreatedDate = Convert.ToDateTime(surveyResultXmlNode.SelectSingleNode("CreatedDate").InnerText);
+            surveyResult.IsCorrect = Convert.ToBoolean(surveyResultXmlNode.SelectSingleNode("IsCorrect").InnerText);
          }
          return surveyResult;
       }

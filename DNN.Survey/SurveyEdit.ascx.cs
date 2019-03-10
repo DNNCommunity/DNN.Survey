@@ -208,6 +208,20 @@ namespace DNN.Modules.Survey
       }
       #endregion
 
+      #region Settings
+      protected SurveyType SurveyType
+      {
+         get
+         {
+            object surveyType = Settings["SurveyType"];
+            if (surveyType == null)
+               return SurveyType.Survey;
+            else
+               return (SurveyType)Convert.ToInt32(surveyType);
+         }
+      }
+      #endregion
+
       #region Events
       protected override void OnInit(EventArgs e)
       {
@@ -230,6 +244,8 @@ namespace DNN.Modules.Survey
             CreateQuestionTypeEntries();
             CreateRepeatDirectionEntries();
             CreateChartTypeEntries();
+
+            CorrectAnswerPanel.Visible = (SurveyType == SurveyType.Quiz);
 
             if (SurveyID > 0)
             {
@@ -362,28 +378,52 @@ namespace DNN.Modules.Survey
                }
                else
                {
-                  if (SurveyID > 0)
+                  if (Request.Form["SurveyOptionID"] == null)
                   {
-                     int[] surveyOptionIDs = (from p in Request.Form["SurveyOptionID"].Split(',')
-                                              select int.Parse(p)).ToArray();
-                     int viewOrder = 1;
-                     List<SurveyOptionsInfo> answers = Answers;
-                     foreach (int surveyOptionID in surveyOptionIDs)
+                     // You can't add a single or multiple choice question with no answers...
+                     ErrorMessagePanel.Visible = true;
+                     ErrorMessageLabel.Text = Localization.GetString("NoAnswersProvided.Text", LocalResourceFile);
+                  }
+                  else
+                  {
+                     if (SurveyID > 0)
                      {
-                        answers.Find(x => x.SurveyOptionID == surveyOptionID).ViewOrder = viewOrder;
-                        viewOrder++;
+                        List<SurveyOptionsInfo> answers = Answers;
+                        int[] surveyOptionIDs = (from p in Request.Form["SurveyOptionID"].Split(',')
+                                                 select int.Parse(p)).ToArray();
+                        int viewOrder = 1;
+                        foreach (int surveyOptionID in surveyOptionIDs)
+                        {
+                           SurveyOptionsInfo answer = answers.Find(x => x.SurveyOptionID == surveyOptionID);
+                           answer.ViewOrder = viewOrder;
+                           viewOrder++;
+                        }
+                        Answers = answers;
                      }
-                     Answers = answers;
+                     int correctAnswers = Answers.Where(a => a.IsCorrect).Count();
+                     if ((SurveyType == SurveyType.Quiz) && (correctAnswers == 0))
+                     {
+                        ErrorMessagePanel.Visible = true;
+                        ErrorMessageLabel.Text = Localization.GetString("NoCorrectAnswersProvided.Text", LocalResourceFile);
+                     }
+                     if ((SurveyType == SurveyType.Quiz) && (survey.OptionType == QuestionType.RadioButtons) && (correctAnswers > 1))
+                     {
+                        ErrorMessagePanel.Visible = true;
+                        ErrorMessageLabel.Text = Localization.GetString("OnlyOneCorrectAnswerAllowed.Text", LocalResourceFile);
+                     }
                   }
                }
-               survey.RepeatDirection = (RepeatDirection)Convert.ToInt32(RepeatDirectionDropDownList.SelectedValue);
-               survey.RepeatColumns = (String.IsNullOrEmpty(RepeatColumnsTextBox.Text) ? (int?)null : Convert.ToInt32(RepeatColumnsTextBox.Text));
-               survey.NumberOfRows = (((String.IsNullOrEmpty(NumberOfRowsTextBox.Text)) || (NumberOfRowsTextBox.Text == "1")) ? (int?)null : Convert.ToInt32(NumberOfRowsTextBox.Text));
+               if (!(ErrorMessagePanel.Visible))
+               {
+                  survey.RepeatDirection = (RepeatDirection)Convert.ToInt32(RepeatDirectionDropDownList.SelectedValue);
+                  survey.RepeatColumns = (String.IsNullOrEmpty(RepeatColumnsTextBox.Text) ? (int?)null : Convert.ToInt32(RepeatColumnsTextBox.Text));
+                  survey.NumberOfRows = (((String.IsNullOrEmpty(NumberOfRowsTextBox.Text)) || (NumberOfRowsTextBox.Text == "1")) ? (int?)null : Convert.ToInt32(NumberOfRowsTextBox.Text));
 
-               survey.ChartType = (ChartType)Convert.ToInt32(ChartTypeDropDownList.SelectedValue);
+                  survey.ChartType = (ChartType)Convert.ToInt32(ChartTypeDropDownList.SelectedValue);
 
-               SurveysController.AddOrChange(survey, XmlDataProvider.SurveyOptionsToXml(Answers), UserId);
-               Response.Redirect(Globals.NavigateURL(), false);
+                  SurveysController.AddOrChange(survey, XmlDataProvider.SurveyOptionsToXml(Answers), UserId);
+                  Response.Redirect(Globals.NavigateURL(), false);
+               }
             }
             catch (Exception ex)
             {

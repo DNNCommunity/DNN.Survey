@@ -168,4 +168,16 @@
   <data name="UseCaptcha.UnauthorizedUsersOnly.Text" xml:space="preserve">
     <value>For unauthorized users only</value>
   </data>
+  <data name="SurveyType.Help" xml:space="preserve">
+    <value>Choose if this is a survey or a quiz.</value>
+  </data>
+  <data name="SurveyType.Quiz.Text" xml:space="preserve">
+    <value>Quiz</value>
+  </data>
+  <data name="SurveyType.Survey.Text" xml:space="preserve">
+    <value>Survey</value>
+  </data>
+  <data name="SurveyType.Text" xml:space="preserve">
+    <value>Survey type</value>
+  </data>
 </root>

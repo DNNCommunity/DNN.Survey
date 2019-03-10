@@ -173,16 +173,24 @@ namespace DNN.Modules.Survey
          SurveysInfo survey;
          try
          {
-            int[] surveyIDs = (from p in Request.Form["SurveyID"].Split(',')
-                               select int.Parse(p)).ToArray();
-            int viewOrder = 1;
-            List<SurveysInfo> surveys = Surveys;
-            foreach (int surveyID in surveyIDs)
+            List<SurveysInfo> surveys;
+            if (Request.Form["SurveyID"] == null)
             {
-               survey = surveys.Find(x => x.SurveyID == surveyID);
-               survey.ViewOrder = viewOrder;
-               survey.LastModifiedByUserID = UserId;
-               viewOrder++;
+               surveys = new List<SurveysInfo>();
+            }
+            else
+            {
+               surveys = Surveys;
+               int[] surveyIDs = (from p in Request.Form["SurveyID"].Split(',')
+                                  select int.Parse(p)).ToArray();
+               int viewOrder = 1;
+               foreach (int surveyID in surveyIDs)
+               {
+                  survey = surveys.Find(x => x.SurveyID == surveyID);
+                  survey.ViewOrder = viewOrder;
+                  survey.LastModifiedByUserID = UserId;
+                  viewOrder++;
+               }
             }
             SurveysController.Sort(surveys);
             Response.Redirect(Globals.NavigateURL(), false);

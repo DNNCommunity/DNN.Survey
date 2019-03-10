@@ -148,6 +148,24 @@ namespace DNN.Modules.Survey {
         protected global::System.Web.UI.WebControls.DataGrid AnswersGrid;
         
         /// <summary>
+        /// ErrorMessagePanel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel ErrorMessagePanel;
+        
+        /// <summary>
+        /// ErrorMessageLabel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label ErrorMessageLabel;
+        
+        /// <summary>
         /// AddEditAnswerPanel-Steuerelement
         /// </summary>
         /// <remarks>
@@ -182,6 +200,15 @@ namespace DNN.Modules.Survey {
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator AnswerValidator;
+        
+        /// <summary>
+        /// CorrectAnswerPanel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel CorrectAnswerPanel;
         
         /// <summary>
         /// CorrectAnswerLabel-Steuerelement
