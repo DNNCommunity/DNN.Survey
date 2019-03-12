@@ -386,8 +386,8 @@ namespace DNN.Modules.Survey
                   }
                   else
                   {
-                     if (SurveyID > 0)
-                     {
+                     //if (SurveyID > 0)
+                     //{
                         List<SurveyOptionsInfo> answers = Answers;
                         int[] surveyOptionIDs = (from p in Request.Form["SurveyOptionID"].Split(',')
                                                  select int.Parse(p)).ToArray();
@@ -399,7 +399,7 @@ namespace DNN.Modules.Survey
                            viewOrder++;
                         }
                         Answers = answers;
-                     }
+                     //}
                      int correctAnswers = Answers.Where(a => a.IsCorrect).Count();
                      if ((SurveyType == SurveyType.Quiz) && (correctAnswers == 0))
                      {
@@ -437,26 +437,43 @@ namespace DNN.Modules.Survey
          Page.Validate("AnswerValidation");
          if (Page.IsValid)
          {
+            LinkButton updateAnswerButton = (LinkButton)sender;
             List<SurveyOptionsInfo> answers = Answers;
             if (answers == null) answers = new List<SurveyOptionsInfo>();
+
+            if (Request.Form["SurveyOptionID"] != null)
+            {
+               int[] surveyOptionIDs = (from p in Request.Form["SurveyOptionID"].Split(',')
+                                        select int.Parse(p)).ToArray();
+               int viewOrder = 1;
+               foreach (int surveyOptionID in surveyOptionIDs)
+               {
+                  SurveyOptionsInfo answer = answers.Find(x => x.SurveyOptionID == surveyOptionID);
+                  answer.ViewOrder = viewOrder;
+                  viewOrder++;
+               }
+            }
+
             if (SurveyOptionID == 0)
             {
                MaxViewOrder = MaxViewOrder + 1;
                SurveyOptionsInfo surveyOption = new SurveyOptionsInfo();
-               surveyOption.ViewOrder = MaxViewOrder;
                surveyOption.OptionName = AnswerTextBox.Text;
-               surveyOption.Votes = 0;
                surveyOption.IsCorrect = CorrectAnswerCheckBox.Checked;
+               surveyOption.SurveyOptionID = MaxViewOrder * (-1);
+               surveyOption.ViewOrder = MaxViewOrder;
+               surveyOption.Votes = 0;
                surveyOption.CreatedByUserID = UserId;
                surveyOption.CreatedDate = DateTime.Now;
                answers.Add(surveyOption);
+               answers.OrderBy(so => so.ViewOrder);
             }
             else
             {
                SurveyOptionsInfo surveyOption = SurveyOption;
+               answers.Remove(answers.Find(so => so.SurveyOptionID == SurveyOptionID));
                surveyOption.OptionName = AnswerTextBox.Text;
                surveyOption.IsCorrect = CorrectAnswerCheckBox.Checked;
-               answers.Remove(answers.Find(so => so.SurveyOptionID == SurveyOptionID));
                answers.Add(surveyOption);
                answers.OrderBy(so => so.ViewOrder);
                SurveyOptionID = 0;

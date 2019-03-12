@@ -354,6 +354,8 @@ namespace DNN.Modules.Survey
                List<SurveysInfo> surveys = SurveysController.GetAll(ModuleId);
                List<SurveyResultsInfo> surveyResults = new List<SurveyResultsInfo>();
 
+               Guid resultUserID = Guid.NewGuid();
+
                foreach (SurveysInfo survey in surveys)
                {
                   SurveyResultsInfo surveyResult;
@@ -366,6 +368,7 @@ namespace DNN.Modules.Survey
                         surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
                         surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
                         surveyResult.IsCorrect = SurveyOptionsController.GetAll(survey.SurveyID).Find(x => x.SurveyOptionID == surveyResult.SurveyOptionID).IsCorrect;
+                        surveyResult.ResultUserID = resultUserID;
                         surveyResults.Add(surveyResult);
                         break;
                      case QuestionType.CheckBoxes:
@@ -377,6 +380,7 @@ namespace DNN.Modules.Survey
                            surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
                            surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
                            surveyResult.IsCorrect = SurveyOptionsController.GetAll(survey.SurveyID).Find(x => x.SurveyOptionID == surveyResult.SurveyOptionID).IsCorrect;
+                           surveyResult.ResultUserID = resultUserID;
                            surveyResults.Add(surveyResult);
                         }
                         break;
@@ -388,6 +392,7 @@ namespace DNN.Modules.Survey
                         surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
                         surveyResult.TextAnswer = surveyTextBox.Text;
                         surveyResult.IsCorrect = true;
+                        surveyResult.ResultUserID = resultUserID;
                         surveyResults.Add(surveyResult);
                         break;
                      default:

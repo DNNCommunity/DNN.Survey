@@ -340,6 +340,7 @@ namespace DNN.Modules.Survey.Components.Providers
             {
                surveyResultBuilder.Append(string.Format("<TextAnswer><![CDATA[{0}]]></TextAnswer>", surveyResult.TextAnswer));
             }
+            surveyResultBuilder.Append(string.Format("<ResultUserID><![CDATA[{0}]]></ResultUserID>", surveyResult.ResultUserID));
             surveyResultBuilder.Append(string.Format("<CreatedDate>{0:yyyy-MM-dd hh:mm:ss}</CreatedDate>", surveyResult.CreatedDate));
             surveyResultBuilder.Append(string.Format("<IsCorrect>{0}</IsCorrect>", surveyResult.IsCorrect));
             surveyResultBuilder.Append("</SurveyResult>");
@@ -399,6 +400,7 @@ namespace DNN.Modules.Survey.Components.Providers
             {
                surveyResult.TextAnswer = String.Empty;
             }
+            surveyResult.ResultUserID = Guid.Parse(surveyResultXmlNode.SelectSingleNode("ResultUserID").InnerText);
             surveyResult.CreatedDate = Convert.ToDateTime(surveyResultXmlNode.SelectSingleNode("CreatedDate").InnerText);
             surveyResult.IsCorrect = Convert.ToBoolean(surveyResultXmlNode.SelectSingleNode("IsCorrect").InnerText);
          }

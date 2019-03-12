@@ -13,6 +13,7 @@ namespace DNN.Modules.Survey.Components.Entities
       public int? UserID { get; set; }
       public string IPAddress { get; set; }
       public string TextAnswer { get; set; }
+      public Guid ResultUserID { get; set; }
       public DateTime CreatedDate { get; set; }
       [IgnoreColumn]
       public bool IsCorrect { get; set; }
