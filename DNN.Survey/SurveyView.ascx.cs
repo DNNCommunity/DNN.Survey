@@ -542,7 +542,10 @@ namespace DNN.Modules.Survey
       private void DisplayQuizResults(List<SurveysInfo> surveys, List<SurveyResultsInfo> surveyResults)
       {
          int score = 0;
-         foreach (SurveysInfo survey in surveys)
+         List<SurveysInfo> quizQuestions = surveys.FindAll(s => (!(s.IsStatistical.Value)));
+         List<SurveysInfo> statisticalQuestions = surveys.FindAll(s => s.IsStatistical.Value);
+
+         foreach (SurveysInfo survey in quizQuestions)
          {
             SurveyPlaceHolder.Controls.Add(new LiteralControl(string.Format("<h2>{0}</h2>", survey.Question)));
             List<SurveyOptionsInfo> answers = SurveyOptionsController.GetAll(survey.SurveyID);
@@ -585,7 +588,36 @@ namespace DNN.Modules.Survey
             }
          }
          string scoreClass = (score == surveys.Count ? "dnnFormSuccess" : (score == 0 ? "dnnFormValidationSummary" : "dnnFormWarning"));
-         SurveyPlaceHolder.Controls.Add(new LiteralControl(string.Format("<div class=\"dnnFormMessage {0} surveyQuizResult\">{1}: {2}/{3} - {4:0.00}%</div>", scoreClass, Localization.GetString("YourResult.Text", LocalResourceFile), score, surveys.Count, Convert.ToDouble(score) / Convert.ToDouble(surveys.Count) * 100.00)));
+         SurveyPlaceHolder.Controls.Add(new LiteralControl(string.Format("<div class=\"dnnFormMessage {0} surveyQuizResult\">{1}: {2}/{3} - {4:0.00}%</div>", scoreClass, Localization.GetString("YourResult.Text", LocalResourceFile), score, quizQuestions.Count, Convert.ToDouble(score) / Convert.ToDouble(quizQuestions.Count) * 100.00)));
+
+         if (statisticalQuestions.Count > 0)
+         {
+            StringBuilder yourStatisticalAnswers = new StringBuilder();
+            yourStatisticalAnswers.Append(string.Format("<h2>{0}</h2>", Localization.GetString("StatisticalAnswers.Text", LocalResourceFile)));
+            foreach (SurveysInfo survey in statisticalQuestions)
+            {
+               yourStatisticalAnswers.Append(string.Format("<div class=\"dnnFormMessage dnnFormInfo\"><h3>{0}</h3>", survey.Question));
+               if ((survey.OptionType == QuestionType.RadioButtons) || (survey.OptionType == QuestionType.CheckBoxes))
+               {
+                  List<SurveyOptionsInfo> answers = SurveyOptionsController.GetAll(survey.SurveyID);
+                  List<SurveyResultsInfo> yourAnswersList = new List<SurveyResultsInfo>();
+                  foreach (SurveyOptionsInfo answer in answers)
+                  {
+                     yourAnswersList = surveyResults.FindAll(r => r.SurveyOptionID == answer.SurveyOptionID);
+                     foreach (SurveyResultsInfo yourAnswer in yourAnswersList)
+                     {
+                        yourStatisticalAnswers.Append(string.Format("<img src =\"{0}images/info.png\" class=\"surveyImageLeft\" />{1}<br />", ControlPath, answer.OptionName));
+                     }
+                  }
+               }
+               else
+               {
+                  yourStatisticalAnswers.Append(string.Format("<img src =\"{0}images/info.png\" class=\"surveyImageLeft\" />{1}<br />", ControlPath, surveyResults[0].TextAnswer));
+               }
+               yourStatisticalAnswers.Append("</div>");
+            }
+            SurveyPlaceHolder.Controls.Add(new LiteralControl(yourStatisticalAnswers.ToString()));
+         }
       }
 
       private void SurveyActions_Click(object sender, ActionEventArgs e)

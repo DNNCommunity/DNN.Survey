@@ -49,6 +49,14 @@ namespace DNN.Modules.Survey.Components.Providers
             surveyBuilder.Append(string.Format("<Question><![CDATA[{0}]]></Question>", survey.Question));
             surveyBuilder.Append(string.Format("<ViewOrder>{0}</ViewOrder>", survey.ViewOrder));
             surveyBuilder.Append(string.Format("<OptionType>{0}</OptionType>", Convert.ToInt32(survey.OptionType)));
+            if (survey.IsStatistical == null)
+            {
+               surveyBuilder.Append("<IsStatistical />");
+            }
+            else
+            {
+               surveyBuilder.Append(string.Format("<IsStatistical>{0}</IsStatistical>", survey.IsStatistical.Value));
+            }
             if ((survey.RepeatDirection == null) || (survey.RepeatDirection == RepeatDirection.Horizontal))
             {
                surveyBuilder.Append("<RepeatDirection />");
@@ -145,6 +153,10 @@ namespace DNN.Modules.Survey.Components.Providers
             survey.Question = surveyXmlNode.SelectSingleNode("Question").InnerText;
             survey.ViewOrder = Convert.ToInt32(surveyXmlNode.SelectSingleNode("ViewOrder").InnerText);
             survey.OptionType = (QuestionType)Convert.ToInt32(surveyXmlNode.SelectSingleNode("OptionType").InnerText);
+            if ((surveyXmlNode.SelectSingleNode("IsStatistical") != null) && (!(String.IsNullOrEmpty(surveyXmlNode.SelectSingleNode("IsStatistical").InnerText))))
+            {
+               survey.IsStatistical = Convert.ToBoolean(surveyXmlNode.SelectSingleNode("IsStatistical").InnerText);
+            }
             if ((surveyXmlNode.SelectSingleNode("RepeatDirection") != null) && (!(String.IsNullOrEmpty(surveyXmlNode.SelectSingleNode("RepeatDirection").InnerText))))
             {
                survey.RepeatDirection = (RepeatDirection)Convert.ToInt32(surveyXmlNode.SelectSingleNode("RepeatDirection").InnerText);

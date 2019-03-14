@@ -58,6 +58,33 @@ namespace DNN.Modules.Survey {
         protected global::System.Web.UI.WebControls.DropDownList QuestionTypeDropDownList;
         
         /// <summary>
+        /// IsStatisticalPanel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel IsStatisticalPanel;
+        
+        /// <summary>
+        /// IsStatisticalLabel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::DotNetNuke.UI.UserControls.LabelControl IsStatisticalLabel;
+        
+        /// <summary>
+        /// IsStatisticalCheckBox-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox IsStatisticalCheckBox;
+        
+        /// <summary>
         /// ChartTypeLabel-Steuerelement
         /// </summary>
         /// <remarks>

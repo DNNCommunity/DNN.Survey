@@ -19,6 +19,7 @@ namespace DNN.Modules.Survey.Components.Entities
       public string Question { get; set; }
       public int ViewOrder { get; set; }
       public QuestionType OptionType { get; set; }
+      public bool? IsStatistical { get; set; }
       public RepeatDirection? RepeatDirection { get; set; }
       public int? RepeatColumns { get; set; }
       public int? NumberOfRows { get; set; }

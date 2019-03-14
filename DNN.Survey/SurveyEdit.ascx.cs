@@ -254,6 +254,7 @@ namespace DNN.Modules.Survey
                QuestionTextBox.Text = Survey.Question;
                QuestionTypeDropDownList.SelectedValue = Convert.ToInt32(Survey.OptionType).ToString();
                ChartTypeDropDownList.SelectedValue = Convert.ToInt32(Survey.ChartType).ToString();
+               IsStatisticalCheckBox.Checked = (Survey.IsStatistical.HasValue ? Survey.IsStatistical.Value : false);
                if (Survey.OptionType == QuestionType.RadioButtons || Survey.OptionType == QuestionType.CheckBoxes)
                {
                   RepeatDirectionDropDownList.SelectedValue = Convert.ToInt32(Survey.RepeatDirection).ToString();
@@ -262,6 +263,7 @@ namespace DNN.Modules.Survey
                else
                {
                   NumberOfRowsTextBox.Text = Survey.NumberOfRows.ToString();
+                  IsStatisticalCheckBox.Enabled = false;
                   RepeatDirectionPanel.Visible = false;
                   AnswersPanel.Visible = false;
                   TextAnswerPanel.Visible = true;
@@ -270,6 +272,10 @@ namespace DNN.Modules.Survey
                AnswersGrid.DataBind();
                MaxViewOrder = Answers.Count;
                ChartTypeChanged = true;
+            }
+            if (SurveyType == SurveyType.Quiz)
+            {
+               IsStatisticalPanel.Visible = true;
             }
          }
       }
@@ -369,6 +375,7 @@ namespace DNN.Modules.Survey
                survey.ModuleID = ModuleId;
                survey.Question = QuestionTextBox.Text;
                survey.OptionType = (QuestionType)Convert.ToInt32(QuestionTypeDropDownList.SelectedValue);
+               survey.IsStatistical = (SurveyType == SurveyType.Quiz ? IsStatisticalCheckBox.Checked : (bool?)null);
                if (survey.OptionType == QuestionType.Text)
                {
                   int surveyOptionID = 0;
@@ -401,12 +408,12 @@ namespace DNN.Modules.Survey
                         Answers = answers;
                      //}
                      int correctAnswers = Answers.Where(a => a.IsCorrect).Count();
-                     if ((SurveyType == SurveyType.Quiz) && (correctAnswers == 0))
+                     if ((SurveyType == SurveyType.Quiz) && (!(IsStatisticalCheckBox.Checked)) && (correctAnswers == 0))
                      {
                         ErrorMessagePanel.Visible = true;
                         ErrorMessageLabel.Text = Localization.GetString("NoCorrectAnswersProvided.Text", LocalResourceFile);
                      }
-                     if ((SurveyType == SurveyType.Quiz) && (survey.OptionType == QuestionType.RadioButtons) && (correctAnswers > 1))
+                     if ((SurveyType == SurveyType.Quiz) && (!(IsStatisticalCheckBox.Checked)) && (survey.OptionType == QuestionType.RadioButtons) && (correctAnswers > 1))
                      {
                         ErrorMessagePanel.Visible = true;
                         ErrorMessageLabel.Text = Localization.GetString("OnlyOneCorrectAnswerAllowed.Text", LocalResourceFile);
@@ -538,6 +545,12 @@ namespace DNN.Modules.Survey
                ChartTypeDropDownList.SelectedValue = Convert.ToInt32(ChartType.Bar).ToString();
                ChartTypeChanged = false;
             }
+            if (SurveyType == SurveyType.Quiz)
+            {
+               IsStatisticalCheckBox.Visible = true;
+               IsStatisticalCheckBox.Enabled = true;
+               CorrectAnswerPanel.Visible = true;
+            }
          }
          else
          {
@@ -549,6 +562,13 @@ namespace DNN.Modules.Survey
                ChartTypeDropDownList.SelectedValue = Convert.ToInt32(ChartType.HorizontalBar).ToString();
                ChartTypeChanged = false;
             }
+            if (SurveyType == SurveyType.Quiz)
+            {
+               IsStatisticalCheckBox.Visible = true;
+               IsStatisticalCheckBox.Checked = true;
+               IsStatisticalCheckBox.Enabled = false;
+               CorrectAnswerPanel.Visible = false;
+            }
          }
       }
 
@@ -558,5 +578,11 @@ namespace DNN.Modules.Survey
          ChartTypeChanged = true;
       }
       #endregion
+
+      protected void IsStatisticalCheckBox_CheckedChanged(object sender, EventArgs e)
+      {
+         CheckBox isStatisticalCheckBox = (CheckBox)sender;
+         CorrectAnswerPanel.Visible = (!((isStatisticalCheckBox.Checked) || ((QuestionType)Convert.ToInt32(QuestionTypeDropDownList.SelectedValue) == QuestionType.Text)));
+      }
    }
 }

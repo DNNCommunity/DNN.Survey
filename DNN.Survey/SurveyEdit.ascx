@@ -34,6 +34,17 @@
             AutoPostBack="true"
             OnSelectedIndexChanged="QuestionTypeDropDownList_SelectedIndexChanged" />
       </div>
+      <asp:Panel ID="IsStatisticalPanel" runat="server"
+         CssClass="dnnFormItem"
+         Visible="false">
+         <dnn:Label ID="IsStatisticalLabel" runat="server"
+            ControlName="IsStatisticalCheckBox"
+            ResourceKey="IsStatistical"
+            Suffix="?" />
+         <asp:CheckBox ID="IsStatisticalCheckBox" runat="server"
+            AutoPostBack="true"
+            OnCheckedChanged="IsStatisticalCheckBox_CheckedChanged" />
+      </asp:Panel>
       <div class="dnnFormItem">
          <dnn:Label ID="ChartTypeLabel" runat="server"
             ControlName="ChartTypeDropDownList"

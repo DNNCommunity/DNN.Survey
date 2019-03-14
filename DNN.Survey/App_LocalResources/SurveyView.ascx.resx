@@ -168,6 +168,9 @@
   <data name="RadioButtonRequired.ErrorMessage" xml:space="preserve">
     <value>Please select an answer to the question "{0}".</value>
   </data>
+  <data name="StatisticalAnswers.Text" xml:space="preserve">
+    <value>Your answers to statistical questions</value>
+  </data>
   <data name="SubmitSurvey.Action" xml:space="preserve">
     <value>Submit survey</value>
   </data>

@@ -162,6 +162,12 @@
   <data name="IsCorrect.Header" xml:space="preserve">
     <value>Correct answer?</value>
   </data>
+  <data name="IsStatistical.Help" xml:space="preserve">
+    <value>Statistical questions can occur in a quiz, but do not have a correct answer (e.g. age group, gender etc.)</value>
+  </data>
+  <data name="IsStatistical.Text" xml:space="preserve">
+    <value>Statistical question</value>
+  </data>
   <data name="NoAnswersProvided.Text" xml:space="preserve">
     <value>You can't add a single- or multiple-choice questions and don't provide an answer.</value>
   </data>
