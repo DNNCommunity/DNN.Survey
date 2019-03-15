@@ -15,7 +15,9 @@ using DotNetNuke.Services.Localization;
 using DotNetNuke.UI.WebControls;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Threading;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -43,6 +45,8 @@ namespace DNN.Modules.Survey
       private SurveysController _surveysController = null;
       private SurveyOptionsController _surveyOptionsController = null;
       private SurveyResultsController _surveyResultsController = null;
+      private SurveyBusinessController _surveyBusinessController = null;
+
       private string _cookie;
 
       protected ModulePermissionCollection ModulePermissionCollection
@@ -82,6 +86,16 @@ namespace DNN.Modules.Survey
             if (_surveyResultsController == null)
                _surveyResultsController = new SurveyResultsController();
             return _surveyResultsController;
+         }
+      }
+
+      protected SurveyBusinessController SurveyBusinessController
+      {
+         get
+         {
+            if (_surveyBusinessController == null)
+               _surveyBusinessController = new SurveyBusinessController();
+            return _surveyBusinessController;
          }
       }
 
@@ -126,7 +140,16 @@ namespace DNN.Modules.Survey
          }
       }
 
+      protected bool HasEditPermission
+      {
+         get
+         {
+            return ModulePermissionController.HasModulePermission(ModulePermissionCollection, ModuleSecurity.EDIT_PERMISSION);
+         }
+      }
+
       protected int DeleteResultsActionID { get; set; }
+      protected int Export2CsvActionID { get; set; }
 
       protected bool AuthorizedUsersOnly
       {
@@ -226,6 +249,8 @@ namespace DNN.Modules.Survey
             }
             DeleteResultsActionID = GetNextActionID();
             actions.Add(DeleteResultsActionID, Localization.GetString("DeleteResults.Action", LocalResourceFile), "DeleteResults", "Delete", IconController.IconURL("Delete"), string.Empty, true, SecurityAccessLevel.Edit, true, false);
+            //Export2CsvActionID = GetNextActionID();
+            //actions.Add(Export2CsvActionID, Localization.GetString("ExportToCsv.Action", LocalResourceFile), "ExportToCsv");
             return actions;
          }
       }
@@ -302,6 +327,10 @@ namespace DNN.Modules.Survey
             else
                ViewResultsButton.Visible = false;
 
+            if ((!(IsEditable)) && (HasEditPermission))
+            {
+               ExportToCsvButton.Visible = true;
+            }
             base.OnLoad(e);
          }
          catch (Exception ex)
@@ -636,5 +665,20 @@ namespace DNN.Modules.Survey
          }
       }
       #endregion
+
+      protected void ExportToCsvButton_Click(object sender, EventArgs e)
+      {
+         string csv = SurveyBusinessController.CSVExport(ModuleId, Localization.SharedResourceFile);
+         Response.Clear();
+         Response.Charset = string.Empty;
+         Response.AddHeader("content-disposition", string.Format("attachment; filename=Survey_Results_{0}_{1:yyyy-MM-dd-hhmmss}.csv", ModuleId, DateTime.Now));
+         Response.ContentType = "application/octet-stream";
+         Response.Cache.SetCacheability(HttpCacheability.NoCache);
+         StringWriter stringWriter = new StringWriter();
+         HtmlTextWriter htmlTextWriter = new HtmlTextWriter(stringWriter);
+         stringWriter.Write(csv);
+         Response.Write(stringWriter.ToString());
+         Response.End();
+      }
    }
 }

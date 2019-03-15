@@ -64,5 +64,7 @@ namespace DNN.Modules.Survey.Components
       public const string PERMISSION_CODE = "DNN_SURVEY";
       public const string PARTICIPATE_PERMISSION = "PARTICIPATE_PERMISSION";
       public const string VIEW_RESULTS_PERMISSION = "VIEW_RESULTS_PERMISSION";
+      public const string EDIT_PERMISSION = "EDIT";
    }
+
 }

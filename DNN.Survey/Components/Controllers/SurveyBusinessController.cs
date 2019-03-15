@@ -3,11 +3,13 @@ using DNN.Modules.Survey.Components.Providers;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
+using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Search.Entities;
 using DotNetNuke.Services.Search.Internals;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -20,6 +22,7 @@ namespace DNN.Modules.Survey.Components.Controllers
       #region Private Properties
       private SurveysController _surveysController = null;
       private SurveyOptionsController _surveyOptionsController = null;
+      private SurveysExportController _surveysExportController = null;
 
       protected SurveysController SurveysController
       {
@@ -38,6 +41,16 @@ namespace DNN.Modules.Survey.Components.Controllers
             if (_surveyOptionsController == null)
                _surveyOptionsController = new SurveyOptionsController();
             return _surveyOptionsController;
+         }
+      }
+
+      protected SurveysExportController SurveysExportController
+      {
+         get
+         {
+            if (_surveysExportController == null)
+               _surveysExportController = new SurveysExportController();
+            return _surveysExportController;
          }
       }
       #endregion
@@ -165,6 +178,30 @@ namespace DNN.Modules.Survey.Components.Controllers
                SurveysController.AddOrChange(survey, survey.SurveyOptionsXml, userID);
             }
          }
+      }
+
+      public string CSVExport(int moduleID, string resourceFile)
+      {
+         StringBuilder csvBuilder = new StringBuilder();
+         csvBuilder.Append("SurveyID; Question; Question Type; Statistical; Answer; Votes; Correct Answer; UserID; IP Address; GUID; Date\r\n");
+
+         List<SurveysExportInfo> surveys = SurveysExportController.GetAll(moduleID);
+         foreach (SurveysExportInfo survey in surveys)
+         {
+            csvBuilder.Append(string.Format("{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10:yyyy-MM-dd hh:mm:ss}\r\n",
+               survey.SurveyID,
+               survey.Question,
+               Localization.GetString(string.Format("QuestionType.{0}.Text", Enum.GetName(typeof(QuestionType), survey.OptionType), resourceFile)),
+               survey.IsStatistical,
+               (survey.OptionType == QuestionType.Text ? survey.TextAnswer : survey.OptionName),
+               survey.Votes,
+               survey.IsCorrect,
+               survey.UserID,
+               survey.IPAddress,
+               survey.ResultUserID,
+               survey.CreatedDate));
+         }
+         return csvBuilder.ToString();
       }
       #endregion
    }

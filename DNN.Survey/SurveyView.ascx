@@ -39,5 +39,12 @@
             OnClick="ViewResultsButton_Click"
             ResourceKey="ViewResults.Action" />
       </li>
+      <li>
+         <asp:LinkButton ID="ExportToCsvButton" runat="server"
+            CssClass="dnnSecondaryAction"
+            OnClick="ExportToCsvButton_Click"
+            ResourceKey="ExportToCsv.Action"
+            Visible="false" />
+      </li>
    </ul>
 </div>

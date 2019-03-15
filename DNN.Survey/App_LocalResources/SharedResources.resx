@@ -120,6 +120,9 @@
   <data name="DragDrop.Text" xml:space="preserve">
     <value>Drag&amp;Drop the rows to reorder.</value>
   </data>
+  <data name="Participate.Permission" xml:space="preserve">
+    <value>Participate</value>
+  </data>
   <data name="QuestionType.CheckBoxes.Text" xml:space="preserve">
     <value>Multiple choice (Checkboxes)</value>
   </data>
@@ -131,5 +134,8 @@
   </data>
   <data name="SurveyClosed.Text" xml:space="preserve">
     <value>The survey has been closed on {0:d} at {0:t}.</value>
+  </data>
+  <data name="ViewResults.Permission" xml:space="preserve">
+    <value>View results</value>
   </data>
 </root>

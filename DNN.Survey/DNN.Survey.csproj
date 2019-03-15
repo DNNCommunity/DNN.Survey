@@ -66,10 +66,12 @@
     <Compile Include="Components\Controllers\SurveyOptionsController.cs" />
     <Compile Include="Components\Controllers\SurveyResultsController.cs" />
     <Compile Include="Components\Controllers\SurveysController.cs" />
+    <Compile Include="Components\Controllers\SurveysExportController.cs" />
     <Compile Include="Components\DummyData.cs" />
     <Compile Include="Components\Entities\SurveyOptionsInfo.cs" />
     <Compile Include="Components\Entities\SurveyResultInfo.cs" />
     <Compile Include="Components\Entities\SurveyResultsInfo.cs" />
+    <Compile Include="Components\Entities\SurveysExportInfo.cs" />
     <Compile Include="Components\Entities\SurveysInfo.cs" />
     <Compile Include="Components\Providers\XmlDataProvider.cs" />
     <Compile Include="Components\UI\Helpers.cs" />

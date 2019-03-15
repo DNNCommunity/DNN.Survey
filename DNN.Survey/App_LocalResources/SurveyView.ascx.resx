@@ -147,6 +147,9 @@
   <data name="DeleteResults.Action" xml:space="preserve">
     <value>Delete results</value>
   </data>
+  <data name="ExportToCsv.Action" xml:space="preserve">
+    <value>Export survey results to CSV</value>
+  </data>
   <data name="HasVoted.Text" xml:space="preserve">
     <value>Thank you for your participation.</value>
   </data>
