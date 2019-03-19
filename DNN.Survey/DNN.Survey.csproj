@@ -50,10 +50,14 @@
     <Content Include="Controls\SurveyRadioButtons.ascx" />
     <Content Include="Controls\SurveyText.ascx" />
     <Content Include="css\Settings.css" />
+    <Content Include="Documentation\License.html" />
+    <Content Include="Documentation\ReleaseNotes.html" />
     <Content Include="images\correct.png" />
+    <Content Include="images\icon_survey_32px.png" />
     <Content Include="images\info.png" />
     <Content Include="images\not-correct.png" />
     <Content Include="Module.css" />
+    <Content Include="Providers\DataProviders\SqlDataProvider\04.60.00.SqlDataProvider" />
     <Content Include="Settings.ascx" />
     <Content Include="SurveyEdit.ascx" />
     <Content Include="SurveyResults.ascx" />
@@ -188,6 +192,24 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Components\UI\WebControls\Validators\Validators.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DNN_Survey.dnn">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Providers\DataProviders\SqlDataProvider\03.01.00.SqlDataProvider" />
+    <Content Include="Providers\DataProviders\SqlDataProvider\03.03.00.SqlDataProvider" />
+    <Content Include="Providers\DataProviders\SqlDataProvider\04.00.20.SqlDataProvider" />
+    <Content Include="Providers\DataProviders\SqlDataProvider\04.00.60.SqlDataProvider" />
+    <Content Include="Providers\DataProviders\SqlDataProvider\04.00.70.SqlDataProvider" />
+    <Content Include="Providers\DataProviders\SqlDataProvider\04.00.85.SqlDataProvider" />
+    <Content Include="Providers\DataProviders\SqlDataProvider\04.01.00.SqlDataProvider" />
+    <Content Include="Providers\DataProviders\SqlDataProvider\04.50.00.SqlDataProvider" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Providers\DataProviders\SqlDataProvider\04.70.00.SqlDataProvider" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

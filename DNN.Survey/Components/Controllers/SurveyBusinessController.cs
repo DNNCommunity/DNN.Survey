@@ -3,6 +3,10 @@ using DNN.Modules.Survey.Components.Providers;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
+using DotNetNuke.Entities.Modules.Definitions;
+using DotNetNuke.Entities.Portals;
+using DotNetNuke.Entities.Tabs;
+using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Search.Entities;
 using DotNetNuke.Services.Search.Internals;
@@ -23,6 +27,7 @@ namespace DNN.Modules.Survey.Components.Controllers
       private SurveysController _surveysController = null;
       private SurveyOptionsController _surveyOptionsController = null;
       private SurveysExportController _surveysExportController = null;
+      private PermissionController _permissionController = null;
 
       protected SurveysController SurveysController
       {
@@ -51,6 +56,16 @@ namespace DNN.Modules.Survey.Components.Controllers
             if (_surveysExportController == null)
                _surveysExportController = new SurveysExportController();
             return _surveysExportController;
+         }
+      }
+
+      protected PermissionController PermissionController
+      {
+         get
+         {
+            if (_permissionController == null)
+               _permissionController = new PermissionController();
+            return _permissionController;
          }
       }
       #endregion
@@ -106,6 +121,76 @@ namespace DNN.Modules.Survey.Components.Controllers
       #region IUpgradeable
       public string UpgradeModule(string version)
       {
+         string[] _version = version.Split(new char[] { '.' });
+         int major = Convert.ToInt32(_version[0]);
+         int minor = Convert.ToInt32(_version[1]);
+         int maintenance = Convert.ToInt32(_version[2]);
+
+         if (major == 9)
+         {
+            if (minor == 0)
+            {
+               if (maintenance == 0)
+               {
+                  DesktopModuleInfo desktopModule = DesktopModuleController.GetDesktopModuleByFriendlyName("Survey");
+                  ArrayList modulesList = ModuleController.Instance.GetModulesByDesktopModuleId(desktopModule.DesktopModuleID);
+                  foreach (object m in modulesList)
+                  {
+                     ModuleInfo module = (ModuleInfo)m;
+                     // Setting surveyresultstype: 0 = Public, 1 = Private
+                     // goes to Permission
+                     string surveyResultsTypeSetting = module.ModuleSettings["surveyresultstype"].ToString();
+                     if (string.IsNullOrEmpty(surveyResultsTypeSetting))
+                     {
+                        // if not defined: make it private to be safe...
+                        surveyResultsTypeSetting = "1";
+                     }
+                     if (surveyResultsTypeSetting == "0")
+                     {
+                        ModulePermissionCollection modulePermissions = module.ModulePermissions;
+                        IEnumerable<ModulePermissionInfo> viewResultsPermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.RoleID == -1);
+                        if (viewResultsPermissions.Count() == 0)
+                        {
+                           ModulePermissionInfo viewResultPermission = new ModulePermissionInfo();
+                           viewResultPermission.AllowAccess = true;
+                           viewResultPermission.RoleID = -1;
+                           viewResultPermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.VIEW_RESULTS_PERMISSION)[0]).PermissionID;
+                           viewResultPermission.ModuleID = module.ModuleID;
+                           modulePermissions.Add(viewResultPermission);
+                           ModulePermissionController.SaveModulePermissions(module);
+                        }
+                     }
+                     // Setting surveytracking: 0 = Cookie, 1 = Registered user
+                     // goes to Permission
+                     string surveyTrackingSetting = module.ModuleSettings["surveytracking"].ToString();
+                     if (string.IsNullOrEmpty(surveyTrackingSetting))
+                     {
+                        // if not defined: make it per user
+                        surveyTrackingSetting = "1";
+                     }
+                     if (surveyTrackingSetting == "0")
+                     {
+                        ModulePermissionCollection modulePermissions = module.ModulePermissions;
+                        IEnumerable<ModulePermissionInfo> participatePermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.PARTICIPATE_PERMISSION && mp.RoleID == -1);
+                        if (participatePermissions.Count() == 0)
+                        {
+                           ModulePermissionInfo participatePermission = new ModulePermissionInfo();
+                           participatePermission.AllowAccess = true;
+                           participatePermission.RoleID = -1;
+                           participatePermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.PARTICIPATE_PERMISSION)[0]).PermissionID;
+                           participatePermission.ModuleID = module.ModuleID;
+                           modulePermissions.Add(participatePermission);
+                           ModulePermissionController.SaveModulePermissions(module);
+                        }
+                     }
+                     // Remove unused old settings
+                     ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresultstype");
+                     ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveytracking");
+                     ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresulttemplate");
+                  }
+               }
+            }
+         }
          return string.Format("Upgrading to version {0}.", version);
       }
       #endregion

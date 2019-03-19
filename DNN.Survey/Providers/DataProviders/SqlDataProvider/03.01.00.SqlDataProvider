@@ -1,0 +1,305 @@
+﻿/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}GetSurveys') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}GetSurveys
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}GetSurvey') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}GetSurvey
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}AddSurvey') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}AddSurvey
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}UpdateSurvey') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}UpdateSurvey
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}DeleteSurvey') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}DeleteSurvey
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}GetSurveyOptions') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}GetSurveyOptions
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}AddSurveyOption') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}AddSurveyOption
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}UpdateSurveyOption') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}UpdateSurveyOption
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}DeleteSurveyOption') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}DeleteSurveyOption
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}AddSurveyResult') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}AddSurveyResult
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}SurveyOptions') and OBJECTPROPERTY(id, N'IsTable') = 1)
+CREATE TABLE {databaseOwner}{objectQualifier}SurveyOptions (
+	[SurveyOptionID] [int] IDENTITY (1, 1) NOT NULL ,
+	[SurveyID] [int] NOT NULL ,
+	[ViewOrder] [int] NOT NULL ,
+	[OptionName] [nvarchar] (500) NOT NULL ,
+	[Votes] [int] NOT NULL 
+) ON [PRIMARY]
+
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}Surveys') and OBJECTPROPERTY(id, N'IsTable') = 1)
+CREATE TABLE {databaseOwner}{objectQualifier}Surveys (
+	[SurveyID] [int] IDENTITY (1, 1) NOT NULL ,
+	[ModuleID] [int] NOT NULL ,
+	[Question] [nvarchar] (500) NOT NULL ,
+	[ViewOrder] [int] NULL ,
+	[OptionType] [char] (1) NOT NULL ,
+	[CreatedByUser] [nvarchar] (100) NOT NULL ,
+	[CreatedDate] [datetime] NOT NULL 
+) ON [PRIMARY]
+GO
+
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PK_{objectQualifier}Surveys') and OBJECTPROPERTY(id, N'IsPrimaryKey') = 1)
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys ADD CONSTRAINT
+	PK_{objectQualifier}Surveys PRIMARY KEY CLUSTERED 
+	(
+	SurveyID
+	) ON [PRIMARY]
+
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'PK_{objectQualifier}SurveyOptions') and OBJECTPROPERTY(id, N'IsPrimaryKey') = 1)
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions ADD CONSTRAINT
+	PK_{objectQualifier}SurveyOptions PRIMARY KEY CLUSTERED 
+	(
+	SurveyOptionID
+	) ON [PRIMARY]
+
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys') and OBJECTPROPERTY(id, N'IsForeignKey') = 1)
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions ADD CONSTRAINT
+	FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys FOREIGN KEY
+	(
+	SurveyID
+	) REFERENCES {databaseOwner}{objectQualifier}Surveys
+	(
+	SurveyID
+	) ON DELETE CASCADE
+	 NOT FOR REPLICATION
+
+GO
+
+if not exists (select * from dbo.sysobjects where id = object_id(N'FK_{objectQualifier}Surveys_{objectQualifier}Modules') and OBJECTPROPERTY(id, N'IsForeignKey') = 1)
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys ADD CONSTRAINT
+	FK_{objectQualifier}Surveys_{objectQualifier}Modules FOREIGN KEY
+	(
+	ModuleID
+	) REFERENCES {databaseOwner}{objectQualifier}Modules
+	(
+	ModuleID
+	) ON DELETE CASCADE
+	 NOT FOR REPLICATION
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}GetSurveys
+
+@ModuleID int
+
+as
+
+select SurveyID,
+       Question,
+       ViewOrder,
+       OptionType,
+       CreatedByUser,
+       CreatedDate
+from   {objectQualifier}Surveys
+where  ModuleID = @ModuleID
+order by ViewOrder
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}GetSurvey
+
+@SurveyID int,
+@ModuleID int
+
+as
+
+select SurveyID,
+       ModuleID,
+       Question,
+       ViewOrder,
+       OptionType,
+       'CreatedByUser' = {objectQualifier}Users.FirstName + ' ' + {objectQualifier}Users.LastName,
+       CreatedDate,
+       'Votes' = ( select sum(Votes) from {objectQualifier}SurveyOptions where {objectQualifier}SurveyOptions.SurveyID = {objectQualifier}Surveys.SurveyID )
+from   {objectQualifier}Surveys
+left outer join {objectQualifier}Users on {objectQualifier}Surveys.CreatedByUser = {objectQualifier}Users.UserID
+where  SurveyID = @SurveyID
+and    ModuleID = @ModuleID
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}AddSurvey
+
+@ModuleID      int,
+@Question      nvarchar(500),
+@ViewOrder     int,
+@OptionType    char(1),
+@UserName      nvarchar(100)
+
+as
+
+insert into {objectQualifier}Surveys ( 
+  ModuleID,
+  Question,
+  ViewOrder,
+  OptionType,
+  CreatedByUser,
+  CreatedDate
+)
+values (
+  @ModuleID,
+  @Question,
+  @ViewOrder,
+  @OptionType,
+  @userName,
+  getdate()
+)
+
+select SCOPE_IDENTITY()
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}UpdateSurvey
+
+@SurveyID       int,
+@Question       nvarchar(500),
+@ViewOrder      int,
+@OptionType     char(1),
+@UserName       nvarchar(100)
+
+as
+
+update {objectQualifier}Surveys
+set    Question = @Question,
+       ViewOrder = @ViewOrder,
+       OptionType = @OptionType,
+       CreatedByUser = @UserName,
+       CreatedDate = getdate()
+where  SurveyID = @SurveyID
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}DeleteSurvey
+
+@SurveyID  int
+
+as
+
+delete 
+from   {objectQualifier}Surveys
+where  SurveyID = @SurveyID
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}GetSurveyOptions
+
+@SurveyID int
+
+as
+
+select SurveyOptionID,
+       ViewOrder,
+       OptionName,
+       Votes
+from   {objectQualifier}SurveyOptions
+where  SurveyID = @SurveyID
+order by ViewOrder
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}AddSurveyOption
+
+@SurveyID    int,
+@OptionName  nvarchar(500),
+@ViewOrder   int
+
+as
+
+insert into {objectQualifier}SurveyOptions ( 
+  SurveyID,
+  OptionName,
+  ViewOrder,
+  Votes
+)
+values (
+  @SurveyID,
+  @OptionName,
+  @ViewOrder,
+  0
+)
+
+select SCOPE_IDENTITY()
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}UpdateSurveyOption
+
+@SurveyOptionID int,
+@OptionName     nvarchar(500),
+@ViewOrder      int
+
+as
+
+update {objectQualifier}SurveyOptions
+set    OptionName = @OptionName,
+       ViewOrder = @ViewOrder
+where  SurveyOptionID = @SurveyOptionID
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}DeleteSurveyOption
+
+@SurveyOptionID int 
+
+as
+
+delete 
+from   {objectQualifier}SurveyOptions
+where  SurveyOptionID = @SurveyOptionID
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}AddSurveyResult
+
+@SurveyOptionID  int
+
+as
+
+update {objectQualifier}SurveyOptions
+set    Votes = Votes + 1
+where  SurveyOptionID = @SurveyOptionID
+
+GO
+ 
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/

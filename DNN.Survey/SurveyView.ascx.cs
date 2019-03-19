@@ -7,6 +7,7 @@ using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Icons;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Modules.Actions;
+using DotNetNuke.Framework;
 using DotNetNuke.Framework.JavaScriptLibraries;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
@@ -249,8 +250,9 @@ namespace DNN.Modules.Survey
             }
             DeleteResultsActionID = GetNextActionID();
             actions.Add(DeleteResultsActionID, Localization.GetString("DeleteResults.Action", LocalResourceFile), "DeleteResults", "Delete", IconController.IconURL("Delete"), string.Empty, true, SecurityAccessLevel.Edit, true, false);
+            //How can I make this a postback control?
             //Export2CsvActionID = GetNextActionID();
-            //actions.Add(Export2CsvActionID, Localization.GetString("ExportToCsv.Action", LocalResourceFile), "ExportToCsv");
+            //actions.Add(Export2CsvActionID, Localization.GetString("ExportToCsv.Action", LocalResourceFile), "ExportToCsv", string.Empty, IconController.IconURL("ExtXls"), string.Empty, true, SecurityAccessLevel.Edit, true, false);
             return actions;
          }
       }
@@ -262,6 +264,7 @@ namespace DNN.Modules.Survey
          JavaScript.RequestRegistration(CommonJs.DnnPlugins);
          _cookie = string.Format("_Module_{0}_Survey_{1}_", ModuleId, ResultsVersion);
          AddActionHandler(SurveyActions_Click);
+         AJAX.RegisterPostBackControl(ExportToCsvButton);
          base.OnInit(e);
       }
 
@@ -327,7 +330,7 @@ namespace DNN.Modules.Survey
             else
                ViewResultsButton.Visible = false;
 
-            if ((!(IsEditable)) && (HasEditPermission))
+            if (HasEditPermission)
             {
                ExportToCsvButton.Visible = true;
             }
@@ -478,6 +481,21 @@ namespace DNN.Modules.Survey
       {
          // if someone activates this checkbox send him home :-)
          Response.Redirect("http://localhost/", true);
+      }
+      protected void ExportToCsvButton_Click(object sender, EventArgs e)
+
+      {
+         string csv = SurveyBusinessController.CSVExport(ModuleId, Localization.SharedResourceFile);
+         Response.Clear();
+         Response.Charset = string.Empty;
+         Response.AddHeader("content-disposition", string.Format("attachment; filename=Survey_Results_{0}_{1:yyyy-MM-dd-hhmmss}.csv", ModuleId, DateTime.Now));
+         Response.ContentType = "application/octet-stream";
+         Response.Cache.SetCacheability(HttpCacheability.NoCache);
+         StringWriter stringWriter = new StringWriter();
+         HtmlTextWriter htmlTextWriter = new HtmlTextWriter(stringWriter);
+         stringWriter.Write(csv);
+         Response.Write(stringWriter.ToString());
+         Response.End();
       }
       #endregion
 
@@ -660,25 +678,30 @@ namespace DNN.Modules.Survey
                   ModuleController.Instance.UpdateModuleSetting(ModuleId, "ResultsVersion", (ResultsVersion + 1).ToString());
                }
                break;
+            case "ExportToCsv":
+               try
+               {
+                  string csv = SurveyBusinessController.CSVExport(ModuleId, Localization.SharedResourceFile);
+                  Response.Clear();
+                  Response.Charset = string.Empty;
+                  Response.AddHeader("content-disposition", string.Format("attachment; filename=Survey_Results_{0}_{1:yyyy-MM-dd-hhmmss}.csv", ModuleId, DateTime.Now));
+                  Response.ContentType = "application/octet-stream";
+                  Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                  StringWriter stringWriter = new StringWriter();
+                  HtmlTextWriter htmlTextWriter = new HtmlTextWriter(stringWriter);
+                  stringWriter.Write(csv);
+                  Response.Write(stringWriter.ToString());
+                  Response.End();
+               }
+               catch (Exception ex)
+               {
+                  Exceptions.ProcessModuleLoadException(this, ex);
+               }
+               break;
             default:
                break;
          }
       }
       #endregion
-
-      protected void ExportToCsvButton_Click(object sender, EventArgs e)
-      {
-         string csv = SurveyBusinessController.CSVExport(ModuleId, Localization.SharedResourceFile);
-         Response.Clear();
-         Response.Charset = string.Empty;
-         Response.AddHeader("content-disposition", string.Format("attachment; filename=Survey_Results_{0}_{1:yyyy-MM-dd-hhmmss}.csv", ModuleId, DateTime.Now));
-         Response.ContentType = "application/octet-stream";
-         Response.Cache.SetCacheability(HttpCacheability.NoCache);
-         StringWriter stringWriter = new StringWriter();
-         HtmlTextWriter htmlTextWriter = new HtmlTextWriter(stringWriter);
-         stringWriter.Write(csv);
-         Response.Write(stringWriter.ToString());
-         Response.End();
-      }
    }
 }
