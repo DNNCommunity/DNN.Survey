@@ -5,3 +5,4 @@ The DNN Survey module allows you to create surveys and quizes on you DNN (former
 ## System requirements
 * [DNN Platform version 09.02.02 or higher](https://github.com/dnnsoftware/Dnn.Platform/releases/tag/v9.2.2)
 * [DNN JavaScript Library for Chart.js v2.7.3](https://github.com/EngageSoftware/DNN-JavaScript-Libraries/releases/tag/chart.js_2.7.3)
+* SQL Server 2016 (any edition, also Express)
