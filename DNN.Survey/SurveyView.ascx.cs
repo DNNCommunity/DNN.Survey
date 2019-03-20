@@ -264,6 +264,7 @@ namespace DNN.Modules.Survey
          JavaScript.RequestRegistration(CommonJs.DnnPlugins);
          _cookie = string.Format("_Module_{0}_Survey_{1}_", ModuleId, ResultsVersion);
          AddActionHandler(SurveyActions_Click);
+         AJAX.RegisterPostBackControl(SubmitSurveyButton);
          AJAX.RegisterPostBackControl(ExportToCsvButton);
          base.OnInit(e);
       }
@@ -589,8 +590,8 @@ namespace DNN.Modules.Survey
       private void DisplayQuizResults(List<SurveysInfo> surveys, List<SurveyResultsInfo> surveyResults)
       {
          int score = 0;
-         List<SurveysInfo> quizQuestions = surveys.FindAll(s => (!(s.IsStatistical.Value)));
-         List<SurveysInfo> statisticalQuestions = surveys.FindAll(s => s.IsStatistical.Value);
+         List<SurveysInfo> quizQuestions = surveys.FindAll(s => ((!(s.IsStatistical.HasValue))) || (!(s.IsStatistical.Value)));
+         List<SurveysInfo> statisticalQuestions = surveys.FindAll(s => ((s.IsStatistical.HasValue) && (s.IsStatistical.Value)));
 
          foreach (SurveysInfo survey in quizQuestions)
          {

@@ -959,55 +959,6 @@ AS
       LEFT JOIN {databaseOwner}{objectQualifier}SurveyResults sr ON sr.SurveyOptionID = so.SurveyOptionID
 GO
 
-/*
-This script adds the module setting SurveyType when the type is a quiz
-Outer Cursor (cModuleIDs):
-- If at least one answer of all the answers in a module has the IsCorrect bit set, the survey type is a quiz.
-Inner Cursor (cSurveyIDs):
-- If no answer to a question in a quiz has the IsCorrect bit set, the question is statistical
-
--->> MAYBE THIS SHOULD BE MOVED TO THE IUPGRADEABLE INTERFACE <<--
-*/
-DECLARE @ModuleId int
-DECLARE @IsQuiz int
-DECLARE @SurveyID int
-DECLARE @CorrectAnswers int
-
-DECLARE cModuleIDs CURSOR FOR
-SELECT DISTINCT ModuleID FROM {databaseOwner}{objectQualifier}Surveys
-
-OPEN cModuleIDs
-FETCH NEXT FROM cModuleIDs INTO @ModuleId
-WHILE @@FETCH_STATUS = 0
-BEGIN
-   SELECT @IsQuiz = COUNT(*) FROM {databaseOwner}{objectQualifier}Surveys s INNER JOIN {databaseOwner}{objectQualifier}SurveyOptions so ON so.SurveyID = s.SurveyID WHERE s.ModuleID = @ModuleId AND so.IsCorrect = 1
-   IF @IsQuiz > 0
-   BEGIN
-      INSERT INTO {databaseOwner}{objectQualifier}ModuleSettings (ModuleID, SettingName, SettingValue, CreatedByUserID, CreatedOnDate, LastModifiedByUserID, LastModifiedOnDate)
-      VALUES (@ModuleId, 'SurveyType', '1', -1, GETDATE(), -1, GETDATE())
-
-      DECLARE cSurveyIDs CURSOR FOR
-      SELECT SurveyID FROM {databaseOwner}{objectQualifier}Survey WHERE ModuleID = @ModuleID
-      OPEN cSurveyIDs
-      FETCH NEXT FROM cSurveyIDs INTO @SurveyID
-      WHILE @@FETCH_STATUS = 0
-      BEGIN
-         SELECT @CorrectAnswers = COUNT(*) FROM {databaseOwner}{objectQualifier}SurveyOptions WHERE SurveyID = @SurveyID AND IsCorrect = 1
-         IF (@CorrectAnswers = 0)
-         BEGIN
-            UPDATE {databaseOwner}{objectQualifier}Surveys SET IsStatistical = 1 WHERE SurveyID = @SurveyID
-         END
-         FETCH NEXT FROM cSurveyIDs INTO @SurveyID
-      END
-      CLOSE cSurveyIDs
-      DEALLOCATE cSurveyIDs
-   END
-   FETCH NEXT FROM cModuleIDs INTO @ModuleId
-END
-CLOSE cModuleIDs
-DEALLOCATE cModuleIDs
-GO
-
 /************************************************************/
 /*****              SqlDataProvider                     *****/
 /************************************************************/

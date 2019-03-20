@@ -183,6 +183,32 @@ namespace DNN.Modules.Survey.Components.Controllers
                            ModulePermissionController.SaveModulePermissions(module);
                         }
                      }
+                     // Is Module a quiz?
+                     List<SurveysInfo> surveys = SurveysController.GetAll(module.ModuleID);
+                     bool isQuiz = false;
+                     List<SurveysInfo> statisticalSurveys = new List<SurveysInfo>();
+                     foreach(SurveysInfo survey in surveys)
+                     {
+                        List<SurveyOptionsInfo> surveyOptions = SurveyOptionsController.GetAll(survey.SurveyID);
+                        int countCorrect = surveyOptions.Where(so => so.IsCorrect).Count();
+                        if (countCorrect > 0)
+                        {
+                           isQuiz = true;
+                        }
+                        else
+                        {
+                           statisticalSurveys.Add(survey);
+                        }
+                     }
+                     if (isQuiz)
+                     {
+                        ModuleController.Instance.UpdateModuleSetting(module.ModuleID, "SurveyType", ((int)SurveyType.Quiz).ToString());
+                        foreach(SurveysInfo statisticalSurvey in statisticalSurveys)
+                        {
+                           statisticalSurvey.IsStatistical = true;
+                           SurveysController.AddOrChange(statisticalSurvey, XmlDataProvider.SurveyOptionsToXml(SurveyOptionsController.GetAll(statisticalSurvey.SurveyID)), -1);
+                        }
+                     }
                      // Remove unused old settings
                      ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresultstype");
                      ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveytracking");
