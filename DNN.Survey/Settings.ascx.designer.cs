@@ -13,15 +13,6 @@ namespace DNN.Modules.Survey {
     public partial class Settings {
         
         /// <summary>
-        /// SurveyResultsTypeMovedLabel-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label SurveyResultsTypeMovedLabel;
-        
-        /// <summary>
         /// SurveyTypeLabel-Steuerelement
         /// </summary>
         /// <remarks>
@@ -94,15 +85,6 @@ namespace DNN.Modules.Survey {
         protected global::System.Web.UI.WebControls.RadioButtonList UseCaptchaRadioButtonList;
         
         /// <summary>
-        /// TabModuleSettingsMessageLabel-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label TabModuleSettingsMessageLabel;
-        
-        /// <summary>
         /// ShowClosingDateMessageLabel-Steuerelement
         /// </summary>
         /// <remarks>
@@ -119,23 +101,5 @@ namespace DNN.Modules.Survey {
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox ShowClosingDateMessageCheckBox;
-        
-        /// <summary>
-        /// SurveyGraphWidthLabel-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::DotNetNuke.UI.UserControls.LabelControl SurveyGraphWidthLabel;
-        
-        /// <summary>
-        /// SurveyGraphWidthTextBox-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox SurveyGraphWidthTextBox;
     }
 }

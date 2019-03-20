@@ -660,11 +660,11 @@
                      <name>04.60.00.SqlDataProvider</name>
                      <version>04.60.00</version>
                   </script>
-                  <script type="Install">
+                  <!-- script type="Install">
                      <path>Providers\DataProviders\SqlDataProvider</path>
                      <name>04.70.00.SqlDataProvider</name>
                      <version>04.70.00</version>
-                  </script>
+                  </script -->
                   <script type="Install">
                      <path>Providers\DataProviders\SqlDataProvider</path>
                      <name>09.00.00.SqlDataProvider</name>
@@ -689,7 +689,7 @@
                   </supportedFeatures>
                   <moduleDefinitions>
                      <moduleDefinition>
-                        <friendlyName>IFrame</friendlyName>
+                        <friendlyName>Survey</friendlyName>
                         <defaultCacheTime>0</defaultCacheTime>
                         <moduleControls>
                            <moduleControl>
@@ -770,7 +770,7 @@
                   <basePath>bin</basePath>
                   <assembly>
                      <path>bin</path>
-                     <name>DotNetNuke.Modules.Survey.dll</name>
+                     <name>DNN.Modules.Survey.dll</name>
                      <version>9.0.0.0</version>
                   </assembly>
                </assemblies>
@@ -907,10 +907,10 @@
                      <path>Providers\DataProviders\SqlDataProvider</path>
                      <name>04.60.00.SqlDataProvider</name>
                   </file>
-                  <file>
+                  <!-- file>
                      <path>Providers\DataProviders\SqlDataProvider</path>
                      <name>04.70.00.SqlDataProvider</name>
-                  </file>
+                  </file -->
                   <file>
                      <path>Providers\DataProviders\SqlDataProvider</path>
                      <name>09.00.00.SqlDataProvider</name>

@@ -1,1 +1,100 @@
-﻿
+﻿/************************************************************/
+/*****             Uninstall.SqlDataProvider            *****/
+/*****                 Version: 09.00.00                *****/
+/*****                                                  *****/
+/*****  Note: To manually execute this script you must  *****/
+/*****        perform a search and replace operation    *****/
+/*****        for {databaseOwner} and {objectQualifier} *****/
+/*****                                                  *****/
+/************************************************************/
+
+DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_Temp
+GO
+
+DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults
+GO
+
+DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}SurveyOptions_Temp
+GO
+
+DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}SurveyOptions
+GO
+
+DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}Surveys_Temp
+GO
+
+DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}Surveys
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurvey
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}Surveys_AddOrChange
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}DeleteSurvey
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}Surveys_Sort
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}Surveys_HasVoted
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}Surveys_CsvExport
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyOptions_AddOrChange
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurveyOption
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}DeleteSurveyOption
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurveyOptions
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}UpdateSurveyOption
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurveyResult
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurveyResult_cookie
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_Add
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}DeleteSurveyResultData
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurvey
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurveys
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}UpdateSurvey
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResultData_Delete
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurveyResultData
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_GetAll
+GO
+
+DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_Get
+GO
+
+DROP VIEW IF EXISTS {databaseOwner}{objectQualifier}vSurveys_CsvExport
+GO
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/

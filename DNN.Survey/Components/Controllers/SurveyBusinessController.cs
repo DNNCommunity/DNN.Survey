@@ -187,6 +187,8 @@ namespace DNN.Modules.Survey.Components.Controllers
                      ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresultstype");
                      ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveytracking");
                      ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresulttemplate");
+                     ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresulttemplate");
+                     ModuleController.Instance.DeleteTabModuleSetting(module.TabModuleID, "surveygraphwidth");
                   }
                }
             }

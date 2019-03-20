@@ -123,23 +123,11 @@
   <data name="SurveyClosingDate.Text" xml:space="preserve">
     <value>Survey Closing Date</value>
   </data>
-  <data name="SurveyGraphWidth.Help" xml:space="preserve">
-    <value>Enter the Maximum width (in pixels) for the results graph.</value>
-  </data>
-  <data name="SurveyGraphWidth.Text" xml:space="preserve">
-    <value>Maximum Bar Graph Width</value>
-  </data>
   <data name="SurveyResultTemplate.Help" xml:space="preserve">
     <value>The template that will be used to format the survey results.</value>
   </data>
   <data name="SurveyResultTemplate.Text" xml:space="preserve">
     <value>Survey Result Template</value>
-  </data>
-  <data name="TabModuleSettingsMessage.Text" xml:space="preserve">
-    <value>The following setting can differ on the same instance of the module on different pages (if you add an existing module but don't make a copy).</value>
-  </data>
-  <data name="SurveyResultsTypeMovedMessage.Text" xml:space="preserve">
-    <value>The results type setting (public/private) from former versions has been removed. Please use the Module Permissions to define who may see the results.</value>
   </data>
   <data name="ShowClosingDateMessage.Help" xml:space="preserve">
     <value>Activate this option to display a message indicationg the closing date of the survey.</value>

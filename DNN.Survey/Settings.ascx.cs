@@ -77,14 +77,12 @@ namespace DNN.Modules.Survey
             UpdateIntegerSetting("UseCaptcha", Convert.ToInt32(value));
          }
       }
-      #endregion
 
-      #region TabModule Settings
       protected bool ShowClosingDateMessage
       {
          get
          {
-            object showClosingDateMessage = TabModuleSettings["ShowClosingDateMessage"];
+            object showClosingDateMessage = ModuleSettings["ShowClosingDateMessage"];
             if (showClosingDateMessage == null)
                return false;
             else
@@ -92,26 +90,7 @@ namespace DNN.Modules.Survey
          }
          set
          {
-            UpdateBooleanSetting("ShowClosingDateMessage", value, true);
-         }
-      }
-
-      protected int SurveyGraphWidth
-      {
-         get
-         {
-            object surveyGraphWidth = TabModuleSettings["SurveyGraphWidth"];
-            if (surveyGraphWidth == null)
-               return 100;
-            else
-               return Convert.ToInt32(surveyGraphWidth);
-         }
-         set
-         {
-            if (value == 100)
-               UpdateIntegerSetting("SurveyGraphWidth", null, true);
-            else
-               UpdateIntegerSetting("SurveyGraphWidth", value, true);
+            UpdateBooleanSetting("ShowClosingDateMessage", value);
          }
       }
       #endregion
@@ -150,11 +129,6 @@ namespace DNN.Modules.Survey
          }
          UseCaptchaRadioButtonList.SelectedValue = Convert.ToInt32(UseCaptcha).ToString();
 
-         if (SurveyGraphWidth == 0)
-            SurveyGraphWidthTextBox.Text = String.Empty;
-         else
-            SurveyGraphWidthTextBox.Text = SurveyGraphWidth.ToString();
-
          base.LoadSettings();
       }
 
@@ -174,16 +148,6 @@ namespace DNN.Modules.Survey
          PrivacyConfirmation = PrivacyConfirmationCheckBox.Checked;
          ShowClosingDateMessage = ShowClosingDateMessageCheckBox.Checked;
          UseCaptcha = (UseCaptcha)Convert.ToInt32(UseCaptchaRadioButtonList.SelectedValue);
-
-         if (String.IsNullOrEmpty(SurveyGraphWidthTextBox.Text))
-            SurveyGraphWidth = 0;
-         else
-         {
-            if (Int32.TryParse(SurveyGraphWidthTextBox.Text, out Int32 result))
-               SurveyGraphWidth = result;
-            else
-               SurveyGraphWidth = 0;
-         }
 
          base.UpdateSettings();
       }
