@@ -1,4 +1,4 @@
-﻿/************************************************************/
+/************************************************************/
 /*****                  SqlDataProvider                 *****/
 /*****                 Version: 09.00.00                *****/
 /*****                                                  *****/
@@ -8,9 +8,20 @@
 /*****                                                  *****/
 /************************************************************/
 
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_Temp') AND type in (N'U'))
-DROP TABLE {databaseOwner}{objectQualifier}Surveys_Temp
+/*
+TABLES
+*/
 
+/*
+Table Surveys_Temp can only exist when something went very wrong... But let's be sure...
+*/
+DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}Surveys_Temp
+GO
+
+/*
+Create a new Surveys table - if there is one, create a Surveys_Temp table,
+copy the data from the Surveys table, delete the Surveys table and rename Surveys_Temp to Surveys.
+*/
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys') AND type in (N'U'))
 BEGIN
    CREATE TABLE {databaseOwner}{objectQualifier}Surveys_Temp(
@@ -38,7 +49,21 @@ BEGIN
       ModuleID,
       Question,
       ViewOrder,
-      CASE WHEN OptionType = 'C' THEN 0 ELSE 1 END AS OptionType,
+      /*
+      The field option type changes from a character to an integer.
+      Reason: In the program an Enum is used to be more flexible.
+      'R' (Single Selection)   => 0 (QuestionType.RadioButtons)
+      'C' (Multiple Selection) => 1 (QuestionType.CheckBoxes)
+      */
+      CASE WHEN OptionType = 'R' THEN 0 ELSE 1 END AS OptionType,
+      /*
+      ChartType is new, and does not allow NULL values. Use 0 as default.
+      Here as well, an Enum is used in the program.
+      0 = ChartType.Bar
+      1 = ChartType.HorizontalBar
+      2 = ChartType.Pie
+      3 = ChartType.Doughnut
+      */
       0 AS ChartType,
       CreatedDate,
       CreatedByUser
@@ -49,11 +74,11 @@ BEGIN
 
    SET IDENTITY_INSERT {databaseOwner}{objectQualifier}Surveys_Temp OFF
 
-   IF EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'{databaseOwner}FK_{objectQualifier}Surveys_{objectQualifier}Modules') AND parent_object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys'))
-   ALTER TABLE {databaseOwner}{objectQualifier}Surveys DROP CONSTRAINT FK_{objectQualifier}Surveys_{objectQualifier}Modules
+   ALTER TABLE {databaseOwner}{objectQualifier}Surveys
+   DROP CONSTRAINT IF EXISTS FK_{objectQualifier}Surveys_{objectQualifier}Modules
 
-   IF EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'{databaseOwner}FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys') AND parent_object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions'))
-   ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions DROP CONSTRAINT FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys
+   ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions
+   DROP CONSTRAINT IF EXISTS FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys
 
    DROP TABLE {databaseOwner}{objectQualifier}Surveys
 
@@ -92,8 +117,8 @@ CREATE NONCLUSTERED INDEX IX_{objectQualifier}Surveys_ModuleID_ViewOrder ON {dat
 GO
 
 ALTER TABLE {databaseOwner}{objectQualifier}Surveys WITH CHECK
-ADD CONSTRAINT FK_{objectQualifier}Surveys_{objectQualifier}Modules FOREIGN KEY (ModuleID)
-REFERENCES {databaseOwner}{objectQualifier}Modules (ModuleID)
+ADD CONSTRAINT FK_{objectQualifier}Surveys_{objectQualifier}Modules
+FOREIGN KEY (ModuleID) REFERENCES {databaseOwner}{objectQualifier}Modules (ModuleID)
 ON DELETE CASCADE
 GO
 
@@ -102,9 +127,16 @@ ADD CONSTRAINT DF_{objectQualifier}Surveys_CreatedDate
 DEFAULT GETDATE() FOR CreatedDate
 GO
 
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions_Temp') AND type in (N'U'))
-DROP TABLE {databaseOwner}{objectQualifier}SurveyOptions_Temp
+/*
+Table SurveyOptions_Temp can only exist when something went very wrong... But let's be sure...
+*/
+DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}SurveyOptions_Temp
+GO
 
+/*
+Create a new SurveyOptions table - if there is one, create a SurveyOptions_Temp table,
+copy the data from the SurveyOptions table, delete the SurveyOptions table and rename SurveyOptions_Temp to SurveyOptions.
+*/
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions') AND type in (N'U'))
 BEGIN
    CREATE TABLE {databaseOwner}{objectQualifier}SurveyOptions_Temp(
@@ -138,8 +170,8 @@ BEGIN
 
    SET IDENTITY_INSERT {databaseOwner}{objectQualifier}SurveyOptions_Temp OFF
 
-   IF EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'{databaseOwner}FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions') AND parent_object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults'))
-   ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults DROP CONSTRAINT FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions
+   ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults
+   DROP CONSTRAINT IF EXISTS FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions
 
    DROP TABLE {databaseOwner}{objectQualifier}SurveyOptions
 
@@ -174,8 +206,8 @@ CREATE NONCLUSTERED INDEX IX_{objectQualifier}SurveyOptions_SurveyID_ViewOrder O
 GO
 
 ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions WITH CHECK
-ADD CONSTRAINT FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys FOREIGN KEY (SurveyID)
-REFERENCES {databaseOwner}{objectQualifier}Surveys (SurveyID)
+ADD CONSTRAINT FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys
+FOREIGN KEY (SurveyID) REFERENCES {databaseOwner}{objectQualifier}Surveys (SurveyID)
 ON DELETE CASCADE
 GO
 
@@ -194,9 +226,16 @@ ADD CONSTRAINT DF_{objectQualifier}SurveyOptions_CreatedDate
 DEFAULT GETDATE() FOR CreatedDate
 GO
 
+/*
+Table SurveyResults_Temp can only exist when something went very wrong... But let's be sure...
+*/
 DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_Temp
 GO
 
+/*
+Create a new SurveyResults table - if there is one, create a SurveyResults_Temp table,
+copy the data from the SurveyResults table, delete the SurveyResults table and rename SurveyResults_Temp to SurveyResults.
+*/
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults') AND type in (N'U'))
 BEGIN
    CREATE TABLE {databaseOwner}{objectQualifier}SurveyResults_Temp(
@@ -215,7 +254,13 @@ BEGIN
    SELECT
       SurveyResultID,
       SurveyOptionID,
+      /*
+      Using NULL instead of -1 for Anonymous Users
+      */
       CASE WHEN UserID = -1 THEN NULL ELSE UserID END AS UserID,
+      /*
+      Use a dummy value for the ResultUserID
+      */
       '00000000-0000-0000-0000-000000000000'
    FROM
       {databaseOwner}{objectQualifier}SurveyResults
@@ -248,14 +293,14 @@ CREATE NONCLUSTERED INDEX IX_{objectQualifier}SurveyResults_SurveyOptionID ON {d
 GO
 
 ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults WITH CHECK
-ADD CONSTRAINT FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions FOREIGN KEY (SurveyOptionID)
-REFERENCES {databaseOwner}{objectQualifier}SurveyOptions (SurveyOptionID)
+ADD CONSTRAINT FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions
+FOREIGN KEY (SurveyOptionID) REFERENCES {databaseOwner}{objectQualifier}SurveyOptions (SurveyOptionID)
 ON DELETE CASCADE
 GO
 
 ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults WITH CHECK
-ADD CONSTRAINT FK_{objectQualifier}SurveyResults_{objectQualifier}Users FOREIGN KEY (UserID)
-REFERENCES {databaseOwner}{objectQualifier}Users (UserID)
+ADD CONSTRAINT FK_{objectQualifier}SurveyResults_{objectQualifier}Users
+FOREIGN KEY (UserID) REFERENCES {databaseOwner}{objectQualifier}Users (UserID)
 ON DELETE SET NULL
 GO
 
@@ -264,9 +309,32 @@ ADD CONSTRAINT DF_{objectQualifier}SurveyResults_CreatedDate
 DEFAULT GETDATE() FOR CreatedDate
 GO
 
+/*
+STORED PROCEDURES
+I prefer to call a Stored Procedure something like TABLENAME_ACTION instead of ACTION_TABLENAME
+because they are somehow together in alphabetical Order...
+*/
+
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurvey
 GO
 
+/*
+There is one procedure to insert or update a record in the Surveys table.
+@SurveyID = 0 => insert, else update
+The possible answers are passed in an XML parameter
+   <SurveyOptions>
+      <SurveyOption>
+         <SurveyOptionID>surveyOptionID</SurveyOptionID>
+         <OptionName><![CDATA[optionName]]></OptionName>
+         <ViewOrder>viewOrder</ViewOrder>
+         <IsCorrect>isCorrect</IsCorrect>
+      </SurveyOption>
+      ...
+   <SurveyOptions>
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}Surveys_AddOrChange
 GO
 
@@ -322,6 +390,10 @@ BEGIN
          WHERE
             SurveyID = @SurveyID
       END
+      
+      /*
+      Add or change the answers... (and therefore the transaction)
+      */
       EXEC {databaseOwner}{objectQualifier}SurveyOptions_AddOrChange @SurveyID, @UserID, @Answers
       SELECT @SurveyID
       IF @@TRANCOUNT > 0
@@ -341,9 +413,25 @@ BEGIN
 END
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}DeleteSurvey
 GO
 
+/*
+Re-sort the questions. They new order is passed as an XML parameter
+<Surveys>
+   <Survey>
+      <SurveyID>surveyID</SurveyID>
+      ...
+      <ViewOrder>viewOrder</ViewOrder>
+      ...
+      <LastModifiedByUserID>lastModifiedByUserID</LastModifiedByUserID>
+   </Survey>
+   ...
+</Surveys>
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}Surveys_Sort
 GO
 
@@ -409,6 +497,9 @@ BEGIN
 END
 GO
 
+/*
+Determine if a user has already voted or not
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}Surveys_HasVoted
 GO
 
@@ -432,6 +523,11 @@ BEGIN
 END
 GO
 
+/*
+This creates a big dataset including most of the columns from all Survey tables
+(the ones that are needed to create customized reports)
+It uses the VIEW from below to filter by ModuleID.
+*/
 CREATE PROCEDURE {databaseOwner}{objectQualifier}Surveys_CsvExport
    @ModuleId int
 AS
@@ -459,6 +555,10 @@ BEGIN
 END
 GO
 
+/*
+This inserts or updates one or more answers to a question.
+The actual data is in the XML parameter described above.
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyOptions_AddOrChange
 GO
 
@@ -493,7 +593,6 @@ BEGIN
          IsCorrect
       FROM
          OPENXML(@idoc, '/SurveyOptions/SurveyOption', 2) WITH (SurveyOptionID int, OptionName nvarchar(max), ViewOrder int, IsCorrect bit)
-
       OPEN curAnswers
       FETCH NEXT FROM curAnswers INTO @SurveyOptionID, @OptionName, @ViewOrder, @IsCorrect
       WHILE @@FETCH_STATUS = 0
@@ -546,27 +645,51 @@ BEGIN
 END
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurveyOption
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}DeleteSurveyOption
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurveyOptions
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}UpdateSurveyOption
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurveyResult
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurveyResult_cookie
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_Add
 GO
 
+/*
+This creates the answers selected by a participant
+*/
 CREATE PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Add
    @AuthorizedUsersOnly bit,
    @SurveyResultsXml xml
@@ -604,6 +727,9 @@ BEGIN
             SELECT @Count = COUNT(*) FROM {databaseOwner}{objectQualifier}SurveyResults WHERE UserID = @UserID AND SurveyOptionID = @SurveyOptionID
          END
 
+         /*
+         If only authorized users may vote and the user has already voted ignore the submission
+         */
          IF @Count = 0
          BEGIN
             UPDATE
@@ -644,18 +770,33 @@ BEGIN
 END
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}DeleteSurveyResultData
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurvey
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurveys
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}UpdateSurvey
 GO
 
+/*
+This deletes all the votes and sets the counters to 0
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResultData_Delete
 GO
 
@@ -702,9 +843,15 @@ BEGIN
 END
 GO
 
+/*
+Not needed anymore
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurveyResultData
 GO
 
+/*
+This gets all the votes of one Survey module for reporting
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_GetAll
 GO
 
@@ -734,6 +881,9 @@ BEGIN
 END
 GO
 
+/*
+This gets all the votes for one question
+*/
 DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_Get
 GO
 
@@ -778,6 +928,10 @@ BEGIN
 END
 GO
 
+/*
+This creates a VIEW with all the columns from all the Survey tables
+(and all the modules)
+*/
 DROP VIEW IF EXISTS {databaseOwner}{objectQualifier}vSurveys_CsvExport
 GO
 
@@ -805,14 +959,25 @@ AS
       LEFT JOIN {databaseOwner}{objectQualifier}SurveyResults sr ON sr.SurveyOptionID = so.SurveyOptionID
 GO
 
+/*
+This script adds the module setting SurveyType when the type is a quiz
+Outer Cursor (cModuleIDs):
+- If at least one answer of all the answers in a module has the IsCorrect bit set, the survey type is a quiz.
+Inner Cursor (cSurveyIDs):
+- If no answer to a question in a quiz has the IsCorrect bit set, the question is statistical
+
+-->> MAYBE THIS SHOULD BE MOVED TO THE IUPGRADEABLE INTERFACE <<--
+*/
 DECLARE @ModuleId int
 DECLARE @IsQuiz int
+DECLARE @SurveyID int
+DECLARE @CorrectAnswers int
 
-DECLARE cConvert CURSOR FOR
+DECLARE cModuleIDs CURSOR FOR
 SELECT DISTINCT ModuleID FROM {databaseOwner}{objectQualifier}Surveys
 
-OPEN cConvert
-FETCH NEXT FROM cConvert INTO @ModuleId
+OPEN cModuleIDs
+FETCH NEXT FROM cModuleIDs INTO @ModuleId
 WHILE @@FETCH_STATUS = 0
 BEGIN
    SELECT @IsQuiz = COUNT(*) FROM {databaseOwner}{objectQualifier}Surveys s INNER JOIN {databaseOwner}{objectQualifier}SurveyOptions so ON so.SurveyID = s.SurveyID WHERE s.ModuleID = @ModuleId AND so.IsCorrect = 1
@@ -820,12 +985,27 @@ BEGIN
    BEGIN
       INSERT INTO {databaseOwner}{objectQualifier}ModuleSettings (ModuleID, SettingName, SettingValue, CreatedByUserID, CreatedOnDate, LastModifiedByUserID, LastModifiedOnDate)
       VALUES (@ModuleId, 'SurveyType', '1', -1, GETDATE(), -1, GETDATE())
-   END
-   FETCH NEXT FROM cConvert INTO @ModuleId
-END
 
-CLOSE cConvert
-DEALLOCATE cConvert
+      DECLARE cSurveyIDs CURSOR FOR
+      SELECT SurveyID FROM {databaseOwner}{objectQualifier}Survey WHERE ModuleID = @ModuleID
+      OPEN cSurveyIDs
+      FETCH NEXT FROM cSurveyIDs INTO @SurveyID
+      WHILE @@FETCH_STATUS = 0
+      BEGIN
+         SELECT @CorrectAnswers = COUNT(*) FROM {databaseOwner}{objectQualifier}SurveyOptions WHERE SurveyID = @SurveyID AND IsCorrect = 1
+         IF (@CorrectAnswers = 0)
+         BEGIN
+            UPDATE {databaseOwner}{objectQualifier}Surveys SET IsStatistical = 1 WHERE SurveyID = @SurveyID
+         END
+         FETCH NEXT FROM cSurveyIDs INTO @SurveyID
+      END
+      CLOSE cSurveyIDs
+      DEALLOCATE cSurveyIDs
+   END
+   FETCH NEXT FROM cModuleIDs INTO @ModuleId
+END
+CLOSE cModuleIDs
+DEALLOCATE cModuleIDs
 GO
 
 /************************************************************/
