@@ -34,6 +34,15 @@
             AutoPostBack="true"
             OnSelectedIndexChanged="QuestionTypeDropDownList_SelectedIndexChanged" />
       </div>
+      <asp:Panel ID="TextAnswerPanel" runat="server"
+         CssClass="dnnFormItem"
+         Visible="false">
+         <dnn:Label ID="NumberOfRowsLabel" runat="server"
+            ControlName="NumberOfRowsTextBox"
+            ResourceKey="NumberOfRows"
+            Suffix=":" />
+         <asp:TextBox ID="NumberOfRowsTextBox" runat="server" />
+      </asp:Panel>
       <asp:Panel ID="IsStatisticalPanel" runat="server"
          CssClass="dnnFormItem"
          Visible="false">
@@ -45,15 +54,6 @@
             AutoPostBack="true"
             OnCheckedChanged="IsStatisticalCheckBox_CheckedChanged" />
       </asp:Panel>
-      <div class="dnnFormItem">
-         <dnn:Label ID="ChartTypeLabel" runat="server"
-            ControlName="ChartTypeDropDownList"
-            ResourceKey="ChartType"
-            Suffix=":" />
-         <asp:DropDownList ID="ChartTypeDropDownList" runat="server"
-            AutoPostBack="true"
-            OnSelectedIndexChanged="ChartTypeDropDownList_SelectedIndexChanged" />
-      </div>
       <asp:Panel ID="RepeatDirectionPanel" runat="server">
          <div class="dnnFormItem">
             <dnn:Label ID="RepeatDirectionLabel" runat="server"
@@ -70,6 +70,15 @@
             <asp:TextBox ID="RepeatColumnsTextBox" runat="server" />
          </div>
       </asp:Panel>
+      <div class="dnnFormItem">
+         <dnn:Label ID="ChartTypeLabel" runat="server"
+            ControlName="ChartTypeDropDownList"
+            ResourceKey="ChartType"
+            Suffix=":" />
+         <asp:DropDownList ID="ChartTypeDropDownList" runat="server"
+            AutoPostBack="true"
+            OnSelectedIndexChanged="ChartTypeDropDownList_SelectedIndexChanged" />
+      </div>
    </fieldset>
 
    <asp:Panel ID="AnswersPanel" runat="server">
@@ -179,16 +188,6 @@
             </ul>
          </div>
       </asp:Panel>
-   </asp:Panel>
-
-   <asp:Panel ID="TextAnswerPanel" runat="server" Visible="false">
-      <div class="dnnFormItem">
-         <dnn:Label ID="NumberOfRowsLabel" runat="server"
-            ControlName="NumberOfRowsTextBox"
-            ResourceKey="NumberOfRows"
-            Suffix=":" />
-         <asp:TextBox ID="NumberOfRowsTextBox" runat="server" />
-      </div>
    </asp:Panel>
 
    <ul class="dnnActions dnnClear">

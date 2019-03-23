@@ -28,6 +28,12 @@
             CssClass="surveyDatePicker" />
       </div>
       <div class="dnnFormItem">
+         <dnn:Label ID="ShowClosingDateMessageLabel" runat="server"
+            ControlName="ShowClosingDateMessageCheckBox"
+            ResourceKey="ShowClosingDateMessage" />
+         <asp:CheckBox ID="ShowClosingDateMessageCheckBox" runat="server" />
+      </div>
+      <div class="dnnFormItem">
          <dnn:Label ID="PrivacyConfirmationLabel" runat="server"
             ControlName="PrivacyConfirmationCheckBox"
             ResourceKey="PrivacyConfirmation" />
@@ -45,13 +51,6 @@
             <asp:ListItem Value="1" />
             <asp:ListItem Value="2" />
          </asp:RadioButtonList>
-      </div>
-      <div class="dnnClear"></div>
-      <div class="dnnFormItem">
-         <dnn:Label ID="ShowClosingDateMessageLabel" runat="server"
-            ControlName="ShowClosingDateMessageCheckBox"
-            ResourceKey="ShowClosingDateMessage" />
-         <asp:CheckBox ID="ShowClosingDateMessageCheckBox" runat="server" />
       </div>
    </fieldset>
 </div>

@@ -58,6 +58,33 @@ namespace DNN.Modules.Survey {
         protected global::System.Web.UI.WebControls.DropDownList QuestionTypeDropDownList;
         
         /// <summary>
+        /// TextAnswerPanel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel TextAnswerPanel;
+        
+        /// <summary>
+        /// NumberOfRowsLabel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::DotNetNuke.UI.UserControls.LabelControl NumberOfRowsLabel;
+        
+        /// <summary>
+        /// NumberOfRowsTextBox-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox NumberOfRowsTextBox;
+        
+        /// <summary>
         /// IsStatisticalPanel-Steuerelement
         /// </summary>
         /// <remarks>
@@ -83,24 +110,6 @@ namespace DNN.Modules.Survey {
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox IsStatisticalCheckBox;
-        
-        /// <summary>
-        /// ChartTypeLabel-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::DotNetNuke.UI.UserControls.LabelControl ChartTypeLabel;
-        
-        /// <summary>
-        /// ChartTypeDropDownList-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ChartTypeDropDownList;
         
         /// <summary>
         /// RepeatDirectionPanel-Steuerelement
@@ -146,6 +155,24 @@ namespace DNN.Modules.Survey {
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox RepeatColumnsTextBox;
+        
+        /// <summary>
+        /// ChartTypeLabel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::DotNetNuke.UI.UserControls.LabelControl ChartTypeLabel;
+        
+        /// <summary>
+        /// ChartTypeDropDownList-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ChartTypeDropDownList;
         
         /// <summary>
         /// AnswersPanel-Steuerelement
@@ -272,33 +299,6 @@ namespace DNN.Modules.Survey {
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton UpdateAnswerButton;
-        
-        /// <summary>
-        /// TextAnswerPanel-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel TextAnswerPanel;
-        
-        /// <summary>
-        /// NumberOfRowsLabel-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::DotNetNuke.UI.UserControls.LabelControl NumberOfRowsLabel;
-        
-        /// <summary>
-        /// NumberOfRowsTextBox-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox NumberOfRowsTextBox;
         
         /// <summary>
         /// UpdateButton-Steuerelement

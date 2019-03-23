@@ -31,7 +31,7 @@ BEGIN
       ViewOrder int NOT NULL,
       OptionType int NOT NULL,
       IsStatistical bit NULL,
-      RepeatDirection int NULL,
+      RepeatDirection int NOT NULL,
       RepeatColumns int NULL,
       NumberOfRows int NULL,
       ChartType int NOT NULL,
@@ -43,7 +43,7 @@ BEGIN
    
    SET IDENTITY_INSERT {databaseOwner}{objectQualifier}Surveys_Temp ON
 
-   INSERT INTO {databaseOwner}{objectQualifier}Surveys_Temp(SurveyID, ModuleID, Question, ViewOrder, OptionType, ChartType, CreatedDate, CreatedByUserID)
+   INSERT INTO {databaseOwner}{objectQualifier}Surveys_Temp(SurveyID, ModuleID, Question, ViewOrder, OptionType, RepeatDirection, ChartType, CreatedDate, CreatedByUserID)
    SELECT
       SurveyID,
       ModuleID,
@@ -56,6 +56,11 @@ BEGIN
       'C' (Multiple Selection) => 1 (QuestionType.CheckBoxes)
       */
       CASE WHEN OptionType = 'R' THEN 0 ELSE 1 END AS OptionType,
+      /*
+      RepeatDirection is new and defines the RepeatDirection of the
+      RadioButtonsList or CheckBoxList
+      */
+      0 AS RepeatDirection,
       /*
       ChartType is new, and does not allow NULL values. Use 0 as default.
       Here as well, an Enum is used in the program.
@@ -125,6 +130,11 @@ GO
 ALTER TABLE {databaseOwner}{objectQualifier}Surveys
 ADD CONSTRAINT DF_{objectQualifier}Surveys_CreatedDate
 DEFAULT GETDATE() FOR CreatedDate
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys
+ADD CONSTRAINT DF_{objectQualifier}Surveys_RepeatDirection
+DEFAULT 0 FOR RepeatDirection
 GO
 
 /*

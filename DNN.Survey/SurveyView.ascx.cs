@@ -512,7 +512,7 @@ namespace DNN.Modules.Survey
                   SurveyRadioButtons surveyRadioButtons = (SurveyRadioButtons)LoadControl(string.Format("{0}Controls/SurveyRadioButtons.ascx", ControlPath));
                   surveyRadioButtons.ID = string.Format("SurveyRadiobutton_{0}", survey.SurveyID);
                   surveyRadioButtons.Label = survey.Question;
-                  surveyRadioButtons.RepeatDirection = (survey.RepeatDirection.HasValue ? survey.RepeatDirection.Value : RepeatDirection.Horizontal);
+                  surveyRadioButtons.RepeatDirection = survey.RepeatDirection;
                   surveyRadioButtons.RepeatColumns = (((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1)) ? 1 : survey.RepeatColumns.Value);
                   surveyRadioButtons.EditUrl = EditUrl("SurveyID", survey.SurveyID.ToString());
                   surveyRadioButtons.IsEditable = IsEditable;
@@ -528,7 +528,7 @@ namespace DNN.Modules.Survey
                   SurveyCheckBoxes surveyCheckBoxes = (SurveyCheckBoxes)LoadControl(string.Format("{0}Controls/SurveyCheckBoxes.ascx", ControlPath));
                   surveyCheckBoxes.ID = string.Format("SurveyCheckbox_{0}", survey.SurveyID);
                   surveyCheckBoxes.Label = survey.Question;
-                  surveyCheckBoxes.RepeatDirection = (survey.RepeatDirection.HasValue ? survey.RepeatDirection.Value : RepeatDirection.Horizontal);
+                  surveyCheckBoxes.RepeatDirection = survey.RepeatDirection;
                   surveyCheckBoxes.RepeatColumns = (((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1)) ? 1 : survey.RepeatColumns.Value);
                   surveyCheckBoxes.EditUrl = EditUrl("SurveyID", survey.SurveyID.ToString());
                   surveyCheckBoxes.IsEditable = IsEditable;

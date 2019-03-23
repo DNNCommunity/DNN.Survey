@@ -61,7 +61,7 @@ namespace DNN.Modules.Survey.Components.Controllers
                   survey.Question,
                   Convert.ToInt32(survey.OptionType),
                   ((survey.IsStatistical == null) ? (bool?)null : survey.IsStatistical.Value),
-                  ((survey.RepeatDirection == null) || (survey.RepeatDirection == RepeatDirection.Horizontal) ? (int?)null : Convert.ToInt32(survey.RepeatDirection.Value)),
+                  Convert.ToInt32(survey.RepeatDirection),
                   ((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1) ? (int?)null : survey.RepeatColumns.Value),
                   ((survey.NumberOfRows == null) || (survey.NumberOfRows <= 1) ? (int?)null : survey.NumberOfRows.Value),
                   Convert.ToInt32(survey.ChartType),

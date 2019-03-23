@@ -44,8 +44,8 @@ namespace DNN.Modules.Survey.Components.Providers
          else
          {
             surveyBuilder.Append("<Survey>");
-            surveyBuilder.Append(string.Format("<SurveyID>{0}</SurveyID>", survey.SurveyID));
-            surveyBuilder.Append(string.Format("<ModuleID>{0}</ModuleID>", survey.ModuleID));
+            surveyBuilder.Append(string.Format("<SurveyID>{0}</SurveyID>", (forExport ? 0 : survey.SurveyID)));
+            surveyBuilder.Append(string.Format("<ModuleID>{0}</ModuleID>", (forExport ? "[MODULE_ID]" : survey.ModuleID.ToString())));
             surveyBuilder.Append(string.Format("<Question><![CDATA[{0}]]></Question>", survey.Question));
             surveyBuilder.Append(string.Format("<ViewOrder>{0}</ViewOrder>", survey.ViewOrder));
             surveyBuilder.Append(string.Format("<OptionType>{0}</OptionType>", Convert.ToInt32(survey.OptionType)));
@@ -57,14 +57,7 @@ namespace DNN.Modules.Survey.Components.Providers
             {
                surveyBuilder.Append(string.Format("<IsStatistical>{0}</IsStatistical>", survey.IsStatistical.Value));
             }
-            if ((survey.RepeatDirection == null) || (survey.RepeatDirection == RepeatDirection.Horizontal))
-            {
-               surveyBuilder.Append("<RepeatDirection />");
-            }
-            else
-            {
-               surveyBuilder.Append(string.Format("<RepeatDirection>{0}</RepeatDirection>", Convert.ToInt32(survey.RepeatDirection.Value)));
-            }
+            surveyBuilder.Append(string.Format("<RepeatDirection>{0}</RepeatDirection>", Convert.ToInt32(survey.RepeatDirection)));
             if ((survey.RepeatColumns == null) || (survey.RepeatColumns <= 1))
             {
                surveyBuilder.Append("<RepeatColumns />");
@@ -89,9 +82,9 @@ namespace DNN.Modules.Survey.Components.Providers
             {
                surveyBuilder.Append(string.Format("<ChartType>{0}</ChartType>", Convert.ToInt32(survey.ChartType)));
             }
-            surveyBuilder.Append(string.Format("<CreatedDate>{0:yyyy-MM-dd hh:mm:ss}</CreatedDate>", survey.CreatedDate));
-            surveyBuilder.Append(string.Format("<CreatedByUserID>{0}</CreatedByUserID>", survey.CreatedByUserID));
-            if (survey.LastModifiedByUserID == null)
+            surveyBuilder.Append(string.Format("<CreatedDate>{0}</CreatedDate>", (forExport ? "[CREATED_DATE]" : string.Format("{0:yyyy-MM-dd hh:mm:ss}", survey.CreatedDate))));
+            surveyBuilder.Append(string.Format("<CreatedByUserID>{0}</CreatedByUserID>", (forExport ? "[USER_ID]" : survey.CreatedByUserID.ToString())));
+            if ((survey.LastModifiedByUserID == null) || forExport)
             {
                surveyBuilder.Append("<LastModifiedByUserID />");
             }
@@ -99,7 +92,7 @@ namespace DNN.Modules.Survey.Components.Providers
             {
                surveyBuilder.Append(string.Format("<LastModifiedByUserID>{0}</LastModifiedByUserID>", survey.LastModifiedByUserID.Value));
             }
-            if (survey.LastModifiedDate == null)
+            if ((survey.LastModifiedDate == null) || forExport)
             {
                surveyBuilder.Append("<LastModifiedDate />");
             }
@@ -109,7 +102,7 @@ namespace DNN.Modules.Survey.Components.Providers
             }
             if (forExport)
             {
-               surveyBuilder.Append(SurveyOptionsToXml(SurveyOptionsController.GetAll(survey.SurveyID)));
+               surveyBuilder.Append(SurveyOptionsToXml(SurveyOptionsController.GetAll(survey.SurveyID), forExport));
             }
             surveyBuilder.Append("</Survey>");
          }
@@ -214,6 +207,11 @@ namespace DNN.Modules.Survey.Components.Providers
       #region SurveyOptions
       public static string SurveyOptionToXml(SurveyOptionsInfo surveyOption)
       {
+         return SurveyOptionToXml(surveyOption, false);
+      }
+
+      public static string SurveyOptionToXml(SurveyOptionsInfo surveyOption, bool forExport)
+      {
          StringBuilder surveyOptionBuilder = new StringBuilder();
          if (surveyOption == null)
          {
@@ -222,14 +220,14 @@ namespace DNN.Modules.Survey.Components.Providers
          else
          {
             surveyOptionBuilder.Append("<SurveyOption>");
-            surveyOptionBuilder.Append(string.Format("<SurveyOptionID>{0}</SurveyOptionID>", surveyOption.SurveyOptionID));
+            surveyOptionBuilder.Append(string.Format("<SurveyOptionID>{0}</SurveyOptionID>", (forExport ? 0 : surveyOption.SurveyOptionID)));
             surveyOptionBuilder.Append(string.Format("<ViewOrder>{0}</ViewOrder>", surveyOption.ViewOrder));
             surveyOptionBuilder.Append(string.Format("<OptionName><![CDATA[{0}]]></OptionName>", surveyOption.OptionName));
-            surveyOptionBuilder.Append(string.Format("<Votes>{0}</Votes>", surveyOption.Votes));
+            surveyOptionBuilder.Append(string.Format("<Votes>{0}</Votes>", (forExport ? 0 : surveyOption.Votes)));
             surveyOptionBuilder.Append(string.Format("<IsCorrect>{0}</IsCorrect>", surveyOption.IsCorrect));
-            surveyOptionBuilder.Append(string.Format("<CreatedDate>{0:yyyy-MM-dd hh:mm:ss}</CreatedDate>", surveyOption.CreatedDate));
-            surveyOptionBuilder.Append(string.Format("<CreatedByUserID>{0}</CreatedByUserID>", surveyOption.CreatedByUserID));
-            if (surveyOption.LastModifiedDate == null)
+            surveyOptionBuilder.Append(string.Format("<CreatedDate>{0}</CreatedDate>", (forExport ? "[CREATED_DATE]" : string.Format("{0:yyyy - MM - dd hh: mm: ss}", surveyOption.CreatedDate))));
+            surveyOptionBuilder.Append(string.Format("<CreatedByUserID>{0}</CreatedByUserID>", (forExport ? "[USER_ID]" : surveyOption.CreatedByUserID.ToString())));
+            if ((surveyOption.LastModifiedDate == null) || forExport)
             {
                surveyOptionBuilder.Append("<LastModifiedDate />");
             }
@@ -237,7 +235,7 @@ namespace DNN.Modules.Survey.Components.Providers
             {
                surveyOptionBuilder.Append(string.Format("<LastModifiedDate>{0:yyyy-MM-dd hh:mm:ss}</LastModifiedDate>", surveyOption.LastModifiedDate.Value));
             }
-            if (surveyOption.LastModifiedByUserID == null)
+            if ((surveyOption.LastModifiedByUserID == null) || forExport)
             {
                surveyOptionBuilder.Append("<LastModifiedByUserID />");
             }
@@ -252,6 +250,11 @@ namespace DNN.Modules.Survey.Components.Providers
 
       public static string SurveyOptionsToXml(List<SurveyOptionsInfo> surveyOptions)
       {
+         return SurveyOptionsToXml(surveyOptions, false);
+      }
+
+      public static string SurveyOptionsToXml(List<SurveyOptionsInfo> surveyOptions, bool forExport)
+      {
          StringBuilder surveyOptionsBuilder = new StringBuilder();
          if (surveyOptions == null)
          {
@@ -263,7 +266,7 @@ namespace DNN.Modules.Survey.Components.Providers
             surveyOptionsBuilder.Append("<SurveyOptions>");
             foreach (SurveyOptionsInfo soi in surveyOptions)
             {
-               surveyOptionsBuilder.Append(SurveyOptionToXml(soi));
+               surveyOptionsBuilder.Append(SurveyOptionToXml(soi, forExport));
             }
             surveyOptionsBuilder.Append("</SurveyOptions>");
          }

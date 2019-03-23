@@ -49,6 +49,24 @@ namespace DNN.Modules.Survey {
         protected global::System.Web.UI.WebControls.TextBox SurveyClosingDateTextBox;
         
         /// <summary>
+        /// ShowClosingDateMessageLabel-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::DotNetNuke.UI.UserControls.LabelControl ShowClosingDateMessageLabel;
+        
+        /// <summary>
+        /// ShowClosingDateMessageCheckBox-Steuerelement
+        /// </summary>
+        /// <remarks>
+        /// Automatisch generiertes Feld
+        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox ShowClosingDateMessageCheckBox;
+        
+        /// <summary>
         /// PrivacyConfirmationLabel-Steuerelement
         /// </summary>
         /// <remarks>
@@ -83,23 +101,5 @@ namespace DNN.Modules.Survey {
         /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList UseCaptchaRadioButtonList;
-        
-        /// <summary>
-        /// ShowClosingDateMessageLabel-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::DotNetNuke.UI.UserControls.LabelControl ShowClosingDateMessageLabel;
-        
-        /// <summary>
-        /// ShowClosingDateMessageCheckBox-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox ShowClosingDateMessageCheckBox;
     }
 }

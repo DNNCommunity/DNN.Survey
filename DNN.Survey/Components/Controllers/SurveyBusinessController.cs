@@ -227,25 +227,26 @@ namespace DNN.Modules.Survey.Components.Controllers
       public string ExportModule(int moduleID)
       {
          StringBuilder exportXml = new StringBuilder();
-         Hashtable moduleSettings = ModuleController.Instance.GetModule(moduleID, Null.NullInteger, true).ModuleSettings;
+         //Hashtable moduleSettings = ModuleController.Instance.GetModule(moduleID, Null.NullInteger, true).ModuleSettings;
 
          exportXml.Append("<Survey>");
-         if (moduleSettings == null)
-         {
-            exportXml.Append("<ModuleSettings />");
-         }
-         else
-         {
-            exportXml.Append("<ModuleSettings>");
-            foreach (KeyValuePair<string, string> setting in moduleSettings)
-            {
-               exportXml.Append(String.Format("<ModuleSetting><{0}>{1}</{0}></ModuleSetting>", setting.Key, setting.Value));
-            }
-            exportXml.Append("</ModuleSettings>");
-         }
+         //if (moduleSettings == null)
+         //{
+         //   exportXml.Append("<ModuleSettings />");
+         //}
+         //else
+         //{
+         //   exportXml.Append("<ModuleSettings>");
+         //   foreach (KeyValuePair<string, string> setting in moduleSettings)
+         //   {
+         //      exportXml.Append(String.Format("<ModuleSetting><{0}>{1}</{0}></ModuleSetting>", setting.Key, setting.Value));
+         //   }
+         //   exportXml.Append("</ModuleSettings>");
+         //}
 
          List<SurveysInfo> surveys = SurveysController.GetAll(moduleID);
          exportXml.Append(XmlDataProvider.SurveysToXml(surveys, true));
+         exportXml.Append("</Survey>");
 
          return exportXml.ToString();
       }
@@ -283,7 +284,10 @@ namespace DNN.Modules.Survey.Components.Controllers
          }
          else
          {
-            List<SurveysInfo> surveys = XmlDataProvider.SurveysFromXml(content);
+            XmlNode root = Globals.GetContent(content, "Survey");
+            string exportString = root.SelectSingleNode("Surveys").OuterXml;
+            exportString = exportString.Replace("[MODULE_ID]", moduleID.ToString()).Replace("[CREATED_DATE]", string.Format("{0:yyyy-MM-dd hh:mm:ss}", DateTime.Now)).Replace("[USER_ID]", userID.ToString());
+            List<SurveysInfo> surveys = XmlDataProvider.SurveysFromXml(exportString);
             foreach (SurveysInfo survey in surveys)
             {
                survey.SurveyID = 0;
