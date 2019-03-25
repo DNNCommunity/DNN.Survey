@@ -1,4 +1,10 @@
-﻿function CheckBoxValidatorEvaluateIsValid(val) {
+﻿/*
+ * Checkbox and Checkboxlist validators
+ * originally by Scott Mitchell
+ * http://aspnet.4guysfromrolla.com/articles/092006-1.aspx
+ * with kind permission
+ */
+function CheckBoxValidatorEvaluateIsValid(val) {
    var control = document.getElementById(val.controltovalidate);
    return control.checked == Boolean(val.mustBeChecked.toLowerCase() == "true");
 }
