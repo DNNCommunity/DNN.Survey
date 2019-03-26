@@ -9,10 +9,10 @@
          </description>
          <iconFile>images/icon_survey_32px.png</iconFile>
          <owner>
-            <name>Michael Tobisch</name>
-            <organization>DNN Connect</organization>
-            <url>https://dnn-connect.org/</url>
-            <email>noreply@dnn-connect.org</email>
+            <name>DNN Corp.</name>
+            <organization>DNN Corp.</organization>
+            <url>https://www.dnnsoftware.com/</url>
+            <email>support@dnnsoftware.com</email>
          </owner>
          <license src="Documentation\License.html" />
          <releaseNotes src="Documentation\ReleaseNotes.html" />

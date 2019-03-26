@@ -45,20 +45,6 @@ namespace DNN.Modules.Survey
 {
    public partial class SurveyView : PortalModuleBase, IActionable
    {
-      #region TabModuleSettings
-      protected bool ShowClosingDateMessage
-      {
-         get
-         {
-            object showClosingDateMessage = ModuleController.Instance.GetTabModule(TabModuleId).TabModuleSettings["ShowClosingDateMessage"];
-            if (showClosingDateMessage == null)
-               return false;
-            else
-               return Convert.ToBoolean(showClosingDateMessage);
-         }
-      }
-      #endregion
-
       #region Private Properties
       private ModulePermissionCollection _modulePermissionCollection = null;
       private SurveysController _surveysController = null;
@@ -214,6 +200,18 @@ namespace DNN.Modules.Survey
          }
       }
 
+      protected bool ShowClosingDateMessage
+      {
+         get
+         {
+            object showClosingDateMessage = Settings["ShowClosingDateMessage"];
+            if (showClosingDateMessage == null)
+               return false;
+            else
+               return Convert.ToBoolean(showClosingDateMessage);
+         }
+      }
+
       protected bool PrivacyConfirmation
       {
          get
@@ -302,6 +300,7 @@ namespace DNN.Modules.Survey
                {
                   SurveyMessageLabel.Text = string.Format(Localization.GetString("SurveyClosed.Text", LocalResourceFile), SurveyClosingDate);
                   SurveyMessageLabel.CssClass = "dnnFormMessage dnnFormWarning";
+                  SurveyMessageLabel.Visible = true;
                   SubmitSurveyButton.Visible = false;
                }
             }
