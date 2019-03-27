@@ -151,6 +151,7 @@ namespace DNN.Modules.Survey.Components.Controllers
                   foreach (object m in modulesList)
                   {
                      ModuleInfo module = (ModuleInfo)m;
+                     ModulePermissionCollection modulePermissions = module.ModulePermissions;
                      // Setting surveyresultstype: 0 = Public, 1 = Private
                      // goes to Permission
                      string surveyResultsTypeSetting = module.ModuleSettings["surveyresultstype"].ToString();
@@ -159,9 +160,11 @@ namespace DNN.Modules.Survey.Components.Controllers
                         // if not defined: make it private to be safe...
                         surveyResultsTypeSetting = "1";
                      }
+                     // If it is public: All Users (RoleID: -1) have the permission to view the results
+                     // Otherwise: only Administrators have the permission to view results
+                     // Is there a better way than using the hard coded role IDs?
                      if (surveyResultsTypeSetting == "0")
                      {
-                        ModulePermissionCollection modulePermissions = module.ModulePermissions;
                         IEnumerable<ModulePermissionInfo> viewResultsPermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.RoleID == -1);
                         if (viewResultsPermissions.Count() == 0)
                         {
@@ -182,20 +185,20 @@ namespace DNN.Modules.Survey.Components.Controllers
                         // if not defined: make it per user
                         surveyTrackingSetting = "1";
                      }
-                     if (surveyTrackingSetting == "0")
+                     // If it is Cookie tracking: All users (RoleId: -1) have the permissions to participate in the survey
+                     // Otherwise: Registered Users have the permission to participate in the survey
+                     // Is there a better way than using the hard coded role IDs?
+                     int permittedRoleID = (surveyTrackingSetting == "0" ? -1 : 1);
+                     IEnumerable<ModulePermissionInfo> participatePermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.PARTICIPATE_PERMISSION && mp.RoleID == permittedRoleID);
+                     if (participatePermissions.Count() == 0)
                      {
-                        ModulePermissionCollection modulePermissions = module.ModulePermissions;
-                        IEnumerable<ModulePermissionInfo> participatePermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.PARTICIPATE_PERMISSION && mp.RoleID == -1);
-                        if (participatePermissions.Count() == 0)
-                        {
-                           ModulePermissionInfo participatePermission = new ModulePermissionInfo();
-                           participatePermission.AllowAccess = true;
-                           participatePermission.RoleID = -1;
-                           participatePermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.PARTICIPATE_PERMISSION)[0]).PermissionID;
-                           participatePermission.ModuleID = module.ModuleID;
-                           modulePermissions.Add(participatePermission);
-                           ModulePermissionController.SaveModulePermissions(module);
-                        }
+                        ModulePermissionInfo participatePermission = new ModulePermissionInfo();
+                        participatePermission.AllowAccess = true;
+                        participatePermission.RoleID = permittedRoleID;
+                        participatePermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.PARTICIPATE_PERMISSION)[0]).PermissionID;
+                        participatePermission.ModuleID = module.ModuleID;
+                        modulePermissions.Add(participatePermission);
+                        ModulePermissionController.SaveModulePermissions(module);
                      }
                      // Is Module a quiz?
                      List<SurveysInfo> surveys = SurveysController.GetAll(module.ModuleID);
@@ -223,10 +226,15 @@ namespace DNN.Modules.Survey.Components.Controllers
                            SurveysController.AddOrChange(statisticalSurvey, XmlDataProvider.SurveyOptionsToXml(SurveyOptionsController.GetAll(statisticalSurvey.SurveyID)), -1);
                         }
                      }
+                     string surveyClosingDate = module.ModuleSettings["surveyclosingdate"].ToString();
+                     if (!(string.IsNullOrEmpty(surveyClosingDate)))
+                     {
+                        ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyclosingdate");
+                        ModuleController.Instance.UpdateModuleSetting(module.ModuleID, "SurveyClosingDate", surveyClosingDate);
+                     }
                      // Remove unused old settings
                      ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresultstype");
                      ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveytracking");
-                     ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresulttemplate");
                      ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresulttemplate");
                      ModuleController.Instance.DeleteTabModuleSetting(module.TabModuleID, "surveygraphwidth");
                   }

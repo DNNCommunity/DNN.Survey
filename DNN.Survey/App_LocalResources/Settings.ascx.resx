@@ -123,12 +123,6 @@
   <data name="SurveyClosingDate.Text" xml:space="preserve">
     <value>Survey Closing Date</value>
   </data>
-  <data name="SurveyResultTemplate.Help" xml:space="preserve">
-    <value>The template that will be used to format the survey results.</value>
-  </data>
-  <data name="SurveyResultTemplate.Text" xml:space="preserve">
-    <value>Survey Result Template</value>
-  </data>
   <data name="ShowClosingDateMessage.Help" xml:space="preserve">
     <value>Activate this option to display a message indicationg the closing date of the survey.</value>
   </data>
