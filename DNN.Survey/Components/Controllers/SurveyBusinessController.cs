@@ -24,6 +24,7 @@ using DotNetNuke.Common;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Localization;
+using DotNetNuke.Services.Log.EventLog;
 using DotNetNuke.Services.Search.Entities;
 using DotNetNuke.Services.Search.Internals;
 using System;
@@ -161,16 +162,44 @@ namespace DNN.Modules.Survey.Components.Controllers
                         surveyResultsTypeSetting = "1";
                      }
                      // If it is public: All Users (RoleID: -1) have the permission to view the results
-                     // Otherwise: only Administrators have the permission to view results
-                     // Is there a better way than using the hard coded role IDs?
                      if (surveyResultsTypeSetting == "0")
                      {
-                        IEnumerable<ModulePermissionInfo> viewResultsPermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.RoleID == -1);
+                        List<ModulePermissionInfo> viewResultsPermissions = modulePermissions.Where(mp => mp.ModuleID == module.ModuleID && mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.RoleID == -1).ToList();
                         if (viewResultsPermissions.Count() == 0)
                         {
                            ModulePermissionInfo viewResultPermission = new ModulePermissionInfo();
                            viewResultPermission.AllowAccess = true;
                            viewResultPermission.RoleID = -1;
+                           viewResultPermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.VIEW_RESULTS_PERMISSION)[0]).PermissionID;
+                           viewResultPermission.ModuleID = module.ModuleID;
+                           modulePermissions.Add(viewResultPermission);
+                           ModulePermissionController.SaveModulePermissions(module);
+                        }
+                     }
+                     // All roles and user who have edit permissions get the View results permission as well
+                     List<ModulePermissionInfo> editModulePermissions = modulePermissions.Where(mp => mp.ModuleID == module.ModuleID && mp.PermissionCode == "SYSTEM_MODULE_DEFINITION" && mp.PermissionKey == "EDIT").ToList();
+                     foreach (ModulePermissionInfo editModulePermission in editModulePermissions)
+                     {
+                        List<ModulePermissionInfo> viewResultsPermissions;
+                        ModulePermissionInfo viewResultPermission = new ModulePermissionInfo();
+                        if (String.IsNullOrEmpty(editModulePermission.RoleName))
+                        {
+                           // when the role name is empty it is a user poermission
+                           viewResultsPermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.UserID == editModulePermission.UserID).ToList();
+                           viewResultPermission.UserID = editModulePermission.UserID;
+                           viewResultPermission.Username = editModulePermission.Username;
+                        }
+                        else
+                        {
+                           // role permission
+                           viewResultsPermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.RoleID == editModulePermission.RoleID).ToList();
+                           viewResultPermission.RoleID = editModulePermission.RoleID;
+                           viewResultPermission.RoleName = editModulePermission.RoleName;
+                        }
+                        if (viewResultsPermissions.Count() == 0)
+                        {
+                           // if the permission for this user/role is not already set...
+                           viewResultPermission.AllowAccess = true;
                            viewResultPermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.VIEW_RESULTS_PERMISSION)[0]).PermissionID;
                            viewResultPermission.ModuleID = module.ModuleID;
                            modulePermissions.Add(viewResultPermission);
@@ -189,7 +218,7 @@ namespace DNN.Modules.Survey.Components.Controllers
                      // Otherwise: Registered Users have the permission to participate in the survey
                      // Is there a better way than using the hard coded role IDs?
                      int permittedRoleID = (surveyTrackingSetting == "0" ? -1 : 1);
-                     IEnumerable<ModulePermissionInfo> participatePermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.PARTICIPATE_PERMISSION && mp.RoleID == permittedRoleID);
+                     List<ModulePermissionInfo> participatePermissions = modulePermissions.Where(mp => mp.ModuleID == module.ModuleID && mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.PARTICIPATE_PERMISSION && mp.RoleID == permittedRoleID).ToList();
                      if (participatePermissions.Count() == 0)
                      {
                         ModulePermissionInfo participatePermission = new ModulePermissionInfo();
