@@ -8,91 +8,56 @@
 /*****                                                  *****/
 /************************************************************/
 
-DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_Temp
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults') AND type = N'U'
+DROP TABLE {databaseOwner}{objectQualifier}SurveyResults
 GO
 
-DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions') AND type = N'U'
+DROP TABLE {databaseOwner}{objectQualifier}SurveyOptions
 GO
 
-DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}SurveyOptions_Temp
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys') AND type = N'U'
+DROP TABLE {databaseOwner}{objectQualifier}Surveys
 GO
 
-DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}SurveyOptions
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_AddOrChange') AND type = N'P'
+DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_AddOrChange
 GO
 
-DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}Surveys_Temp
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_Sort') AND type = N'P'
+DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_Sort
 GO
 
-DROP TABLE IF EXISTS {databaseOwner}{objectQualifier}Surveys
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_HasVoted') AND type = N'P'
+DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_HasVoted
 GO
 
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurvey
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_CsvExport') AND type = N'P'
+DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_CsvExport
 GO
 
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}Surveys_AddOrChange
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions_AddOrChange') AND type = N'P'
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyOptions_AddOrChange
 GO
 
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}DeleteSurvey
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Add') AND type = N'P'
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Add
 GO
 
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}Surveys_Sort
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResultData_Delete') AND type = N'P'
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResultData_Delete
 GO
 
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}Surveys_HasVoted
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_GetAll') AND type = N'P'
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_GetAll
 GO
 
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}Surveys_CsvExport
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Get') AND type = N'P'
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Get
 GO
 
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyOptions_AddOrChange
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurveyOption
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}DeleteSurveyOption
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurveyOptions
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}UpdateSurveyOption
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurveyResult
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}AddSurveyResult_cookie
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_Add
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}DeleteSurveyResultData
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurvey
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurveys
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}UpdateSurvey
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResultData_Delete
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}GetSurveyResultData
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_GetAll
-GO
-
-DROP PROCEDURE IF EXISTS {databaseOwner}{objectQualifier}SurveyResults_Get
-GO
-
-DROP VIEW IF EXISTS {databaseOwner}{objectQualifier}vSurveys_CsvExport
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}vSurveys_CsvExport') AND type = N'V'
+DROP VIEW {databaseOwner}{objectQualifier}vSurveys_CsvExport
 GO
 
 /************************************************************/
