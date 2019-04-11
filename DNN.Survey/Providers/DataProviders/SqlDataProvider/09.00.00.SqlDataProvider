@@ -15,7 +15,7 @@ TABLES
 /*
 Table Surveys_Temp can only exist when something went very wrong... But let's be sure...
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_Temp') AND type = N'U'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_Temp') AND type = N'U')
 DROP TABLE {databaseOwner}{objectQualifier}Surveys_Temp
 GO
 
@@ -23,7 +23,7 @@ GO
 Create a new Surveys table - if there is one, create a Surveys_Temp table,
 copy the data from the Surveys table, delete the Surveys table and rename Surveys_Temp to Surveys.
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys') AND type = N'U'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys') AND type = N'U')
 BEGIN
    CREATE TABLE {databaseOwner}{objectQualifier}Surveys_Temp(
       SurveyID int IDENTITY(1,1) NOT NULL,
@@ -80,11 +80,11 @@ BEGIN
 
    SET IDENTITY_INSERT {databaseOwner}{objectQualifier}Surveys_Temp OFF
 
-   IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'FK_{objectQualifier}Surveys_{objectQualifier}Modules') AND type = N'F'
+   IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'FK_{objectQualifier}Surveys_{objectQualifier}Modules') AND type = N'F')
    ALTER TABLE {databaseOwner}{objectQualifier}Surveys
    DROP CONSTRAINT FK_{objectQualifier}Surveys_{objectQualifier}Modules
 
-   IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys') AND type = N'F'
+   IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys') AND type = N'F')
    ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions
    DROP CONSTRAINT FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys
 
@@ -143,7 +143,7 @@ GO
 /*
 Table SurveyOptions_Temp can only exist when something went very wrong... But let's be sure...
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions_Temp') AND type = N'U'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions_Temp') AND type = N'U')
 DROP TABLE {databaseOwner}{objectQualifier}SurveyOptions_Temp
 GO
 
@@ -151,7 +151,7 @@ GO
 Create a new SurveyOptions table - if there is one, create a SurveyOptions_Temp table,
 copy the data from the SurveyOptions table, delete the SurveyOptions table and rename SurveyOptions_Temp to SurveyOptions.
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions') AND type = N'U'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions') AND type = N'U')
 BEGIN
    CREATE TABLE {databaseOwner}{objectQualifier}SurveyOptions_Temp(
       SurveyOptionID int IDENTITY(1,1) NOT NULL,
@@ -184,7 +184,7 @@ BEGIN
 
    SET IDENTITY_INSERT {databaseOwner}{objectQualifier}SurveyOptions_Temp OFF
 
-   IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions') AND type = N'F'
+   IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions') AND type = N'F')
    ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults
    DROP CONSTRAINT FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions
 
@@ -244,7 +244,7 @@ GO
 /*
 Table SurveyResults_Temp can only exist when something went very wrong... But let's be sure...
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Temp') AND type = N'U'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Temp') AND type = N'U')
 DROP TABLE {databaseOwner}{objectQualifier}SurveyResults_Temp
 GO
 
@@ -252,7 +252,7 @@ GO
 Create a new SurveyResults table - if there is one, create a SurveyResults_Temp table,
 copy the data from the SurveyResults table, delete the SurveyResults table and rename SurveyResults_Temp to SurveyResults.
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults') AND type = N'U'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults') AND type = N'U')
 BEGIN
    CREATE TABLE {databaseOwner}{objectQualifier}SurveyResults_Temp(
       SurveyResultID int IDENTITY(1,1) NOT NULL,
@@ -334,7 +334,7 @@ because they are somehow together in alphabetical Order...
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurvey') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurvey') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}AddSurvey
 GO
 
@@ -352,7 +352,7 @@ The possible answers are passed in an XML parameter
       ...
    <SurveyOptions>
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_AddOrChange') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_AddOrChange') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_AddOrChange
 GO
 
@@ -434,7 +434,7 @@ GO
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}DeleteSurvey') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}DeleteSurvey') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}DeleteSurvey
 GO
 
@@ -451,7 +451,7 @@ Re-sort the questions. They new order is passed as an XML parameter
    ...
 </Surveys>
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_Sort') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_Sort') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_Sort
 GO
 
@@ -520,7 +520,7 @@ GO
 /*
 Determine if a user has already voted or not
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_HasVoted') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_HasVoted') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_HasVoted
 GO
 
@@ -580,7 +580,7 @@ GO
 This inserts or updates one or more answers to a question.
 The actual data is in the XML parameter described above.
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions_AddOrChange') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions_AddOrChange') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyOptions_AddOrChange
 GO
 
@@ -670,49 +670,49 @@ GO
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurveyOption') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurveyOption') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}AddSurveyOption
 GO
 
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}DeleteSurveyOption') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}DeleteSurveyOption') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}DeleteSurveyOption
 GO
 
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurveyOptions') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurveyOptions') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}GetSurveyOptions
 GO
 
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}UpdateSurveyOption') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}UpdateSurveyOption') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}UpdateSurveyOption
 GO
 
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurveyResult') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurveyResult') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}AddSurveyResult
 GO
 
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurveyResult_cookie') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurveyResult_cookie') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}AddSurveyResult_cookie
 GO
 
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Add') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Add') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Add
 GO
 
@@ -802,35 +802,35 @@ GO
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}DeleteSurveyResultData') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}DeleteSurveyResultData') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}DeleteSurveyResultData
 GO
 
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurvey') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurvey') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}GetSurvey
 GO
 
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurveys') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurveys') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}GetSurveys
 GO
 
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}UpdateSurvey') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}UpdateSurvey') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}UpdateSurvey
 GO
 
 /*
 This deletes all the votes and sets the counters to 0
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResultData_Delete') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResultData_Delete') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResultData_Delete
 GO
 
@@ -880,14 +880,14 @@ GO
 /*
 Not needed anymore
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurveyResultData') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurveyResultData') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}GetSurveyResultData
 GO
 
 /*
 This gets all the votes of one Survey module for reporting
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_GetAll') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_GetAll') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_GetAll
 GO
 
@@ -920,7 +920,7 @@ GO
 /*
 This gets all the votes for one question
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Get') AND type = N'P'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Get') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Get
 GO
 
@@ -969,7 +969,7 @@ GO
 This creates a VIEW with all the columns from all the Survey tables
 (and all the modules)
 */
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}vSurveys_CsvExport') AND type = N'V'
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}vSurveys_CsvExport') AND type = N'V')
 DROP VIEW {databaseOwner}{objectQualifier}vSurveys_CsvExport
 GO
 
