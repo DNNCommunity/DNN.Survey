@@ -1,0 +1,57 @@
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}UpdateSurvey]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}{objectQualifier}UpdateSurvey
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}DeleteSurvey]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}{objectQualifier}DeleteSurvey
+GO
+
+/** Create Stored Procedures **/
+
+create procedure {databaseOwner}{objectQualifier}UpdateSurvey
+
+@SurveyID       int,
+@Question       nvarchar(500),
+@ViewOrder      int,
+@OptionType     char(1),
+@UserID         int,
+@ModuleID int
+
+as
+
+update {databaseOwner}{objectQualifier}Surveys
+set    Question = @Question,
+       ViewOrder = @ViewOrder,
+       OptionType = @OptionType,
+       CreatedByUser = @UserID,
+       CreatedDate = getdate()
+where  SurveyID = @SurveyID and ModuleID = @ModuleID
+
+GO
+
+create procedure {databaseOwner}{objectQualifier}DeleteSurvey
+
+@SurveyID  int,
+@ModuleID int
+
+as
+
+delete 
+from   {databaseOwner}{objectQualifier}Surveys
+where  SurveyID = @SurveyID and ModuleID = @ModuleID
+
+GO
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/

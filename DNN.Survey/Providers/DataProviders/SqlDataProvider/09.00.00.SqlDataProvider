@@ -1,0 +1,1002 @@
+/************************************************************/
+/*****                  SqlDataProvider                 *****/
+/*****                 Version: 09.00.00                *****/
+/*****                                                  *****/
+/*****  Note: To manually execute this script you must  *****/
+/*****        perform a search and replace operation    *****/
+/*****        for {databaseOwner} and {objectQualifier} *****/
+/*****                                                  *****/
+/************************************************************/
+
+/*
+TABLES
+*/
+
+/*
+Table Surveys_Temp can only exist when something went very wrong... But let's be sure...
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_Temp') AND type = N'U')
+DROP TABLE {databaseOwner}{objectQualifier}Surveys_Temp
+GO
+
+/*
+Create a new Surveys table - if there is one, create a Surveys_Temp table,
+copy the data from the Surveys table, delete the Surveys table and rename Surveys_Temp to Surveys.
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys') AND type = N'U')
+BEGIN
+   CREATE TABLE {databaseOwner}{objectQualifier}Surveys_Temp(
+      SurveyID int IDENTITY(1,1) NOT NULL,
+      ModuleID int NOT NULL,
+      Question nvarchar(max) NOT NULL,
+      ViewOrder int NOT NULL,
+      OptionType int NOT NULL,
+      IsStatistical bit NULL,
+      RepeatDirection int NOT NULL,
+      RepeatColumns int NULL,
+      NumberOfRows int NULL,
+      ChartType int NOT NULL,
+      CreatedDate datetime NOT NULL,
+      CreatedByUserID int NOT NULL,
+      LastModifiedDate datetime NULL,
+      LastModifiedByUserID int NULL
+   )
+   
+   SET IDENTITY_INSERT {databaseOwner}{objectQualifier}Surveys_Temp ON
+
+   INSERT INTO {databaseOwner}{objectQualifier}Surveys_Temp(SurveyID, ModuleID, Question, ViewOrder, OptionType, RepeatDirection, ChartType, CreatedDate, CreatedByUserID)
+   SELECT
+      SurveyID,
+      ModuleID,
+      Question,
+      ViewOrder,
+      /*
+      The field option type changes from a character to an integer.
+      Reason: In the program an Enum is used to be more flexible.
+      'R' (Single Selection)   => 0 (QuestionType.RadioButtons)
+      'C' (Multiple Selection) => 1 (QuestionType.CheckBoxes)
+      */
+      CASE WHEN OptionType = 'R' THEN 0 ELSE 1 END AS OptionType,
+      /*
+      RepeatDirection is new and defines the RepeatDirection of the
+      RadioButtonsList or CheckBoxList
+      */
+      0 AS RepeatDirection,
+      /*
+      ChartType is new, and does not allow NULL values. Use 0 as default.
+      Here as well, an Enum is used in the program.
+      0 = ChartType.Bar
+      1 = ChartType.HorizontalBar
+      2 = ChartType.Pie
+      3 = ChartType.Doughnut
+      */
+      0 AS ChartType,
+      CreatedDate,
+      CreatedByUser
+   FROM
+      {databaseOwner}{objectQualifier}Surveys
+   WHERE
+      ModuleID IN (SELECT ModuleID FROM {databaseOwner}{objectQualifier}Modules)
+
+   SET IDENTITY_INSERT {databaseOwner}{objectQualifier}Surveys_Temp OFF
+
+   IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'FK_{objectQualifier}Surveys_{objectQualifier}Modules') AND type = N'F')
+   ALTER TABLE {databaseOwner}{objectQualifier}Surveys
+   DROP CONSTRAINT FK_{objectQualifier}Surveys_{objectQualifier}Modules
+
+   IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys') AND type = N'F')
+   ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions
+   DROP CONSTRAINT FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys
+
+   DROP TABLE {databaseOwner}{objectQualifier}Surveys
+
+   EXEC sp_rename '{databaseOwner}{objectQualifier}Surveys_Temp', '{objectQualifier}Surveys'
+END
+ELSE
+BEGIN
+   CREATE TABLE {databaseOwner}{objectQualifier}Surveys(
+      SurveyID int IDENTITY(1,1) NOT NULL,
+      ModuleID int NOT NULL,
+      Question nvarchar(max) NOT NULL,
+      ViewOrder int NOT NULL,
+      OptionType int NOT NULL,
+      IsStatistical bit NULL,
+      RepeatDirection int NULL,
+      RepeatColumns int NULL,
+      NumberOfRows int NULL,
+      ChartType int NOT NULL,
+      CreatedDate datetime NOT NULL,
+      CreatedByUserID int NOT NULL,
+      LastModifiedDate datetime NULL,
+      LastModifiedByUserID int NULL
+   )
+END
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys
+ADD CONSTRAINT PK_{objectQualifier}Surveys
+PRIMARY KEY CLUSTERED (SurveyID ASC)
+GO
+
+CREATE NONCLUSTERED INDEX IX_{objectQualifier}Surveys_ModuleID ON {databaseOwner}{objectQualifier}Surveys (ModuleID)
+GO
+
+CREATE NONCLUSTERED INDEX IX_{objectQualifier}Surveys_ModuleID_ViewOrder ON {databaseOwner}{objectQualifier}Surveys (ModuleID, ViewOrder)
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys WITH CHECK
+ADD CONSTRAINT FK_{objectQualifier}Surveys_{objectQualifier}Modules
+FOREIGN KEY (ModuleID) REFERENCES {databaseOwner}{objectQualifier}Modules (ModuleID)
+ON DELETE CASCADE
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys
+ADD CONSTRAINT DF_{objectQualifier}Surveys_CreatedDate
+DEFAULT GETDATE() FOR CreatedDate
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys
+ADD CONSTRAINT DF_{objectQualifier}Surveys_RepeatDirection
+DEFAULT 0 FOR RepeatDirection
+GO
+
+/*
+Table SurveyOptions_Temp can only exist when something went very wrong... But let's be sure...
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions_Temp') AND type = N'U')
+DROP TABLE {databaseOwner}{objectQualifier}SurveyOptions_Temp
+GO
+
+/*
+Create a new SurveyOptions table - if there is one, create a SurveyOptions_Temp table,
+copy the data from the SurveyOptions table, delete the SurveyOptions table and rename SurveyOptions_Temp to SurveyOptions.
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions') AND type = N'U')
+BEGIN
+   CREATE TABLE {databaseOwner}{objectQualifier}SurveyOptions_Temp(
+      SurveyOptionID int IDENTITY(1,1) NOT NULL,
+      SurveyID int NOT NULL,
+      ViewOrder int NOT NULL,
+      OptionName nvarchar(max) NOT NULL,
+      Votes int NOT NULL,
+      IsCorrect bit NOT NULL,
+      CreatedDate datetime NOT NULL,
+      CreatedByUserID int NOT NULL,
+      LastModifiedDate datetime NULL,
+      LastModifiedByUserID int NULL
+   )
+
+   SET IDENTITY_INSERT {databaseOwner}{objectQualifier}SurveyOptions_Temp ON
+
+   INSERT INTO {databaseOwner}{objectQualifier}SurveyOptions_Temp(SurveyOptionID, SurveyID, ViewOrder, OptionName, Votes, IsCorrect, CreatedDate, CreatedByUserID)
+   SELECT
+      so.SurveyOptionID,
+      so.SurveyID,
+      so.ViewOrder,
+      so.OptionName,
+      so.Votes,
+      so.IsCorrect,
+      s.CreatedDate,
+      s.CreatedByUserID
+   FROM
+      {databaseOwner}{objectQualifier}SurveyOptions so
+      INNER JOIN {databaseOwner}{objectQualifier}Surveys s ON s.SurveyID = so.SurveyID
+
+   SET IDENTITY_INSERT {databaseOwner}{objectQualifier}SurveyOptions_Temp OFF
+
+   IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions') AND type = N'F')
+   ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults
+   DROP CONSTRAINT FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions
+
+   DROP TABLE {databaseOwner}{objectQualifier}SurveyOptions
+
+   EXEC sp_rename '{databaseOwner}{objectQualifier}SurveyOptions_Temp', '{objectQualifier}SurveyOptions'
+END
+ELSE
+BEGIN
+   CREATE TABLE {databaseOwner}{objectQualifier}SurveyOptions(
+      SurveyOptionID int IDENTITY(1,1) NOT NULL,
+      SurveyID int NOT NULL,
+      ViewOrder int NOT NULL,
+      OptionName nvarchar(max) NOT NULL,
+      Votes int NOT NULL,
+      IsCorrect bit NOT NULL,
+      CreatedDate datetime NOT NULL,
+      CreatedByUserID int NOT NULL,
+      LastModifiedDate datetime NULL,
+      LastModifiedByUserID int NULL
+   )
+END
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions
+ADD CONSTRAINT PK_{objectQualifier}SurveyOptions
+PRIMARY KEY CLUSTERED (SurveyOptionID ASC)
+GO
+
+CREATE NONCLUSTERED INDEX IX_{objectQualifier}SurveyOptions_SurveyID ON {databaseOwner}{objectQualifier}SurveyOptions (SurveyID)
+GO
+
+CREATE NONCLUSTERED INDEX IX_{objectQualifier}SurveyOptions_SurveyID_ViewOrder ON {databaseOwner}{objectQualifier}SurveyOptions (SurveyID, ViewOrder)
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions WITH CHECK
+ADD CONSTRAINT FK_{objectQualifier}SurveyOptions_{objectQualifier}Surveys
+FOREIGN KEY (SurveyID) REFERENCES {databaseOwner}{objectQualifier}Surveys (SurveyID)
+ON DELETE CASCADE
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions
+ADD CONSTRAINT DF_{objectQualifier}SurveyOptions_Votes
+DEFAULT 0 FOR Votes
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions
+ADD CONSTRAINT DF_{objectQualifier}SurveyOptions_IsCorrect
+DEFAULT 0 FOR IsCorrect
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions
+ADD CONSTRAINT DF_{objectQualifier}SurveyOptions_CreatedDate
+DEFAULT GETDATE() FOR CreatedDate
+GO
+
+/*
+Table SurveyResults_Temp can only exist when something went very wrong... But let's be sure...
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Temp') AND type = N'U')
+DROP TABLE {databaseOwner}{objectQualifier}SurveyResults_Temp
+GO
+
+/*
+Create a new SurveyResults table - if there is one, create a SurveyResults_Temp table,
+copy the data from the SurveyResults table, delete the SurveyResults table and rename SurveyResults_Temp to SurveyResults.
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults') AND type = N'U')
+BEGIN
+   CREATE TABLE {databaseOwner}{objectQualifier}SurveyResults_Temp(
+      SurveyResultID int IDENTITY(1,1) NOT NULL,
+      SurveyOptionID int NOT NULL,
+      UserID int NULL,
+      IPAddress nvarchar(50) NULL,
+      TextAnswer nvarchar(max),
+      ResultUserID uniqueidentifier NOT NULL,
+      CreatedDate datetime
+   )
+
+   SET IDENTITY_INSERT {databaseOwner}{objectQualifier}SurveyResults_Temp ON
+
+   INSERT INTO {databaseOwner}{objectQualifier}SurveyResults_Temp(SurveyResultID, SurveyOptionID, UserID, ResultUserID)
+   SELECT
+      SurveyResultID,
+      SurveyOptionID,
+      /*
+      Using NULL instead of -1 for Anonymous Users
+      */
+      CASE WHEN UserID = -1 THEN NULL ELSE UserID END AS UserID,
+      /*
+      Use a dummy value for the ResultUserID
+      */
+      '00000000-0000-0000-0000-000000000000'
+   FROM
+      {databaseOwner}{objectQualifier}SurveyResults
+
+   SET IDENTITY_INSERT {databaseOwner}{objectQualifier}SurveyResults_Temp OFF
+
+   DROP TABLE {databaseOwner}{objectQualifier}SurveyResults
+
+   EXEC sp_rename '{databaseOwner}{objectQualifier}SurveyResults_Temp', '{objectQualifier}SurveyResults'
+END
+ELSE
+BEGIN
+   CREATE TABLE {databaseOwner}{objectQualifier}SurveyResults(
+      SurveyResultID int IDENTITY(1,1) NOT NULL,
+      SurveyOptionID int NOT NULL,
+      UserID int NULL,
+      IPAddress nvarchar(50) NULL,
+      TextAnswer nvarchar(max),
+      ResultUserID uniqueidentifier NOT NULL,
+      CreatedDate datetime
+   )
+END
+
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults
+ADD CONSTRAINT PK_{objectQualifier}SurveyResults
+PRIMARY KEY CLUSTERED (SurveyResultID ASC)
+GO
+
+CREATE NONCLUSTERED INDEX IX_{objectQualifier}SurveyResults_SurveyOptionID ON {databaseOwner}{objectQualifier}SurveyResults (SurveyOptionID)
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults WITH CHECK
+ADD CONSTRAINT FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions
+FOREIGN KEY (SurveyOptionID) REFERENCES {databaseOwner}{objectQualifier}SurveyOptions (SurveyOptionID)
+ON DELETE CASCADE
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults WITH CHECK
+ADD CONSTRAINT FK_{objectQualifier}SurveyResults_{objectQualifier}Users
+FOREIGN KEY (UserID) REFERENCES {databaseOwner}{objectQualifier}Users (UserID)
+ON DELETE SET NULL
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults
+ADD CONSTRAINT DF_{objectQualifier}SurveyResults_CreatedDate
+DEFAULT GETDATE() FOR CreatedDate
+GO
+
+/*
+STORED PROCEDURES
+I prefer to call a Stored Procedure something like TABLENAME_ACTION instead of ACTION_TABLENAME
+because they are somehow together in alphabetical Order...
+*/
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurvey') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}AddSurvey
+GO
+
+/*
+There is one procedure to insert or update a record in the Surveys table.
+@SurveyID = 0 => insert, else update
+The possible answers are passed in an XML parameter
+   <SurveyOptions>
+      <SurveyOption>
+         <SurveyOptionID>surveyOptionID</SurveyOptionID>
+         <OptionName><![CDATA[optionName]]></OptionName>
+         <ViewOrder>viewOrder</ViewOrder>
+         <IsCorrect>isCorrect</IsCorrect>
+      </SurveyOption>
+      ...
+   <SurveyOptions>
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_AddOrChange') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_AddOrChange
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}Surveys_AddOrChange
+   @SurveyID int,
+   @ModuleID int,
+   @Question nvarchar(max),
+   @OptionType int,
+   @IsStatistical bit,
+   @RepeatDirection int,
+   @RepeatColumns int,
+   @NumberOfRows int,
+   @ChartType int,
+   @UserID int,
+   @Answers xml
+AS
+BEGIN
+   BEGIN TRY
+      BEGIN TRANSACTION
+      IF @SurveyID = 0
+      BEGIN
+         DECLARE @ViewOrder int
+         SELECT @ViewOrder = MAX(ViewOrder) + 1 FROM {databaseOwner}{objectQualifier}Surveys WHERE ModuleID = @ModuleID
+         INSERT INTO {databaseOwner}{objectQualifier}Surveys (ModuleID, Question, ViewOrder, OptionType, IsStatistical, RepeatDirection, RepeatColumns, NumberOfRows, ChartType, CreatedByUserID)
+         VALUES (
+            @ModuleID,
+            @Question,
+            ISNULL(@ViewOrder, 1),
+            @OptionType,
+            @IsStatistical,
+            @RepeatDirection,
+            @RepeatColumns,
+            @NumberOfRows,
+            @ChartType,
+            @UserID
+         )
+         SELECT @SurveyID = SCOPE_IDENTITY()
+      END
+      ELSE
+      BEGIN
+         UPDATE
+            {databaseOwner}{objectQualifier}Surveys
+         SET
+            Question = @Question,
+            OptionType = @OptionType,
+            IsStatistical = @IsStatistical,
+            RepeatDirection = @RepeatDirection,
+            RepeatColumns = @RepeatColumns,
+            NumberOfRows = @NumberOfRows,
+            ChartType = @ChartType,
+            LastModifiedByUserID = @UserID,
+            LastModifiedDate = GETDATE()
+         WHERE
+            SurveyID = @SurveyID
+      END
+      
+      /*
+      Add or change the answers... (and therefore the transaction)
+      */
+      EXEC {databaseOwner}{objectQualifier}SurveyOptions_AddOrChange @SurveyID, @UserID, @Answers
+      SELECT @SurveyID
+      IF @@TRANCOUNT > 0
+      BEGIN
+         COMMIT TRANSACTION
+      END
+   END TRY
+   BEGIN CATCH
+      IF @@TRANCOUNT > 0
+      BEGIN
+         ROLLBACK TRANSACTION
+      END
+      DECLARE @ErrMsg nvarchar(max), @ErrSeverity int
+      SELECT @ErrMsg = ERROR_MESSAGE(), @ErrSeverity = ERROR_SEVERITY()
+      RAISERROR(@ErrMsg, @ErrSeverity, 1)
+   END CATCH
+END
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}DeleteSurvey') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}DeleteSurvey
+GO
+
+/*
+Re-sort the questions. They new order is passed as an XML parameter
+<Surveys>
+   <Survey>
+      <SurveyID>surveyID</SurveyID>
+      ...
+      <ViewOrder>viewOrder</ViewOrder>
+      ...
+      <LastModifiedByUserID>lastModifiedByUserID</LastModifiedByUserID>
+   </Survey>
+   ...
+</Surveys>
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_Sort') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_Sort
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}Surveys_Sort
+   @SurveysXML xml
+AS
+BEGIN
+   DECLARE @idoc int
+   DECLARE @SurveyID int
+   DECLARE @ViewOrder int
+   DECLARE @LastModifiedByUserID int
+   DECLARE @SurveyIDs table(SurveyID int)
+
+   BEGIN TRY
+      BEGIN TRANSACTION
+
+      EXEC sp_xml_preparedocument @idoc OUTPUT, @SurveysXML
+
+      DECLARE curQuestions CURSOR FOR
+      SELECT
+         SurveyID,
+         ViewOrder,
+         LastModifiedByUserID
+      FROM
+         OPENXML(@idoc, '/Surveys/Survey', 2) WITH (SurveyID int, ViewOrder int, LastModifiedByUserID int)
+
+      OPEN curQuestions
+      FETCH NEXT FROM curQuestions INTO @SurveyID, @ViewOrder, @LastModifiedByUserID
+      WHILE @@FETCH_STATUS = 0
+      BEGIN
+         UPDATE
+            {databaseOwner}{objectQualifier}Surveys
+         SET
+            ViewOrder = @ViewOrder,
+            LastModifiedByUserID = @LastModifiedByUserID,
+            LastModifiedDate = GETDATE()
+         WHERE
+            SurveyID = @SurveyID
+         -- Collect SurveyID for later purpose (delete surveys not included, see below)
+         INSERT INTO @SurveyIDs(SurveyID) VALUES(@SurveyID)
+         FETCH NEXT FROM curQuestions INTO @SurveyID, @ViewOrder, @LastModifiedByUserID
+      END
+      CLOSE curQuestions
+      DEALLOCATE curQuestions
+
+      -- Delete surveys that were not submitted in the XML
+      DELETE FROM {databaseOwner}{objectQualifier}Surveys WHERE SurveyID NOT IN (SELECT SurveyID FROM @SurveyIDs)
+
+      IF @@TRANCOUNT > 0
+      BEGIN
+         COMMIT TRANSACTION
+      END
+   END TRY
+   BEGIN CATCH
+      IF @@TRANCOUNT > 0
+      BEGIN
+         ROLLBACK TRANSACTION
+      END
+      DECLARE @ErrMsg nvarchar(max), @ErrSeverity int
+      SELECT @ErrMsg = ERROR_MESSAGE(), @ErrSeverity = ERROR_SEVERITY()
+      RAISERROR(@ErrMsg, @ErrSeverity, 1)
+   END CATCH
+END
+GO
+
+/*
+Determine if a user has already voted or not
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_HasVoted') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_HasVoted
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}Surveys_HasVoted
+   @ModuleID int,
+   @UserID int
+AS
+BEGIN
+   DECLARE @Count int
+   SELECT
+      @Count = COUNT(*)
+   FROM
+      {databaseOwner}{objectQualifier}Surveys s
+      INNER JOIN {databaseOwner}{objectQualifier}SurveyOptions so ON so.SurveyID = s.SurveyID
+      INNER JOIN {databaseOwner}{objectQualifier}SurveyResults sr ON sr.SurveyOptionID = so.SurveyOptionID
+   WHERE
+      s.ModuleID = @ModuleID AND
+      sr.UserID = @UserID
+
+   SELECT CASE WHEN @Count > 0 THEN 1 ELSE 0 END
+END
+GO
+
+/*
+This creates a big dataset including most of the columns from all Survey tables
+(the ones that are needed to create customized reports)
+It uses the VIEW from below to filter by ModuleID.
+*/
+CREATE PROCEDURE {databaseOwner}{objectQualifier}Surveys_CsvExport
+   @ModuleId int
+AS
+BEGIN
+   SELECT
+      SurveyID,
+      Question,
+      OptionType,
+      IsStatistical,
+      OptionName,
+      Votes,
+      IsCorrect,
+      UserID,
+      IPAddress,
+      TextAnswer,
+      ResultUserID,
+      CreatedDate
+   FROM
+      {objectQualifier}vSurveys_CsvExport
+   WHERE
+      ModuleID = @ModuleID
+   ORDER BY
+      SurveyViewOrder,
+      SurveyOptionViewOrder
+END
+GO
+
+/*
+This inserts or updates one or more answers to a question.
+The actual data is in the XML parameter described above.
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions_AddOrChange') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyOptions_AddOrChange
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}SurveyOptions_AddOrChange
+   @SurveyID int,
+   @UserID int,
+   @AnswersXML xml
+AS
+BEGIN
+   DECLARE @idoc int
+   DECLARE @SurveyOptionID int
+   DECLARE @OptionName nvarchar(max)
+   DECLARE @ViewOrder int
+   DECLARE @IsCorrect bit
+   DECLARE @SurveyOptionIDs table(SurveyOptionID int)
+   DECLARE @IsOpenTransaction bit = 0
+
+   BEGIN TRY
+      IF @@TRANCOUNT = 0
+      BEGIN
+         BEGIN TRANSACTION
+         SET @IsOpenTransaction = 1
+      END
+
+      EXEC sp_xml_preparedocument @idoc OUTPUT, @AnswersXML
+      
+      DECLARE curAnswers CURSOR FOR
+      SELECT
+         SurveyOptionID,
+         OptionName,
+         ViewOrder,
+         IsCorrect
+      FROM
+         OPENXML(@idoc, '/SurveyOptions/SurveyOption', 2) WITH (SurveyOptionID int, OptionName nvarchar(max), ViewOrder int, IsCorrect bit)
+      OPEN curAnswers
+      FETCH NEXT FROM curAnswers INTO @SurveyOptionID, @OptionName, @ViewOrder, @IsCorrect
+      WHILE @@FETCH_STATUS = 0
+      BEGIN
+         IF (@SurveyOptionID < 1)
+         -- New option
+         BEGIN
+            INSERT INTO {databaseOwner}{objectQualifier}SurveyOptions(SurveyID, OptionName, ViewOrder, IsCorrect, CreatedByUserID)
+            VALUES (@SurveyID, @OptionName, @ViewOrder, @IsCorrect, @UserID)
+            SELECT @SurveyOptionID = SCOPE_IDENTITY()
+         END
+         ELSE
+         -- Existing option
+         BEGIN
+            UPDATE
+               {databaseOwner}{objectQualifier}SurveyOptions
+            SET
+               OptionName = @OptionName,
+               ViewOrder = @ViewOrder,
+               IsCorrect = @IsCorrect,
+               LastModifiedByUserID = @UserID,
+               LastModifiedDate = GETDATE()
+            WHERE
+               SurveyOptionID = @SurveyOptionID
+         END
+         -- Collect SurveyOptionID for later purpose (delete options not included, see below)
+         INSERT INTO @SurveyOptionIDs(SurveyOptionID) VALUES(@SurveyOptionID)
+         FETCH NEXT FROM curAnswers INTO @SurveyOptionID, @OptionName, @ViewOrder, @IsCorrect
+      END
+      CLOSE curAnswers
+      DEALLOCATE curAnswers
+      -- Delete option that were not submitted in the XML
+      DELETE FROM {databaseOwner}{objectQualifier}SurveyOptions WHERE SurveyID = @SurveyID AND SurveyOptionID NOT IN (SELECT SurveyOptionID FROM @SurveyOptionIDs)
+
+      IF @IsOpenTransaction = 1
+      BEGIN
+         COMMIT TRANSACTION
+         SET @IsOpenTransaction = 0
+      END
+   END TRY
+   BEGIN CATCH
+      IF @IsOpenTransaction = 1
+      BEGIN
+         ROLLBACK TRANSACTION
+      END
+      DECLARE @ErrMsg nvarchar(max), @ErrSeverity int
+      SELECT @ErrMsg = ERROR_MESSAGE(), @ErrSeverity = ERROR_SEVERITY()
+      RAISERROR(@ErrMsg, @ErrSeverity, 1)
+   END CATCH
+END
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurveyOption') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}AddSurveyOption
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}DeleteSurveyOption') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}DeleteSurveyOption
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurveyOptions') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}GetSurveyOptions
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}UpdateSurveyOption') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}UpdateSurveyOption
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurveyResult') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}AddSurveyResult
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}AddSurveyResult_cookie') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}AddSurveyResult_cookie
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Add') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Add
+GO
+
+/*
+This creates the answers selected by a participant
+*/
+CREATE PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Add
+   @AuthorizedUsersOnly bit,
+   @SurveyResultsXml xml
+AS
+BEGIN
+   DECLARE @iDoc int
+   DECLARE @SurveyOptionID int
+   DECLARE @UserID int
+   DECLARE @IPAddress nvarchar(50)
+   DECLARE @TextAnswer nvarchar(max)
+   DECLARE @ResultUserID uniqueidentifier
+   DECLARE @Count int
+
+   BEGIN TRY
+      BEGIN TRANSACTION
+      EXEC sp_xml_preparedocument @idoc OUTPUT, @SurveyResultsXml
+
+      DECLARE curSurveyResults CURSOR FOR
+      SELECT
+         SurveyOptionID,
+         UserID,
+         IPAddress,
+         TextAnswer,
+         ResultUserID
+      FROM
+         OPENXML(@iDoc, '/SurveyResults/SurveyResult', 2) WITH (SurveyOptionID int, UserID int, IPAddress nvarchar(50), TextAnswer nvarchar(max), ResultUserID uniqueidentifier)
+
+      OPEN curSurveyResults
+      FETCH NEXT FROM curSurveyResults INTO @SurveyOptionID, @UserID, @IPAddress, @TextAnswer, @ResultUserID
+      WHILE @@FETCH_STATUS = 0
+      BEGIN
+         SET @Count = 0
+         IF @AuthorizedUsersOnly = 1
+         BEGIN
+            SELECT @Count = COUNT(*) FROM {databaseOwner}{objectQualifier}SurveyResults WHERE UserID = @UserID AND SurveyOptionID = @SurveyOptionID
+         END
+
+         /*
+         If only authorized users may vote and the user has already voted ignore the submission
+         */
+         IF @Count = 0
+         BEGIN
+            UPDATE
+               {databaseOwner}{objectQualifier}SurveyOptions
+            SET
+               Votes = Votes + 1 
+            WHERE
+               SurveyOptionID = @SurveyOptionID 
+
+            INSERT INTO {databaseOwner}{objectQualifier}SurveyResults (SurveyOptionID, UserID, IPAddress, TextAnswer, ResultUserID)
+            VALUES (
+               @SurveyOptionID,
+               CASE WHEN @UserID = 0 THEN NULL ELSE @UserID END,
+               CASE WHEN @IPAddress = '' THEN NULL ELSE @IPAddress END,
+               CASE WHEN @TextAnswer = '' THEN NULL ELSE @TextAnswer END,
+               @ResultUserID
+            )
+         END
+
+         FETCH NEXT FROM curSurveyResults INTO @SurveyOptionID, @UserID, @IPAddress, @TextAnswer, @ResultUserID
+      END
+
+      CLOSE curSurveyResults
+      DEALLOCATE curSurveyResults
+
+      IF @@TRANCOUNT > 0
+      BEGIN
+         COMMIT TRANSACTION
+      END
+   END TRY
+   BEGIN CATCH
+      ROLLBACK TRANSACTION
+      DECLARE @ErrMsg nvarchar(4000)
+      DECLARE @ErrSeverity int
+      SELECT @ErrMsg = ERROR_MESSAGE(), @ErrSeverity = ERROR_SEVERITY()
+      RAISERROR(@ErrMsg, @ErrSeverity, 1)
+   END CATCH
+END
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}DeleteSurveyResultData') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}DeleteSurveyResultData
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurvey') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}GetSurvey
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurveys') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}GetSurveys
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}UpdateSurvey') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}UpdateSurvey
+GO
+
+/*
+This deletes all the votes and sets the counters to 0
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResultData_Delete') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResultData_Delete
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}SurveyResultData_Delete
+   @ModuleID int
+AS
+BEGIN
+   DECLARE @SurveyResultID int
+   DECLARE @SurveyOptionID int
+
+   BEGIN TRY
+      BEGIN TRANSACTION  
+      DECLARE curSurveyResultsData CURSOR FOR
+      SELECT
+         sr.SurveyResultID,
+         so.SurveyOptionID
+      FROM
+         {databaseOwner}{objectQualifier}Surveys s
+         INNER JOIN {databaseOwner}{objectQualifier}SurveyOptions so ON so.SurveyID = s.SurveyID
+         INNER JOIN {databaseOwner}{objectQualifier}SurveyResults sr ON sr.SurveyOptionID = so.SurveyOptionID
+      WHERE
+         s.ModuleID = @ModuleID
+
+      OPEN curSurveyResultsData
+
+      FETCH NEXT FROM curSurveyResultsData INTO @SurveyResultID, @SurveyOptionID
+      WHILE @@FETCH_STATUS = 0
+      BEGIN
+         DELETE FROM {databaseOwner}{objectQualifier}SurveyResults WHERE SurveyResultID = @SurveyResultID
+         UPDATE {databaseOwner}{objectQualifier}SurveyOptions  SET Votes = 0 WHERE SurveyOptionID = @SurveyOptionID
+         FETCH NEXT FROM curSurveyResultsData INTO @SurveyResultID, @SurveyOptionID
+      END
+   
+      CLOSE curSurveyResultsData
+      DEALLOCATE curSurveyResultsData
+      COMMIT TRANSACTION
+   END TRY
+   BEGIN CATCH
+      ROLLBACK TRANSACTION
+      DECLARE @ErrMsg nvarchar(max), @ErrSeverity int
+      SELECT @ErrMsg = ERROR_MESSAGE(), @ErrSeverity = ERROR_SEVERITY()
+      RAISERROR(@ErrMsg, @ErrSeverity, 1)
+   END CATCH
+END
+GO
+
+/*
+Not needed anymore
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}GetSurveyResultData') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}GetSurveyResultData
+GO
+
+/*
+This gets all the votes of one Survey module for reporting
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_GetAll') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_GetAll
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_GetAll
+   @ModuleID int
+AS
+BEGIN
+   SELECT
+      s.Question, 
+      s.OptionType,
+      so.OptionName,
+      so.Votes,
+      so.IsCorrect,
+      sr.UserID,
+      sr.IPAddress,
+      sr.TextAnswer,
+      sr.CreatedDate
+   FROM
+      {databaseOwner}{objectQualifier}Surveys s
+      INNER JOIN {databaseOwner}{objectQualifier}SurveyOptions so ON so.SurveyID = s.SurveyID
+      INNER JOIN {databaseOwner}{objectQualifier}SurveyResults sr ON sr.SurveyOptionID = so.SurveyOptionID
+   WHERE
+      s.ModuleID = @ModuleID
+   ORDER BY
+      s.ViewOrder,
+      so.ViewOrder
+END
+GO
+
+/*
+This gets all the votes for one question
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Get') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Get
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Get
+   @SurveyID int
+AS
+BEGIN
+   DECLARE @OptionType int
+
+   SELECT @OptionType = OptionType FROM {databaseOwner}{objectQualifier}Surveys WHERE SurveyID = @SurveyID
+
+   IF @OptionType IN (0, 1)
+   BEGIN
+      SELECT
+         OptionName,
+         Votes,
+         IsCorrect
+      FROM
+         {databaseOwner}{objectQualifier}SurveyOptions
+      WHERE
+         SurveyID = @SurveyID
+      ORDER BY
+         ViewOrder
+   END
+   ELSE
+   BEGIN
+      SELECT
+         sr.TextAnswer AS OptionName,
+         COUNT(sr.TextAnswer) AS Votes,
+         0 As IsCorrect
+      FROM
+         {databaseOwner}{objectQualifier}SurveyOptions so
+         INNER JOIN {databaseOwner}{objectQualifier}SurveyResults sr ON sr.SurveyOptionID = so.SurveyOptionID
+      WHERE
+         so.SurveyID = @SurveyID
+      GROUP BY
+         sr.TextAnswer
+      ORDER BY
+         Votes DESC,
+         sr.TextAnswer
+   END
+END
+GO
+
+/*
+This creates a VIEW with all the columns from all the Survey tables
+(and all the modules)
+*/
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}vSurveys_CsvExport') AND type = N'V')
+DROP VIEW {databaseOwner}{objectQualifier}vSurveys_CsvExport
+GO
+
+CREATE VIEW {databaseOwner}{objectQualifier}vSurveys_CsvExport
+AS
+   SELECT
+      s.SurveyID,
+      s.ModuleID,
+      s.Question,
+      s.ViewOrder AS SurveyViewOrder,
+      s.OptionType,
+      s.IsStatistical,
+      so.ViewOrder AS SurveyOptionViewOrder,
+      so.OptionName,
+      so.Votes,
+      so.IsCorrect,
+      sr.UserID,
+      sr.IPAddress,
+      sr.TextAnswer,
+      sr.ResultUserID,
+      sr.CreatedDate
+   FROM
+      {databaseOwner}{objectQualifier}Surveys s
+      LEFT JOIN {databaseOwner}{objectQualifier}SurveyOptions so ON so.SurveyID = s.SurveyID
+      LEFT JOIN {databaseOwner}{objectQualifier}SurveyResults sr ON sr.SurveyOptionID = so.SurveyOptionID
+GO
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/

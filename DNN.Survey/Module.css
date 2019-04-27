@@ -1,0 +1,41 @@
+﻿div.SurveyFormItem {
+   margin-bottom: 1rem;
+}
+
+span.SurveyLabel {
+   font-weight: bold;
+}
+
+label.dnnBoxLabel {
+   font-weight: normal;
+}
+
+table.dnnFormRadioButtons
+{
+   width: 40%;
+}
+
+span.SurveyHandle
+{
+   cursor: pointer;
+}
+
+div.dnnCheckBoxFormItemForFaxQuestion {
+   /* PLEASE DO NOT CHANGE THIS IN ANY WAY! */
+   visibility: hidden;
+   display: none;
+}
+
+img.surveyImageLeft
+{
+   width: 32px;
+   height: 32px;
+   visibility: visible;
+   display: inline-block;
+}
+
+div.surveyQuizResult
+{
+   font-size: 18px !important;
+   font-weight: bold;
+}
