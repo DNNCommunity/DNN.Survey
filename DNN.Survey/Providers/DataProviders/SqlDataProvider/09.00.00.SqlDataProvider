@@ -72,7 +72,7 @@ BEGIN
       */
       0 AS ChartType,
       CreatedDate,
-      CreatedByUser
+      CreatedByUserID
    FROM
       {databaseOwner}{objectQualifier}Surveys
    WHERE

@@ -146,9 +146,9 @@ select SurveyID,
        Question,
        ViewOrder,
        OptionType,
-       'CreatedByUser' = {objectQualifier}Users.FirstName + ' ' + {objectQualifier}Users.LastName,
+       {objectQualifier}Users.FirstName + ' ' + {objectQualifier}Users.LastName AS CreatedByUser,
        CreatedDate,
-       'Votes' = ( select sum(Votes) from {objectQualifier}SurveyOptions where {objectQualifier}SurveyOptions.SurveyID = {objectQualifier}Surveys.SurveyID )
+       ( select sum(Votes) from {objectQualifier}SurveyOptions where {objectQualifier}SurveyOptions.SurveyID = {objectQualifier}Surveys.SurveyID ) AS Votes
 from   {objectQualifier}Surveys
 left outer join {objectQualifier}Users on {objectQualifier}Surveys.CreatedByUser = {objectQualifier}Users.UserID
 where  SurveyID = @SurveyID

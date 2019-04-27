@@ -100,7 +100,7 @@ SELECT
        S.OptionType,
        S.CreatedByUser,
        S.CreatedDate,
-       'Votes' = ( SELECT sum(Votes) FROM {databaseOwner}{objectQualifier}SurveyOptions SO WHERE SO.SurveyID = S.SurveyID )
+       ( SELECT sum(Votes) FROM {databaseOwner}{objectQualifier}SurveyOptions SO WHERE SO.SurveyID = S.SurveyID ) AS Votes
 FROM   {databaseOwner}{objectQualifier}Surveys S
 WHERE  SurveyID = @SurveyID
 AND    ModuleID = @ModuleID
