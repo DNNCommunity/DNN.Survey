@@ -38,12 +38,13 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>..\..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="build.ps1" />
     <Content Include="Controls\CanvasControl.ascx" />
     <Content Include="Controls\PrivacyConfirmationCheckBox.ascx" />
     <Content Include="Controls\SurveyCheckBoxes.ascx" />
@@ -56,6 +57,7 @@
     <Content Include="images\icon_survey_32px.png" />
     <Content Include="images\info.png" />
     <Content Include="images\not-correct.png" />
+    <Content Include="js\Chart.min.js" />
     <Content Include="Module.css" />
     <Content Include="Providers\DataProviders\SqlDataProvider\04.60.00.SqlDataProvider" />
     <Content Include="Settings.ascx" />
@@ -225,6 +227,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BuildScripts\Module.Targets">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="build.cake" />
+    <Content Include="cake.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <PropertyGroup>
@@ -243,11 +250,11 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="BuildScripts\Module.Targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
+       Other similar extension points exist, see Microsoft.Common.targets. -->
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
+  <Target Name="AfterBuild" DependsOnTargets="PackageModule;CopyModule">
   </Target>
-  -->
 </Project>
