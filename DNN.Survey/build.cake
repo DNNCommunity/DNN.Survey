@@ -67,7 +67,7 @@ Task("ReleasePackage")
 	CopyFiles(sqlScripts, "./Install/Package/Providers/DataProviders/SqlDataProvider");
 
 	// COPY THE BINARIES
-	CopyFile("../../../bin/Dnn.Modules.Vendors.dll", "./Install/Package/bin/DNN.Modules.Survey.dll");
+	CopyFile("../../../bin/Dnn.Modules.Survey.dll", "./Install/Package/bin/DNN.Modules.Survey.dll");
 
 	// COPY THE SYMBOLS
 	var symbols = GetFiles("../../../bin/DNN.Modules.Survey.pdb");
