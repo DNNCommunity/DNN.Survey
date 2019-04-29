@@ -19,16 +19,24 @@
     <ItemGroup>
       <DeploymentResourceFiles Include="**\App_LocalResources\*.resx" />
     </ItemGroup>
-    <ItemGroup>
-      <DeploymentCssFiles Include="**\css\*.css" />
-    </ItemGroup>
-    <ItemGroup>
-      <DeploymentImages Include="**\images\*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(DeploymentFiles)" DestinationFolder="..\..\Survey" SkipUnchangedFiles="true" />
+     <ItemGroup>
+        <DeploymentControlFiles Include="**\Controls\*.ascx" />
+     </ItemGroup>
+     <ItemGroup>
+        <DeploymentCssFiles Include="**\css\*.css" />
+     </ItemGroup>
+     <ItemGroup>
+        <DeploymentImages Include="**\images\*" />
+     </ItemGroup>
+     <ItemGroup>
+        <DeploymentJsFiles Include="**\js\*.js" />
+     </ItemGroup>
+     <Copy SourceFiles="@(DeploymentFiles)" DestinationFolder="..\..\Survey" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(DeploymentResourceFiles)" DestinationFolder="..\..\Survey\App_LocalResources" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(DeploymentCssFiles)" DestinationFolder="..\..\Survey\css" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(DeploymentImages)" DestinationFolder="..\..\Survey\images" SkipUnchangedFiles="true" />
+     <Copy SourceFiles="@(DeploymentControlFiles)" DestinationFolder="..\..\Survey\Controls" SkipUnchangedFiles="true" />
+     <Copy SourceFiles="@(DeploymentCssFiles)" DestinationFolder="..\..\Survey\css" SkipUnchangedFiles="true" />
+     <Copy SourceFiles="@(DeploymentImages)" DestinationFolder="..\..\Survey\images" SkipUnchangedFiles="true" />
+     <Copy SourceFiles="@(DeploymentJsFiles)" DestinationFolder="..\..\Survey\js" SkipUnchangedFiles="true" />
   </Target>
   
 </Project>

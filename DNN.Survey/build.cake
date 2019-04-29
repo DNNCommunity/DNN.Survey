@@ -53,9 +53,11 @@ Task("ReleasePackage")
 	// GET THE RESOURCE FILES
 	var resourceFiles = GetFiles("./*.ascx");
 	resourceFiles.Add(GetFiles("./App_LocalResources/*.resx"));
+	resourceFiles.Add(GetFiles("./Controls/*.ascx"));
 	resourceFiles.Add(GetFiles("./**/*.css"));
 	resourceFiles.Add(GetFiles("./*.txt"));
 	resourceFiles.Add(GetFiles("./images/*"));
+	resourceFiles.Add(GetFiles("./js/*.js"));
 	foreach (var file in resourceFiles)
 	{
 		Information("Zipping resource file: " + file);
