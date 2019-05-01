@@ -49,7 +49,7 @@ BEGIN
       SurveyID,
       ModuleID,
       Question,
-      ViewOrder,
+      ROW_NUMBER() OVER (PARTITION BY ModuleID ORDER BY ViewOrder, SurveyID) AS [ViewOrder],
       /*
       The field option type changes from a character to an integer.
       Reason: In the program an Enum is used to be more flexible.
@@ -72,7 +72,7 @@ BEGIN
       */
       0 AS ChartType,
       CreatedDate,
-      CreatedByUserID
+      CreatedByUser
    FROM
       {databaseOwner}{objectQualifier}Surveys
    WHERE
