@@ -950,7 +950,7 @@ BEGIN
       SELECT
          sr.TextAnswer AS OptionName,
          COUNT(sr.TextAnswer) AS Votes,
-         0 As IsCorrect
+         so.IsCorrect
       FROM
          {databaseOwner}{objectQualifier}SurveyOptions so
          INNER JOIN {databaseOwner}{objectQualifier}SurveyResults sr ON sr.SurveyOptionID = so.SurveyOptionID
@@ -958,6 +958,7 @@ BEGIN
          so.SurveyID = @SurveyID
       GROUP BY
          sr.TextAnswer
+		 so.IsCorrect
       ORDER BY
          Votes DESC,
          sr.TextAnswer
