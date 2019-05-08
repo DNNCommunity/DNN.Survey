@@ -957,8 +957,8 @@ BEGIN
       WHERE
          so.SurveyID = @SurveyID
       GROUP BY
-         sr.TextAnswer
-		 so.IsCorrect
+         sr.TextAnswer,
+         so.IsCorrect
       ORDER BY
          Votes DESC,
          sr.TextAnswer
