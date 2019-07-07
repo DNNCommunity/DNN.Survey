@@ -32,8 +32,8 @@ using System.Web.UI;
 //
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
-[assembly: AssemblyVersion("9.0.0.0")]
-[assembly: AssemblyFileVersion("9.0.0.0")]
+[assembly: AssemblyVersion("9.0.1.0")]
+[assembly: AssemblyFileVersion("9.0.1.0")]
 
 // Add assembly reference to allow for WebResource.axd access to JavaScript files
 // see: http://aspnet.4guysfromrolla.com/articles/080906-1.aspx

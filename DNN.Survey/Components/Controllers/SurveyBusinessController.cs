@@ -43,6 +43,7 @@ namespace DNN.Modules.Survey.Components.Controllers
         private SurveyOptionsController _surveyOptionsController = null;
         private SurveysExportController _surveysExportController = null;
         private PermissionController _permissionController = null;
+        private ModuleController _moduleController = null;
 
         protected SurveysController SurveysController
         {
@@ -81,6 +82,16 @@ namespace DNN.Modules.Survey.Components.Controllers
                 if (_permissionController == null)
                     _permissionController = new PermissionController();
                 return _permissionController;
+            }
+        }
+
+        protected ModuleController ModuleController
+        {
+            get
+            {
+                if (_moduleController == null)
+                    _moduleController = new ModuleController();
+                return _moduleController;
             }
         }
         #endregion
@@ -147,9 +158,7 @@ namespace DNN.Modules.Survey.Components.Controllers
                 {
                     if (maintenance == 0)
                     {
-                        DesktopModuleInfo desktopModule = DesktopModuleController.GetDesktopModuleByFriendlyName("Survey");
-                        var mc = new ModuleController();
-                        ArrayList modulesList = mc.GetAllModules();
+                        List<ModuleInfo> modulesList = ModuleController.GetAllModules().Cast<ModuleInfo>().ToList();
 
                         foreach (object m in modulesList)
                         {

@@ -1,4 +1,7 @@
 # DNN.Survey
+
+[![Build Status](https://dev.azure.com/DNNCommunity/Community%20Modules/_apis/build/status/DNNCommunity.DNN.Survey?branchName=develop)](https://dev.azure.com/DNNCommunity/Community%20Modules/_build/latest?definitionId=7&branchName=develop)
+
 The DNN Survey module allows you to create surveys and quizes on your DNN (formerly known as DotNetNuke) web site.
 * Answers can be single-choice, multiple-choice or free text
 * Result charts (created with ChartJS)
