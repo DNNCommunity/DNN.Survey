@@ -200,7 +200,7 @@ namespace DNN.Modules.Survey
             }
             else
             {
-               ModuleController.Instance.DeleteModuleSetting(TabModuleId, settingName);
+               ModuleController.Instance.DeleteModuleSetting(ModuleId, settingName);
             }
          }
       }
