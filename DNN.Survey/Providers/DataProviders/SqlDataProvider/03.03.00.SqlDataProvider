@@ -1,0 +1,266 @@
+﻿/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search AND replace operation     *****/
+/*****       for {databaseOwner} AND {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+
+/** Change CreatedByUser column to an int for performance **/
+
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys ADD
+	CreatedByUserID int NULL
+GO
+
+UPDATE {databaseOwner}{objectQualifier}Surveys 
+SET    CreatedByUserID = convert(int,CreatedByUser)
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys
+	DROP COLUMN CreatedByUser
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys ADD
+	CreatedByUser int NOT NULL CONSTRAINT DF_{objectQualifier}Surveys_CreatedByUser DEFAULT 0
+GO
+
+UPDATE {databaseOwner}{objectQualifier}Surveys
+SET    CreatedByUser = CreatedByUserID
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys
+	DROP COLUMN CreatedByUserID
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}Surveys
+	DROP CONSTRAINT DF_{objectQualifier}Surveys_CreatedByUser
+GO
+
+/** DROP Existing Stored PROCEDUREs **/
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}AddSurvey]') AND OBJECTPROPERTY(id, N'IsPROCEDURE') = 1)
+	DROP PROCEDURE {databaseOwner}{objectQualifier}AddSurvey
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}GetSurvey]') AND OBJECTPROPERTY(id, N'IsPROCEDURE') = 1)
+	DROP PROCEDURE {databaseOwner}{objectQualifier}GetSurvey
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}[{objectQualifier}UpdateSurvey]') AND OBJECTPROPERTY(id, N'IsPROCEDURE') = 1)
+	DROP PROCEDURE {databaseOwner}{objectQualifier}UpdateSurvey
+GO
+
+/** CREATE Optimized Stored PROCEDUREs **/
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}AddSurvey
+
+@ModuleID      int,
+@Question      nvarchar(500),
+@ViewOrder     int,
+@OptionType    char(1),
+@UserID        int
+
+AS
+
+INSERT INTO {databaseOwner}{objectQualifier}Surveys ( 
+  ModuleID,
+  Question,
+  ViewOrder,
+  OptionType,
+  CreatedByUser,
+  CreatedDate
+)
+VALUES (
+  @ModuleID,
+  @Question,
+  @ViewOrder,
+  @OptionType,
+  @UserID,
+  getdate()
+)
+
+SELECT SCOPE_IDENTITY()
+
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}GetSurvey
+
+@SurveyID int,
+@ModuleID int
+
+AS
+
+SELECT 
+       S.SurveyID,
+       S.ModuleID,
+       S.Question,
+       S.ViewOrder,
+       S.OptionType,
+       S.CreatedByUser,
+       S.CreatedDate,
+       ( SELECT sum(Votes) FROM {databaseOwner}{objectQualifier}SurveyOptions SO WHERE SO.SurveyID = S.SurveyID ) AS Votes
+FROM   {databaseOwner}{objectQualifier}Surveys S
+WHERE  SurveyID = @SurveyID
+AND    ModuleID = @ModuleID
+
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}UpdateSurvey
+
+@SurveyID       int,
+@Question       nvarchar(500),
+@ViewOrder      int,
+@OptionType     char(1),
+@UserID         int
+
+AS
+
+UPDATE {databaseOwner}{objectQualifier}Surveys
+SET    Question = @Question,
+       ViewOrder = @ViewOrder,
+       OptionType = @OptionType,
+       CreatedByUser = @UserID,
+       CreatedDate = getdate()
+WHERE  SurveyID = @SurveyID
+
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyOptions ADD
+	IsCorrect bit NOT NULL CONSTRAINT DF_{objectQualifier}SurveyOptions_IsCorrect DEFAULT 0
+GO
+
+if EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}{objectQualifier}GetSurveyOptions') AND OBJECTPROPERTY(id, N'IsPROCEDURE') = 1)
+DROP PROCEDURE {databaseOwner}{objectQualifier}GetSurveyOptions
+GO
+
+if EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}{objectQualifier}AddSurveyOption') AND OBJECTPROPERTY(id, N'IsPROCEDURE') = 1)
+DROP PROCEDURE {databaseOwner}{objectQualifier}AddSurveyOption
+GO
+
+if EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}{objectQualifier}UpdateSurveyOption') AND OBJECTPROPERTY(id, N'IsPROCEDURE') = 1)
+DROP PROCEDURE {databaseOwner}{objectQualifier}UpdateSurveyOption
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}GetSurveyOptions
+
+@SurveyID int
+
+AS
+
+SELECT 
+       SO.SurveyOptionID,
+       SO.ViewOrder,
+       SO.OptionName,
+       SO.Votes,
+       SO.IsCorrect
+FROM   {databaseOwner}{objectQualifier}SurveyOptions SO
+WHERE  SO.SurveyID = @SurveyID
+ORDER BY SO.ViewOrder
+
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}AddSurveyOption
+
+@SurveyID    int,
+@OptionName  nvarchar(500),
+@ViewOrder   int,
+@IsCorrect   bit
+
+AS
+
+INSERT INTO {databaseOwner}{objectQualifier}SurveyOptions ( 
+  SurveyID,
+  OptionName,
+  ViewOrder,
+  Votes,
+  IsCorrect
+)
+VALUES (
+  @SurveyID,
+  @OptionName,
+  @ViewOrder,
+  0,
+  @IsCorrect
+)
+
+SELECT SCOPE_IDENTITY()
+
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}UpdateSurveyOption
+
+@SurveyOptionID int,
+@OptionName     nvarchar(500),
+@ViewOrder      int,
+@IsCorrect      bit
+
+AS
+
+UPDATE {databaseOwner}{objectQualifier}SurveyOptions
+SET    
+       OptionName = @OptionName,
+       ViewOrder = @ViewOrder,
+       IsCorrect = @IsCorrect
+WHERE  
+       SurveyOptionID = @SurveyOptionID
+
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}{objectQualifier}AddSurveyResult') AND OBJECTPROPERTY(id, N'IsPROCEDURE') = 1)
+DROP PROCEDURE {databaseOwner}{objectQualifier}AddSurveyResult
+GO
+
+if not EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'{databaseOwner}{objectQualifier}SurveyResults') AND OBJECTPROPERTY(id, N'IsTable') = 1)
+CREATE TABLE {databaseOwner}{objectQualifier}SurveyResults (
+	[SurveyResultID] [int] IDENTITY (1, 1) NOT NULL ,
+	[SurveyOptionID] [int] NOT NULL ,
+	[UserID] [int] NOT NULL
+) ON [PRIMARY]
+
+GO
+
+
+IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'PK_{objectQualifier}SurveyResults') AND OBJECTPROPERTY(id, N'IsPrimaryKey') = 1)
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults ADD CONSTRAINT
+	PK_{objectQualifier}SurveyResults PRIMARY KEY CLUSTERED 
+	(
+	SurveyResultID
+	) ON [PRIMARY]
+
+GO
+
+IF NOT EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions') AND OBJECTPROPERTY(id, N'IsForeignKey') = 1)
+ALTER TABLE {databaseOwner}{objectQualifier}SurveyResults ADD CONSTRAINT
+	FK_{objectQualifier}SurveyResults_{objectQualifier}SurveyOptions FOREIGN KEY
+	(
+	SurveyOptionID
+	) REFERENCES {databaseOwner}{objectQualifier}SurveyOptions
+	(
+	SurveyOptionID
+	) ON DELETE CASCADE
+	 NOT FOR REPLICATION
+
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}AddSurveyResult
+
+@SurveyOptionID  int,
+@UserID          int
+
+AS
+
+UPDATE {databaseOwner}{objectQualifier}SurveyOptions 
+SET    Votes = Votes + 1
+WHERE  SurveyOptionID = @SurveyOptionID
+
+INSERT INTO {databaseOwner}{objectQualifier}SurveyResults ( SurveyOptionID, UserID )
+VALUES ( @SurveyOptionID, @UserID )
+
+GO
+ 
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/

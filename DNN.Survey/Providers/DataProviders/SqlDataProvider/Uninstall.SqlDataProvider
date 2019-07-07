@@ -1,0 +1,65 @@
+﻿/************************************************************/
+/*****             Uninstall.SqlDataProvider            *****/
+/*****                 Version: 09.00.00                *****/
+/*****                                                  *****/
+/*****  Note: To manually execute this script you must  *****/
+/*****        perform a search and replace operation    *****/
+/*****        for {databaseOwner} and {objectQualifier} *****/
+/*****                                                  *****/
+/************************************************************/
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults') AND type = N'U')
+DROP TABLE {databaseOwner}{objectQualifier}SurveyResults
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions') AND type = N'U')
+DROP TABLE {databaseOwner}{objectQualifier}SurveyOptions
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys') AND type = N'U')
+DROP TABLE {databaseOwner}{objectQualifier}Surveys
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_AddOrChange') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_AddOrChange
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_Sort') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_Sort
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_HasVoted') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_HasVoted
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}Surveys_CsvExport') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}Surveys_CsvExport
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyOptions_AddOrChange') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyOptions_AddOrChange
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Add') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Add
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResultData_Delete') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResultData_Delete
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_GetAll') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_GetAll
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Get') AND type = N'P')
+DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Get
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}vSurveys_CsvExport') AND type = N'V')
+DROP VIEW {databaseOwner}{objectQualifier}vSurveys_CsvExport
+GO
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/

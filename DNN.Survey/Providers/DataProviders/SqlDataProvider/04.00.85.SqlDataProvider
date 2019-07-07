@@ -1,0 +1,34 @@
+﻿/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}AddSurveyResult_cookie]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}{objectQualifier}AddSurveyResult_cookie 
+GO
+
+/** Create Stored Procedure **/ 
+
+create procedure {databaseOwner}{objectQualifier}AddSurveyResult_cookie
+@SurveyOptionID int,
+@UserID int
+
+as
+
+update {databaseOwner}{objectQualifier}SurveyOptions
+set Votes = Votes + 1
+where SurveyOptionID = @SurveyOptionID
+insert into {databaseOwner}{objectQualifier}SurveyResults (SurveyOptionID, UserID)
+values (@SurveyOptionID, @UserID)
+
+GO
+
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/

@@ -1,0 +1,10 @@
+﻿/* Datepicker control */
+.surveyDatePicker {
+   max-width: 10em !important;
+}
+
+.surveyTabModuleMessage {
+   margin-left: 36%;
+   width: 43%;
+   max-width: 445px;
+}

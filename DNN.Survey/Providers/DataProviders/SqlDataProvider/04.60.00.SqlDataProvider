@@ -1,0 +1,49 @@
+﻿/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}[{objectQualifier}DeleteSurveyResultData]') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	drop procedure {databaseOwner}{objectQualifier}DeleteSurveyResultData
+GO
+
+ 
+/** Create Stored Procedure **/  
+create procedure {databaseOwner}{objectQualifier}DeleteSurveyResultData 
+@ModuleID int 
+as 
+DELETE FROM {databaseOwner}{objectQualifier}SurveyResults 
+where SurveyOptionID  
+in( 
+SELECT     
+SurveyOptionID 
+FROM         
+{databaseOwner}{objectQualifier}SurveyOptions SO INNER JOIN
+{databaseOwner}{objectQualifier}Surveys S ON SO.SurveyID = S.SurveyID
+WHERE     
+(S.ModuleID = @ModuleID) 
+)
+ 
+UPDATE {databaseOwner}{objectQualifier}SurveyOptions 
+set Votes = 0 
+where SurveyOptionID  
+in( 
+SELECT     
+SurveyOptionID 
+FROM         
+{databaseOwner}{objectQualifier}SurveyOptions SO INNER JOIN
+{databaseOwner}{objectQualifier}Surveys S ON SO.SurveyID = S.SurveyID
+WHERE     
+(S.ModuleID = @ModuleID) 
+)
+ 
+GO
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/
