@@ -567,7 +567,7 @@ BEGIN
       ResultUserID,
       CreatedDate
    FROM
-      {objectQualifier}vSurveys_CsvExport
+      {databaseOwner}{objectQualifier}vSurveys_CsvExport
    WHERE
       ModuleID = @ModuleID
    ORDER BY
