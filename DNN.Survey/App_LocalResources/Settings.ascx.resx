@@ -162,4 +162,46 @@
   <data name="SurveyType.Text" xml:space="preserve">
     <value>Survey type</value>
   </data>
+  <data name="AppearanceSecurityOptions.Text" xml:space="preserve">
+    <value>Appearance and Security Options</value>
+  </data>
+  <data name="CSVExportOptions.Text" xml:space="preserve">
+    <value>CSV Export Options</value>
+  </data>
+  <data name="TextQualifier.DoubleQuote.Text" xml:space="preserve">
+    <value>Double quotes</value>
+  </data>
+  <data name="TextQualifier.Help" xml:space="preserve">
+    <value>Select the text qualifier to use when exporting the results to a CSV file.</value>
+  </data>
+  <data name="TextQualifier.None.Text" xml:space="preserve">
+    <value>(none)</value>
+  </data>
+  <data name="TextQualifier.SingleQuote.Text" xml:space="preserve">
+    <value>Single quotes</value>
+  </data>
+  <data name="TextQualifier.Text" xml:space="preserve">
+    <value>Text Qualifier</value>
+  </data>
+  <data name="GeneralSettings.Text" xml:space="preserve">
+    <value>General Settings</value>
+  </data>
+  <data name="Separator.Comma.Text" xml:space="preserve">
+    <value>Comma</value>
+  </data>
+  <data name="Separator.Help" xml:space="preserve">
+    <value>Select the separator to use when exporting the results to a CSV file.</value>
+  </data>
+  <data name="Separator.SemiColon.Text" xml:space="preserve">
+    <value>Semicolon</value>
+  </data>
+  <data name="Separator.Space.Text" xml:space="preserve">
+    <value>Space</value>
+  </data>
+  <data name="Separator.Tab.Text" xml:space="preserve">
+    <value>Tab</value>
+  </data>
+  <data name="Separator.Text" xml:space="preserve">
+    <value>Separator</value>
+  </data>
 </root>

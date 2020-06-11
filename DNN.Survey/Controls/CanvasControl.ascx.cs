@@ -21,6 +21,7 @@
 using DNN.Modules.Survey.Components;
 using System;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 
 namespace DNN.Modules.Survey.Controls
@@ -58,7 +59,7 @@ namespace DNN.Modules.Survey.Controls
          for (int i = 0; i < labels.Length; i++)
          {
             // Let Google see the results...
-            Graph.InnerHtml += string.Format("<span>{0}: {1} ({2:0.00}%)</span>", Server.HtmlEncode(labels[i]), data[i], (data[i] == "0" ? 0 : Convert.ToDouble(data[i]) * 100 / sum));
+            Graph.InnerHtml += string.Format("<span>{0}: {1} ({2:0.00}%)</span>", labels[i], data[i], (data[i] == "0" ? 0 : Convert.ToDouble(data[i]) * 100 / sum));
          }
       }
 

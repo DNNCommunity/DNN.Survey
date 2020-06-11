@@ -36,355 +36,401 @@ using System.Xml;
 
 namespace DNN.Modules.Survey.Components.Controllers
 {
-    public class SurveyBusinessController : ModuleSearchBase, IUpgradeable, IPortable
-    {
-        #region Private Properties
-        private SurveysController _surveysController = null;
-        private SurveyOptionsController _surveyOptionsController = null;
-        private SurveysExportController _surveysExportController = null;
-        private PermissionController _permissionController = null;
-        private ModuleController _moduleController = null;
+   public class SurveyBusinessController : ModuleSearchBase, IUpgradeable, IPortable
+   {
+      #region Private Properties
+      private SurveysController _surveysController = null;
+      private SurveyOptionsController _surveyOptionsController = null;
+      private SurveysExportController _surveysExportController = null;
+      private PermissionController _permissionController = null;
+      private ModuleController _moduleController = null;
 
-        protected SurveysController SurveysController
-        {
-            get
+      protected SurveysController SurveysController
+      {
+         get
+         {
+            if (_surveysController == null)
+               _surveysController = new SurveysController();
+            return _surveysController;
+         }
+      }
+
+      protected SurveyOptionsController SurveyOptionsController
+      {
+         get
+         {
+            if (_surveyOptionsController == null)
+               _surveyOptionsController = new SurveyOptionsController();
+            return _surveyOptionsController;
+         }
+      }
+
+      protected SurveysExportController SurveysExportController
+      {
+         get
+         {
+            if (_surveysExportController == null)
+               _surveysExportController = new SurveysExportController();
+            return _surveysExportController;
+         }
+      }
+
+      protected PermissionController PermissionController
+      {
+         get
+         {
+            if (_permissionController == null)
+               _permissionController = new PermissionController();
+            return _permissionController;
+         }
+      }
+
+      protected ModuleController ModuleController
+      {
+         get
+         {
+            if (_moduleController == null)
+               _moduleController = new ModuleController();
+            return _moduleController;
+         }
+      }
+      #endregion
+
+      #region ModuleSearchBase
+      private static readonly int ModuleSearchTypeId = SearchHelper.Instance.GetSearchTypeByName("module").SearchTypeId;
+
+      public override IList<SearchDocument> GetModifiedSearchDocuments(ModuleInfo moduleInfo, DateTime beginDateUtc)
+      {
+         List<SearchDocument> docs = new List<SearchDocument>();
+         List<SurveysInfo> surveys = SurveysController.GetAll(moduleInfo.ModuleID);
+
+         foreach (SurveysInfo survey in surveys)
+         {
+            SearchDocument surveyDoc = new SearchDocument();
+            surveyDoc.UniqueKey = string.Format("{0}_{1}_{2}", moduleInfo.ModuleDefinition.DefinitionName, moduleInfo.PortalID, survey.SurveyID);
+            surveyDoc.NumericKeys.Add("SurveyID", survey.SurveyID);
+            surveyDoc.Title = moduleInfo.ModuleTitle;
+            surveyDoc.Body = survey.Question;
+            surveyDoc.AuthorUserId = (survey.LastModifiedByUserID == null ? survey.CreatedByUserID : survey.LastModifiedByUserID.Value);
+            surveyDoc.ModuleId = moduleInfo.ModuleID;
+            surveyDoc.ModuleDefId = moduleInfo.ModuleDefID;
+            surveyDoc.PortalId = moduleInfo.PortalID;
+            surveyDoc.TabId = moduleInfo.ParentTab.TabID;
+            surveyDoc.SearchTypeId = ModuleSearchTypeId;
+            surveyDoc.ModifiedTimeUtc = (survey.LastModifiedDate == null ? survey.CreatedDate : survey.LastModifiedDate.Value).ToUniversalTime();
+            // Important, if false, the document will be deleted from the search index
+            surveyDoc.IsActive = true;
+            docs.Add(surveyDoc);
+            List<SurveyOptionsInfo> surveyOptions = SurveyOptionsController.GetAll(survey.SurveyID);
+            foreach (SurveyOptionsInfo surveyOption in surveyOptions)
             {
-                if (_surveysController == null)
-                    _surveysController = new SurveysController();
-                return _surveysController;
+               SearchDocument surveyOptionDoc = new SearchDocument();
+               surveyOptionDoc.UniqueKey = string.Format("{0}_{1}_{2}_{3}", moduleInfo.ModuleDefinition.DefinitionName, moduleInfo.PortalID, survey.SurveyID, surveyOption.SurveyOptionID);
+               surveyOptionDoc.NumericKeys.Add("SurveyOptionID", surveyOption.SurveyOptionID);
+               surveyOptionDoc.Title = survey.Question;
+               surveyOptionDoc.Body = surveyOption.OptionName;
+               surveyOptionDoc.AuthorUserId = (surveyOption.LastModifiedByUserID == null ? surveyOption.CreatedByUserID : surveyOption.LastModifiedByUserID.Value);
+               surveyOptionDoc.ModuleId = moduleInfo.ModuleID;
+               surveyOptionDoc.ModuleDefId = moduleInfo.ModuleDefID;
+               surveyOptionDoc.PortalId = moduleInfo.PortalID;
+               surveyOptionDoc.TabId = moduleInfo.ParentTab.TabID;
+               surveyOptionDoc.SearchTypeId = ModuleSearchTypeId;
+               surveyOptionDoc.ModifiedTimeUtc = (surveyOption.LastModifiedDate == null ? surveyOption.CreatedDate : surveyOption.LastModifiedDate.Value).ToUniversalTime();
+               surveyOptionDoc.IsActive = true;
+               docs.Add(surveyOptionDoc);
             }
-        }
+         }
+         return docs;
+      }
+      #endregion
 
-        protected SurveyOptionsController SurveyOptionsController
-        {
-            get
+      #region IUpgradeable
+      public string UpgradeModule(string version)
+      {
+         string[] _version = version.Split(new char[] { '.' });
+         int major = Convert.ToInt32(_version[0]);
+         int minor = Convert.ToInt32(_version[1]);
+         int maintenance = Convert.ToInt32(_version[2]);
+
+         if (major == 9)
+         {
+            if (minor == 0)
             {
-                if (_surveyOptionsController == null)
-                    _surveyOptionsController = new SurveyOptionsController();
-                return _surveyOptionsController;
-            }
-        }
+               if (maintenance == 0)
+               {
+                  List<ModuleInfo> modulesList = ModuleController.GetAllModules().Cast<ModuleInfo>().ToList();
 
-        protected SurveysExportController SurveysExportController
-        {
-            get
+                  foreach (object m in modulesList)
+                  {
+                     ModuleInfo module = (ModuleInfo)m;
+                     if (module.DesktopModule.FriendlyName == "Survey")
+                     {
+                        ModulePermissionCollection modulePermissions = module.ModulePermissions;
+                        // Setting surveyresultstype: 0 = Public, 1 = Private
+                        // goes to Permission
+                        string surveyResultsTypeSetting = module.ModuleSettings["surveyresultstype"].ToString();
+                        if (string.IsNullOrEmpty(surveyResultsTypeSetting))
+                        {
+                           // if not defined: make it private to be safe...
+                           surveyResultsTypeSetting = "1";
+                        }
+                        // If it is public: All Users (RoleID: -1) have the permission to view the results
+                        if (surveyResultsTypeSetting == "0")
+                        {
+                           List<ModulePermissionInfo> viewResultsPermissions = modulePermissions.Where(mp => mp.ModuleID == module.ModuleID && mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.RoleID == -1).ToList();
+                           if (viewResultsPermissions.Count() == 0)
+                           {
+                              ModulePermissionInfo viewResultPermission = new ModulePermissionInfo();
+                              viewResultPermission.AllowAccess = true;
+                              viewResultPermission.RoleID = -1;
+                              viewResultPermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.VIEW_RESULTS_PERMISSION)[0]).PermissionID;
+                              viewResultPermission.ModuleID = module.ModuleID;
+                              modulePermissions.Add(viewResultPermission);
+                              ModulePermissionController.SaveModulePermissions(module);
+                           }
+                        }
+                        // All roles and user who have edit permissions get the View results permission as well
+                        List<ModulePermissionInfo> editModulePermissions = modulePermissions.Where(mp => mp.ModuleID == module.ModuleID && mp.PermissionCode == "SYSTEM_MODULE_DEFINITION" && mp.PermissionKey == "EDIT").ToList();
+                        foreach (ModulePermissionInfo editModulePermission in editModulePermissions)
+                        {
+                           List<ModulePermissionInfo> viewResultsPermissions;
+                           ModulePermissionInfo viewResultPermission = new ModulePermissionInfo();
+                           if (String.IsNullOrEmpty(editModulePermission.RoleName))
+                           {
+                              // when the role name is empty it is a user poermission
+                              viewResultsPermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.UserID == editModulePermission.UserID).ToList();
+                              viewResultPermission.UserID = editModulePermission.UserID;
+                              viewResultPermission.Username = editModulePermission.Username;
+                           }
+                           else
+                           {
+                              // role permission
+                              viewResultsPermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.RoleID == editModulePermission.RoleID).ToList();
+                              viewResultPermission.RoleID = editModulePermission.RoleID;
+                              viewResultPermission.RoleName = editModulePermission.RoleName;
+                           }
+                           if (viewResultsPermissions.Count() == 0)
+                           {
+                              // if the permission for this user/role is not already set...
+                              viewResultPermission.AllowAccess = true;
+                              viewResultPermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.VIEW_RESULTS_PERMISSION)[0]).PermissionID;
+                              viewResultPermission.ModuleID = module.ModuleID;
+                              modulePermissions.Add(viewResultPermission);
+                              ModulePermissionController.SaveModulePermissions(module);
+                           }
+                        }
+                        // Setting surveytracking: 0 = Cookie, 1 = Registered user
+                        // goes to Permission
+                        string surveyTrackingSetting = module.ModuleSettings["surveytracking"].ToString();
+                        if (string.IsNullOrEmpty(surveyTrackingSetting))
+                        {
+                           // if not defined: make it per user
+                           surveyTrackingSetting = "1";
+                        }
+                        // If it is Cookie tracking: All users (RoleId: -1) have the permissions to participate in the survey
+                        // Otherwise: Registered Users have the permission to participate in the survey
+                        // Is there a better way than using the hard coded role IDs?
+                        int permittedRoleID = (surveyTrackingSetting == "0" ? -1 : 1);
+                        List<ModulePermissionInfo> participatePermissions = modulePermissions.Where(mp => mp.ModuleID == module.ModuleID && mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.PARTICIPATE_PERMISSION && mp.RoleID == permittedRoleID).ToList();
+                        if (participatePermissions.Count() == 0)
+                        {
+                           ModulePermissionInfo participatePermission = new ModulePermissionInfo();
+                           participatePermission.AllowAccess = true;
+                           participatePermission.RoleID = permittedRoleID;
+                           participatePermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.PARTICIPATE_PERMISSION)[0]).PermissionID;
+                           participatePermission.ModuleID = module.ModuleID;
+                           modulePermissions.Add(participatePermission);
+                           ModulePermissionController.SaveModulePermissions(module);
+                        }
+                        // Is Module a quiz?
+                        List<SurveysInfo> surveys = SurveysController.GetAll(module.ModuleID);
+                        bool isQuiz = false;
+                        List<SurveysInfo> statisticalSurveys = new List<SurveysInfo>();
+                        foreach (SurveysInfo survey in surveys)
+                        {
+                           List<SurveyOptionsInfo> surveyOptions = SurveyOptionsController.GetAll(survey.SurveyID);
+                           int countCorrect = surveyOptions.Where(so => so.IsCorrect).Count();
+                           if (countCorrect > 0)
+                           {
+                              isQuiz = true;
+                           }
+                           else
+                           {
+                              statisticalSurveys.Add(survey);
+                           }
+                        }
+                        if (isQuiz)
+                        {
+                           ModuleController.Instance.UpdateModuleSetting(module.ModuleID, "SurveyType", ((int)SurveyType.Quiz).ToString());
+                           foreach (SurveysInfo statisticalSurvey in statisticalSurveys)
+                           {
+                              statisticalSurvey.IsStatistical = true;
+                              SurveysController.AddOrChange(statisticalSurvey, XmlDataProvider.SurveyOptionsToXml(SurveyOptionsController.GetAll(statisticalSurvey.SurveyID)), -1);
+                           }
+                        }
+                        string surveyClosingDate = module.ModuleSettings["surveyclosingdate"].ToString();
+                        if (!(string.IsNullOrEmpty(surveyClosingDate)))
+                        {
+                           ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyclosingdate");
+                           ModuleController.Instance.UpdateModuleSetting(module.ModuleID, "SurveyClosingDate", surveyClosingDate);
+                        }
+                        // Remove unused old settings
+                        ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresultstype");
+                        ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveytracking");
+                        ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresulttemplate");
+                        ModuleController.Instance.DeleteTabModuleSetting(module.TabModuleID, "surveygraphwidth");
+                     }
+                  }
+               }
+            }
+         }
+         return string.Format("Upgrading to version {0}.", version);
+      }
+      #endregion
+
+      #region IPortable
+      public string ExportModule(int moduleID)
+      {
+         StringBuilder exportXml = new StringBuilder();
+         //Hashtable moduleSettings = ModuleController.Instance.GetModule(moduleID, Null.NullInteger, true).ModuleSettings;
+
+         exportXml.Append("<Survey>");
+         //if (moduleSettings == null)
+         //{
+         //   exportXml.Append("<ModuleSettings />");
+         //}
+         //else
+         //{
+         //   exportXml.Append("<ModuleSettings>");
+         //   foreach (KeyValuePair<string, string> setting in moduleSettings)
+         //   {
+         //      exportXml.Append(String.Format("<ModuleSetting><{0}>{1}</{0}></ModuleSetting>", setting.Key, setting.Value));
+         //   }
+         //   exportXml.Append("</ModuleSettings>");
+         //}
+
+         List<SurveysInfo> surveys = SurveysController.GetAll(moduleID);
+         exportXml.Append(XmlDataProvider.SurveysToXml(surveys, true));
+         exportXml.Append("</Survey>");
+
+         return exportXml.ToString();
+      }
+
+      public void ImportModule(int moduleID, string content, string version, int userID)
+      {
+         string[] versions = version.Split(new char[] { '.' });
+
+         if (Convert.ToInt32(versions[0]) < 9)
+         {
+            // Old Xml data sructure by the original core module
+            XmlNode surveysNode = Globals.GetContent(content, "surveys");
+            foreach (XmlNode surveyNode in surveysNode)
             {
-                if (_surveysExportController == null)
-                    _surveysExportController = new SurveysExportController();
-                return _surveysExportController;
+               SurveysInfo survey = new SurveysInfo();
+               survey.SurveyID = 0;
+               survey.ModuleID = moduleID;
+               survey.Question = surveyNode.SelectSingleNode("question").InnerText;
+               survey.ViewOrder = Convert.ToInt32(surveyNode.SelectSingleNode("vieworder").InnerText);
+               survey.OptionType = (QuestionType)Convert.ToInt32(surveyNode.SelectSingleNode("optiontype").InnerText);
+
+               XmlNode surveyOptionsNode = surveyNode.SelectSingleNode("surveyoptions");
+               List<SurveyOptionsInfo> surveyOptions = new List<SurveyOptionsInfo>();
+               foreach (XmlNode surveyOptionNode in surveyOptionsNode)
+               {
+                  SurveyOptionsInfo surveyOption = new SurveyOptionsInfo();
+                  surveyOption.SurveyOptionID = 0;
+                  surveyOption.OptionName = surveyOptionNode.SelectSingleNode("optionname").InnerText;
+                  surveyOption.IsCorrect = Convert.ToBoolean(surveyOptionNode.SelectSingleNode("iscorrect").InnerText);
+                  surveyOption.ViewOrder = Convert.ToInt32(surveyOptionNode.SelectSingleNode("vieworder").InnerText);
+                  surveyOptions.Add(surveyOption);
+               }
+               SurveysController.AddOrChange(survey, XmlDataProvider.SurveyOptionsToXml(surveyOptions), userID);
             }
-        }
-
-        protected PermissionController PermissionController
-        {
-            get
-            {
-                if (_permissionController == null)
-                    _permissionController = new PermissionController();
-                return _permissionController;
-            }
-        }
-
-        protected ModuleController ModuleController
-        {
-            get
-            {
-                if (_moduleController == null)
-                    _moduleController = new ModuleController();
-                return _moduleController;
-            }
-        }
-        #endregion
-
-        #region ModuleSearchBase
-        private static readonly int ModuleSearchTypeId = SearchHelper.Instance.GetSearchTypeByName("module").SearchTypeId;
-
-        public override IList<SearchDocument> GetModifiedSearchDocuments(ModuleInfo moduleInfo, DateTime beginDateUtc)
-        {
-            List<SearchDocument> docs = new List<SearchDocument>();
-            List<SurveysInfo> surveys = SurveysController.GetAll(moduleInfo.ModuleID);
-
+         }
+         else
+         {
+            XmlNode root = Globals.GetContent(content, "Survey");
+            string exportString = root.SelectSingleNode("Surveys").OuterXml;
+            exportString = exportString.Replace("[MODULE_ID]", moduleID.ToString()).Replace("[CREATED_DATE]", string.Format("{0:yyyy-MM-dd hh:mm:ss}", DateTime.Now)).Replace("[USER_ID]", userID.ToString());
+            List<SurveysInfo> surveys = XmlDataProvider.SurveysFromXml(exportString);
             foreach (SurveysInfo survey in surveys)
             {
-                SearchDocument surveyDoc = new SearchDocument();
-                surveyDoc.UniqueKey = string.Format("{0}_{1}_{2}", moduleInfo.ModuleDefinition.DefinitionName, moduleInfo.PortalID, survey.SurveyID);
-                surveyDoc.NumericKeys.Add("SurveyID", survey.SurveyID);
-                surveyDoc.Title = moduleInfo.ModuleTitle;
-                surveyDoc.Body = survey.Question;
-                surveyDoc.AuthorUserId = (survey.LastModifiedByUserID == null ? survey.CreatedByUserID : survey.LastModifiedByUserID.Value);
-                surveyDoc.ModuleId = moduleInfo.ModuleID;
-                surveyDoc.ModuleDefId = moduleInfo.ModuleDefID;
-                surveyDoc.PortalId = moduleInfo.PortalID;
-                surveyDoc.TabId = moduleInfo.ParentTab.TabID;
-                surveyDoc.SearchTypeId = ModuleSearchTypeId;
-                surveyDoc.ModifiedTimeUtc = (survey.LastModifiedDate == null ? survey.CreatedDate : survey.LastModifiedDate.Value).ToUniversalTime();
-                // Important, if false, the document will be deleted from the search index
-                surveyDoc.IsActive = true;
-                docs.Add(surveyDoc);
-                List<SurveyOptionsInfo> surveyOptions = SurveyOptionsController.GetAll(survey.SurveyID);
-                foreach (SurveyOptionsInfo surveyOption in surveyOptions)
-                {
-                    SearchDocument surveyOptionDoc = new SearchDocument();
-                    surveyOptionDoc.UniqueKey = string.Format("{0}_{1}_{2}_{3}", moduleInfo.ModuleDefinition.DefinitionName, moduleInfo.PortalID, survey.SurveyID, surveyOption.SurveyOptionID);
-                    surveyOptionDoc.NumericKeys.Add("SurveyOptionID", surveyOption.SurveyOptionID);
-                    surveyOptionDoc.Title = survey.Question;
-                    surveyOptionDoc.Body = surveyOption.OptionName;
-                    surveyOptionDoc.AuthorUserId = (surveyOption.LastModifiedByUserID == null ? surveyOption.CreatedByUserID : surveyOption.LastModifiedByUserID.Value);
-                    surveyOptionDoc.ModuleId = moduleInfo.ModuleID;
-                    surveyOptionDoc.ModuleDefId = moduleInfo.ModuleDefID;
-                    surveyOptionDoc.PortalId = moduleInfo.PortalID;
-                    surveyOptionDoc.TabId = moduleInfo.ParentTab.TabID;
-                    surveyOptionDoc.SearchTypeId = ModuleSearchTypeId;
-                    surveyOptionDoc.ModifiedTimeUtc = (surveyOption.LastModifiedDate == null ? surveyOption.CreatedDate : surveyOption.LastModifiedDate.Value).ToUniversalTime();
-                    surveyOptionDoc.IsActive = true;
-                    docs.Add(surveyOptionDoc);
-                }
+               survey.SurveyID = 0;
+               survey.ModuleID = moduleID;
+               SurveysController.AddOrChange(survey, survey.SurveyOptionsXml, userID);
             }
-            return docs;
-        }
-        #endregion
+         }
+      }
+      #endregion
+      #region CSV Export
+      public string CSVExport(int moduleID, string resourceFile, Separator separator, TextQualifier textQualifier)
+      {
+         StringBuilder csvBuilder = new StringBuilder();
+         csvBuilder.Append(string.Format("{0}SurveyID{0}{1}{0}Question{0}{1}{0}Question Type{0}{1}{0}Statistical{0}{1}{0}Answer{0}{1}{0}Votes{0}{1}{0}Correct Answer{0}{1}{0}UserID{0}{1}{0}IP Address{0}{1}{0}GUID{0}{1}{0}Date\r\n", GetTextQualifierCharacter(textQualifier), GetSeparatorCharacter(separator)));
 
-        #region IUpgradeable
-        public string UpgradeModule(string version)
-        {
-            string[] _version = version.Split(new char[] { '.' });
-            int major = Convert.ToInt32(_version[0]);
-            int minor = Convert.ToInt32(_version[1]);
-            int maintenance = Convert.ToInt32(_version[2]);
-
-            if (major == 9)
-            {
-                if (minor == 0)
-                {
-                    if (maintenance == 0)
-                    {
-                        List<ModuleInfo> modulesList = ModuleController.GetAllModules().Cast<ModuleInfo>().ToList();
-
-                        foreach (object m in modulesList)
-                        {
-                            ModuleInfo module = (ModuleInfo)m;
-                            if (module.DesktopModule.FriendlyName == "Survey")
-                            {
-                                ModulePermissionCollection modulePermissions = module.ModulePermissions;
-                                // Setting surveyresultstype: 0 = Public, 1 = Private
-                                // goes to Permission
-                                string surveyResultsTypeSetting = module.ModuleSettings["surveyresultstype"].ToString();
-                                if (string.IsNullOrEmpty(surveyResultsTypeSetting))
-                                {
-                                    // if not defined: make it private to be safe...
-                                    surveyResultsTypeSetting = "1";
-                                }
-                                // If it is public: All Users (RoleID: -1) have the permission to view the results
-                                if (surveyResultsTypeSetting == "0")
-                                {
-                                    List<ModulePermissionInfo> viewResultsPermissions = modulePermissions.Where(mp => mp.ModuleID == module.ModuleID && mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.RoleID == -1).ToList();
-                                    if (viewResultsPermissions.Count() == 0)
-                                    {
-                                        ModulePermissionInfo viewResultPermission = new ModulePermissionInfo();
-                                        viewResultPermission.AllowAccess = true;
-                                        viewResultPermission.RoleID = -1;
-                                        viewResultPermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.VIEW_RESULTS_PERMISSION)[0]).PermissionID;
-                                        viewResultPermission.ModuleID = module.ModuleID;
-                                        modulePermissions.Add(viewResultPermission);
-                                        ModulePermissionController.SaveModulePermissions(module);
-                                    }
-                                }
-                                // All roles and user who have edit permissions get the View results permission as well
-                                List<ModulePermissionInfo> editModulePermissions = modulePermissions.Where(mp => mp.ModuleID == module.ModuleID && mp.PermissionCode == "SYSTEM_MODULE_DEFINITION" && mp.PermissionKey == "EDIT").ToList();
-                                foreach (ModulePermissionInfo editModulePermission in editModulePermissions)
-                                {
-                                    List<ModulePermissionInfo> viewResultsPermissions;
-                                    ModulePermissionInfo viewResultPermission = new ModulePermissionInfo();
-                                    if (String.IsNullOrEmpty(editModulePermission.RoleName))
-                                    {
-                                        // when the role name is empty it is a user poermission
-                                        viewResultsPermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.UserID == editModulePermission.UserID).ToList();
-                                        viewResultPermission.UserID = editModulePermission.UserID;
-                                        viewResultPermission.Username = editModulePermission.Username;
-                                    }
-                                    else
-                                    {
-                                        // role permission
-                                        viewResultsPermissions = modulePermissions.Where(mp => mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.VIEW_RESULTS_PERMISSION && mp.RoleID == editModulePermission.RoleID).ToList();
-                                        viewResultPermission.RoleID = editModulePermission.RoleID;
-                                        viewResultPermission.RoleName = editModulePermission.RoleName;
-                                    }
-                                    if (viewResultsPermissions.Count() == 0)
-                                    {
-                                        // if the permission for this user/role is not already set...
-                                        viewResultPermission.AllowAccess = true;
-                                        viewResultPermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.VIEW_RESULTS_PERMISSION)[0]).PermissionID;
-                                        viewResultPermission.ModuleID = module.ModuleID;
-                                        modulePermissions.Add(viewResultPermission);
-                                        ModulePermissionController.SaveModulePermissions(module);
-                                    }
-                                }
-                                // Setting surveytracking: 0 = Cookie, 1 = Registered user
-                                // goes to Permission
-                                string surveyTrackingSetting = module.ModuleSettings["surveytracking"].ToString();
-                                if (string.IsNullOrEmpty(surveyTrackingSetting))
-                                {
-                                    // if not defined: make it per user
-                                    surveyTrackingSetting = "1";
-                                }
-                                // If it is Cookie tracking: All users (RoleId: -1) have the permissions to participate in the survey
-                                // Otherwise: Registered Users have the permission to participate in the survey
-                                // Is there a better way than using the hard coded role IDs?
-                                int permittedRoleID = (surveyTrackingSetting == "0" ? -1 : 1);
-                                List<ModulePermissionInfo> participatePermissions = modulePermissions.Where(mp => mp.ModuleID == module.ModuleID && mp.PermissionCode == ModuleSecurity.PERMISSION_CODE && mp.PermissionKey == ModuleSecurity.PARTICIPATE_PERMISSION && mp.RoleID == permittedRoleID).ToList();
-                                if (participatePermissions.Count() == 0)
-                                {
-                                    ModulePermissionInfo participatePermission = new ModulePermissionInfo();
-                                    participatePermission.AllowAccess = true;
-                                    participatePermission.RoleID = permittedRoleID;
-                                    participatePermission.PermissionID = ((PermissionInfo)PermissionController.GetPermissionByCodeAndKey(ModuleSecurity.PERMISSION_CODE, ModuleSecurity.PARTICIPATE_PERMISSION)[0]).PermissionID;
-                                    participatePermission.ModuleID = module.ModuleID;
-                                    modulePermissions.Add(participatePermission);
-                                    ModulePermissionController.SaveModulePermissions(module);
-                                }
-                                // Is Module a quiz?
-                                List<SurveysInfo> surveys = SurveysController.GetAll(module.ModuleID);
-                                bool isQuiz = false;
-                                List<SurveysInfo> statisticalSurveys = new List<SurveysInfo>();
-                                foreach (SurveysInfo survey in surveys)
-                                {
-                                    List<SurveyOptionsInfo> surveyOptions = SurveyOptionsController.GetAll(survey.SurveyID);
-                                    int countCorrect = surveyOptions.Where(so => so.IsCorrect).Count();
-                                    if (countCorrect > 0)
-                                    {
-                                        isQuiz = true;
-                                    }
-                                    else
-                                    {
-                                        statisticalSurveys.Add(survey);
-                                    }
-                                }
-                                if (isQuiz)
-                                {
-                                    ModuleController.Instance.UpdateModuleSetting(module.ModuleID, "SurveyType", ((int)SurveyType.Quiz).ToString());
-                                    foreach (SurveysInfo statisticalSurvey in statisticalSurveys)
-                                    {
-                                        statisticalSurvey.IsStatistical = true;
-                                        SurveysController.AddOrChange(statisticalSurvey, XmlDataProvider.SurveyOptionsToXml(SurveyOptionsController.GetAll(statisticalSurvey.SurveyID)), -1);
-                                    }
-                                }
-                                string surveyClosingDate = module.ModuleSettings["surveyclosingdate"].ToString();
-                                if (!(string.IsNullOrEmpty(surveyClosingDate)))
-                                {
-                                    ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyclosingdate");
-                                    ModuleController.Instance.UpdateModuleSetting(module.ModuleID, "SurveyClosingDate", surveyClosingDate);
-                                }
-                                // Remove unused old settings
-                                ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresultstype");
-                                ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveytracking");
-                                ModuleController.Instance.DeleteModuleSetting(module.ModuleID, "surveyresulttemplate");
-                                ModuleController.Instance.DeleteTabModuleSetting(module.TabModuleID, "surveygraphwidth");
-                            }
-                        }
-                    }
-                }
-            }
-            return string.Format("Upgrading to version {0}.", version);
-        }
-        #endregion
-
-        #region IPortable
-        public string ExportModule(int moduleID)
-        {
-            StringBuilder exportXml = new StringBuilder();
-            //Hashtable moduleSettings = ModuleController.Instance.GetModule(moduleID, Null.NullInteger, true).ModuleSettings;
-
-            exportXml.Append("<Survey>");
-            //if (moduleSettings == null)
-            //{
-            //   exportXml.Append("<ModuleSettings />");
-            //}
-            //else
-            //{
-            //   exportXml.Append("<ModuleSettings>");
-            //   foreach (KeyValuePair<string, string> setting in moduleSettings)
-            //   {
-            //      exportXml.Append(String.Format("<ModuleSetting><{0}>{1}</{0}></ModuleSetting>", setting.Key, setting.Value));
-            //   }
-            //   exportXml.Append("</ModuleSettings>");
-            //}
-
-            List<SurveysInfo> surveys = SurveysController.GetAll(moduleID);
-            exportXml.Append(XmlDataProvider.SurveysToXml(surveys, true));
-            exportXml.Append("</Survey>");
-
-            return exportXml.ToString();
-        }
-
-        public void ImportModule(int moduleID, string content, string version, int userID)
-        {
-            string[] versions = version.Split(new char[] { '.' });
-
-            if (Convert.ToInt32(versions[0]) < 9)
-            {
-                // Old Xml data sructure by the original core module
-                XmlNode surveysNode = Globals.GetContent(content, "surveys");
-                foreach (XmlNode surveyNode in surveysNode)
-                {
-                    SurveysInfo survey = new SurveysInfo();
-                    survey.SurveyID = 0;
-                    survey.ModuleID = moduleID;
-                    survey.Question = surveyNode.SelectSingleNode("question").InnerText;
-                    survey.ViewOrder = Convert.ToInt32(surveyNode.SelectSingleNode("vieworder").InnerText);
-                    survey.OptionType = (QuestionType)Convert.ToInt32(surveyNode.SelectSingleNode("optiontype").InnerText);
-
-                    XmlNode surveyOptionsNode = surveyNode.SelectSingleNode("surveyoptions");
-                    List<SurveyOptionsInfo> surveyOptions = new List<SurveyOptionsInfo>();
-                    foreach (XmlNode surveyOptionNode in surveyOptionsNode)
-                    {
-                        SurveyOptionsInfo surveyOption = new SurveyOptionsInfo();
-                        surveyOption.SurveyOptionID = 0;
-                        surveyOption.OptionName = surveyOptionNode.SelectSingleNode("optionname").InnerText;
-                        surveyOption.IsCorrect = Convert.ToBoolean(surveyOptionNode.SelectSingleNode("iscorrect").InnerText);
-                        surveyOption.ViewOrder = Convert.ToInt32(surveyOptionNode.SelectSingleNode("vieworder").InnerText);
-                        surveyOptions.Add(surveyOption);
-                    }
-                    SurveysController.AddOrChange(survey, XmlDataProvider.SurveyOptionsToXml(surveyOptions), userID);
-                }
-            }
-            else
-            {
-                XmlNode root = Globals.GetContent(content, "Survey");
-                string exportString = root.SelectSingleNode("Surveys").OuterXml;
-                exportString = exportString.Replace("[MODULE_ID]", moduleID.ToString()).Replace("[CREATED_DATE]", string.Format("{0:yyyy-MM-dd hh:mm:ss}", DateTime.Now)).Replace("[USER_ID]", userID.ToString());
-                List<SurveysInfo> surveys = XmlDataProvider.SurveysFromXml(exportString);
-                foreach (SurveysInfo survey in surveys)
-                {
-                    survey.SurveyID = 0;
-                    survey.ModuleID = moduleID;
-                    SurveysController.AddOrChange(survey, survey.SurveyOptionsXml, userID);
-                }
-            }
-        }
-
-        public string CSVExport(int moduleID, string resourceFile)
-        {
-            StringBuilder csvBuilder = new StringBuilder();
-            csvBuilder.Append("SurveyID; Question; Question Type; Statistical; Answer; Votes; Correct Answer; UserID; IP Address; GUID; Date\r\n");
-
-            List<SurveysExportInfo> surveys = SurveysExportController.GetAll(moduleID);
-            foreach (SurveysExportInfo survey in surveys)
-            {
-                csvBuilder.Append(string.Format("{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10:yyyy-MM-dd hh:mm:ss}\r\n",
-                   survey.SurveyID,
-                   survey.Question,
-                   Localization.GetString(string.Format("QuestionType.{0}.Text", Enum.GetName(typeof(QuestionType), survey.OptionType), resourceFile)),
-                   survey.IsStatistical,
-                   (survey.OptionType == QuestionType.Text ? survey.TextAnswer : survey.OptionName),
-                   survey.Votes,
-                   survey.IsCorrect,
-                   survey.UserID,
-                   survey.IPAddress,
-                   survey.ResultUserID,
-                   survey.CreatedDate));
-            }
-            return csvBuilder.ToString();
-        }
-        #endregion
-    }
+         List<SurveysExportInfo> surveys = SurveysExportController.GetAll(moduleID);
+         foreach (SurveysExportInfo survey in surveys)
+         {
+            csvBuilder.Append(string.Format("{0}{2}{0}{1}{0}{3}{0}{1}{0}{4}{0}{1}{0}{5}{0}{1}{0}{6}{0}{1}{0}{7}{0}{1}{0}{8}{0}{1}{0}{9}{0}{1}{0}{10}{0}{1}{0}{11}{0}{1}{0}{12:yyyy-MM-dd hh:mm:ss}\r\n",
+               GetTextQualifierCharacter(textQualifier),
+               GetSeparatorCharacter(separator),
+               survey.SurveyID,
+               survey.Question,
+               Localization.GetString(string.Format("QuestionType.{0}.Text", Enum.GetName(typeof(QuestionType), survey.OptionType), resourceFile)),
+               survey.IsStatistical,
+               (survey.OptionType == QuestionType.Text ? survey.TextAnswer : survey.OptionName),
+               survey.Votes,
+               survey.IsCorrect,
+               survey.UserID,
+               survey.IPAddress,
+               survey.ResultUserID,
+               survey.CreatedDate));
+         }
+         return csvBuilder.ToString();
+      }
+      private char GetSeparatorCharacter(Separator separator)
+      {
+         char separatorCharacter;
+         switch (separator)
+         {
+            case Separator.SemiColon:
+               separatorCharacter = ';';
+               break;
+            case Separator.Comma:
+               separatorCharacter = ',';
+               break;
+            case Separator.Space:
+               separatorCharacter = ' ';
+               break;
+            case Separator.Tab:
+               separatorCharacter = (char)9;
+               break;
+            default:
+               separatorCharacter = ';';
+               break;
+         }
+         return separatorCharacter;
+      }
+      private char GetTextQualifierCharacter(TextQualifier textQualifier)
+      {
+         char textQualifierCharacter;
+         switch (textQualifier)
+         {
+            case TextQualifier.None:
+               textQualifierCharacter = '\0';
+               break;
+            case TextQualifier.DoubleQuote:
+               textQualifierCharacter = '\"';
+               break;
+            case TextQualifier.SingleQuote:
+               textQualifierCharacter = '\'';
+               break;
+            default:
+               textQualifierCharacter = '\0';
+               break;
+         }
+         return textQualifierCharacter;
+      }
+      #endregion
+   }
 }
