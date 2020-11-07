@@ -7,6 +7,7 @@ The DNN Survey module allows you to create surveys and quizes on your DNN (forme
 * Result charts (created with ChartJS)
 * Quiz questions can be statistical, that means they have no correct answer. This is useful for questions about the gender, age group etc. in a quiz and allows analysis by these items.
 * To be able to identify which answers come from the same user (even in a survey that allows anonymous participation) there is a random GUID in the survey results which is created when the survey is submitted.
+* Survey results can be downloaded as a CSV file to be processed with any reporting tool of your choice. To give maximum flexibility, the separator and delimiter can be set in the module settings.
 ## System requirements
 * [DNN Platform version 08.00.00 or higher](https://github.com/dnnsoftware/Dnn.Platform/releases/tag/v8.0.0)
 ## More information
