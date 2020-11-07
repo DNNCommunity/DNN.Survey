@@ -128,7 +128,7 @@ select SurveyID,
        OptionType,
        CreatedByUser,
        CreatedDate
-from   {objectQualifier}Surveys
+from   {databaseOwner}{objectQualifier}Surveys
 where  ModuleID = @ModuleID
 order by ViewOrder
 
@@ -146,11 +146,11 @@ select SurveyID,
        Question,
        ViewOrder,
        OptionType,
-       {objectQualifier}Users.FirstName + ' ' + {objectQualifier}Users.LastName AS CreatedByUser,
+       {databaseOwner}{objectQualifier}Users.FirstName + ' ' + {databaseOwner}{objectQualifier}Users.LastName AS CreatedByUser,
        CreatedDate,
-       ( select sum(Votes) from {objectQualifier}SurveyOptions where {objectQualifier}SurveyOptions.SurveyID = {objectQualifier}Surveys.SurveyID ) AS Votes
-from   {objectQualifier}Surveys
-left outer join {objectQualifier}Users on {objectQualifier}Surveys.CreatedByUser = {objectQualifier}Users.UserID
+       ( select sum(Votes) from {databaseOwner}{objectQualifier}SurveyOptions where {databaseOwner}{objectQualifier}SurveyOptions.SurveyID = {databaseOwner}{objectQualifier}Surveys.SurveyID ) AS Votes
+from   {databaseOwner}{objectQualifier}{databaseOwner}Surveys
+left outer join {databaseOwner}{objectQualifier}Users on {databaseOwner}{objectQualifier}Surveys.CreatedByUser = {databaseOwner}{objectQualifier}Users.UserID
 where  SurveyID = @SurveyID
 and    ModuleID = @ModuleID
 
@@ -166,7 +166,7 @@ create procedure {databaseOwner}{objectQualifier}AddSurvey
 
 as
 
-insert into {objectQualifier}Surveys ( 
+insert into {databaseOwner}{objectQualifier}Surveys ( 
   ModuleID,
   Question,
   ViewOrder,
@@ -197,7 +197,7 @@ create procedure {databaseOwner}{objectQualifier}UpdateSurvey
 
 as
 
-update {objectQualifier}Surveys
+update {databaseOwner}{objectQualifier}Surveys
 set    Question = @Question,
        ViewOrder = @ViewOrder,
        OptionType = @OptionType,
@@ -214,7 +214,7 @@ create procedure {databaseOwner}{objectQualifier}DeleteSurvey
 as
 
 delete 
-from   {objectQualifier}Surveys
+from   {databaseOwner}{objectQualifier}Surveys
 where  SurveyID = @SurveyID
 
 GO
@@ -229,7 +229,7 @@ select SurveyOptionID,
        ViewOrder,
        OptionName,
        Votes
-from   {objectQualifier}SurveyOptions
+from   {databaseOwner}{objectQualifier}SurveyOptions
 where  SurveyID = @SurveyID
 order by ViewOrder
 
@@ -243,7 +243,7 @@ create procedure {databaseOwner}{objectQualifier}AddSurveyOption
 
 as
 
-insert into {objectQualifier}SurveyOptions ( 
+insert into {databaseOwner}{objectQualifier}SurveyOptions ( 
   SurveyID,
   OptionName,
   ViewOrder,
@@ -268,7 +268,7 @@ create procedure {databaseOwner}{objectQualifier}UpdateSurveyOption
 
 as
 
-update {objectQualifier}SurveyOptions
+update {databaseOwner}{objectQualifier}SurveyOptions
 set    OptionName = @OptionName,
        ViewOrder = @ViewOrder
 where  SurveyOptionID = @SurveyOptionID
@@ -282,7 +282,7 @@ create procedure {databaseOwner}{objectQualifier}DeleteSurveyOption
 as
 
 delete 
-from   {objectQualifier}SurveyOptions
+from   {databaseOwner}{objectQualifier}SurveyOptions
 where  SurveyOptionID = @SurveyOptionID
 
 GO
@@ -293,7 +293,7 @@ create procedure {databaseOwner}{objectQualifier}AddSurveyResult
 
 as
 
-update {objectQualifier}SurveyOptions
+update {databaseOwner}{objectQualifier}SurveyOptions
 set    Votes = Votes + 1
 where  SurveyOptionID = @SurveyOptionID
 

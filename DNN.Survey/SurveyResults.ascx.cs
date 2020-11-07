@@ -21,6 +21,7 @@
 using DNN.Modules.Survey.Components;
 using DNN.Modules.Survey.Components.Controllers;
 using DNN.Modules.Survey.Components.Entities;
+using DNN.Modules.Survey.Components.UI;
 using DNN.Modules.Survey.Controls;
 using DotNetNuke.Common;
 using DotNetNuke.Entities.Modules;
@@ -28,6 +29,7 @@ using DotNetNuke.Framework.JavaScriptLibraries;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Localization;
+using DotNetNuke.UI.Utilities;
 using DotNetNuke.Web.Client.ClientResourceManagement;
 using System;
 using System.Collections.Generic;
@@ -215,7 +217,7 @@ namespace DNN.Modules.Survey
                 StringBuilder bColorsBuilder = new StringBuilder();
                 foreach (SurveyResultInfo r in result)
                 {
-                    labelBuilder.Append(string.Format("\"{0}\"", String.Format("{0}{1}", r.OptionName, r.IsCorrect ? string.Format(" {0}", Localization.GetString("CorrectAnswer.Text", LocalResourceFile)) : string.Empty)));
+                    labelBuilder.Append(string.Format("\"{0}\"", String.Format("{0}{1}", ClientAPI.GetSafeJSString(r.OptionName), r.IsCorrect ? string.Format(" {0}", Localization.GetString("CorrectAnswer.Text", LocalResourceFile)) : string.Empty)));
                     dataBuilder.Append(r.Votes);
                     bgColorsBuilder.Append(string.Format("\"{0}\"", Base.GetColor(result.IndexOf(r), (!(r.IsCorrect)))));
                     bColorsBuilder.Append(string.Format("\"{0}\"", r.IsCorrect ? "rgba(0,170,0,1)" : Base.GetColor(result.IndexOf(r), false)));
@@ -243,7 +245,7 @@ namespace DNN.Modules.Survey
 
         protected void ViewSurveyButton_Click(object sender, EventArgs e)
         {
-            Response.Redirect(Globals.NavigateURL(), false);
+            Response.Redirect(DotNetNuke.Common.Globals.NavigateURL(), false);
         }
         #endregion
     }

@@ -82,7 +82,7 @@ namespace DNN.Modules.Survey
 
       protected override void OnLoad(EventArgs e)
       {
-         if (!(Page.IsPostBack))
+         if (!Page.IsPostBack)
          {
             Surveys = SurveysController.GetAll(ModuleId);
             QuestionsGrid.DataSource = Surveys;

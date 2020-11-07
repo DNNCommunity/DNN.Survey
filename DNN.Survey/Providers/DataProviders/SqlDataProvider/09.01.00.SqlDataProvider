@@ -1,0 +1,62 @@
+﻿ALTER PROCEDURE {databaseOwner}{objectQualifier}Surveys_Sort
+   @SurveysXML xml
+AS
+BEGIN
+   DECLARE @idoc int
+   DECLARE @ModuleID int
+   DECLARE @SurveyID int
+   DECLARE @ViewOrder int
+   DECLARE @LastModifiedByUserID int
+   DECLARE @SurveyIDs table(SurveyID int)
+
+   BEGIN TRY
+      BEGIN TRANSACTION
+
+      EXEC sp_xml_preparedocument @idoc OUTPUT, @SurveysXML
+
+      DECLARE curQuestions CURSOR FOR
+      SELECT
+         ModuleID,
+         SurveyID,
+         ViewOrder,
+         LastModifiedByUserID
+      FROM
+         OPENXML(@idoc, '/Surveys/Survey', 2) WITH (ModuleID int, SurveyID int, ViewOrder int, LastModifiedByUserID int)
+
+      OPEN curQuestions
+      FETCH NEXT FROM curQuestions INTO @ModuleID, @SurveyID, @ViewOrder, @LastModifiedByUserID
+      WHILE @@FETCH_STATUS = 0
+      BEGIN
+         UPDATE
+            {databaseOwner}{objectQualifier}Surveys
+         SET
+            ViewOrder = @ViewOrder,
+            LastModifiedByUserID = @LastModifiedByUserID,
+            LastModifiedDate = GETDATE()
+         WHERE
+            SurveyID = @SurveyID
+         -- Collect SurveyID for later purpose (delete surveys not included, see below)
+         INSERT INTO @SurveyIDs(SurveyID) VALUES(@SurveyID)
+         FETCH NEXT FROM curQuestions INTO @ModuleID, @SurveyID, @ViewOrder, @LastModifiedByUserID
+      END
+      CLOSE curQuestions
+      DEALLOCATE curQuestions
+
+      -- Delete surveys that were not submitted in the XML
+      DELETE FROM {databaseOwner}{objectQualifier}Surveys WHERE ModuleID = @ModuleID AND SurveyID NOT IN (SELECT SurveyID FROM @SurveyIDs)
+
+      IF @@TRANCOUNT > 0
+      BEGIN
+         COMMIT TRANSACTION
+      END
+   END TRY
+   BEGIN CATCH
+      IF @@TRANCOUNT > 0
+      BEGIN
+         ROLLBACK TRANSACTION
+      END
+      DECLARE @ErrMsg nvarchar(max), @ErrSeverity int
+      SELECT @ErrMsg = ERROR_MESSAGE(), @ErrSeverity = ERROR_SEVERITY()
+      RAISERROR(@ErrMsg, @ErrSeverity, 1)
+   END CATCH
+END
