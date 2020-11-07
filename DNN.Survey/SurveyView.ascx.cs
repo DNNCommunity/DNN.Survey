@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -51,6 +52,7 @@ namespace DNN.Modules.Survey
       private SurveyOptionsController _surveyOptionsController = null;
       private SurveyResultsController _surveyResultsController = null;
       private SurveyBusinessController _surveyBusinessController = null;
+      private PortalSecurity _portalSecurity = null;
 
       private string _cookie;
 
@@ -59,7 +61,9 @@ namespace DNN.Modules.Survey
          get
          {
             if (_modulePermissionCollection == null)
+            {
                _modulePermissionCollection = ModulePermissionController.GetModulePermissions(ModuleId, TabId);
+            }
             return _modulePermissionCollection;
          }
       }
@@ -69,7 +73,9 @@ namespace DNN.Modules.Survey
          get
          {
             if (_surveysController == null)
+            {
                _surveysController = new SurveysController();
+            }
             return _surveysController;
          }
       }
@@ -79,7 +85,9 @@ namespace DNN.Modules.Survey
          get
          {
             if (_surveyOptionsController == null)
+            {
                _surveyOptionsController = new SurveyOptionsController();
+            }
             return _surveyOptionsController;
          }
       }
@@ -89,7 +97,9 @@ namespace DNN.Modules.Survey
          get
          {
             if (_surveyResultsController == null)
+            {
                _surveyResultsController = new SurveyResultsController();
+            }
             return _surveyResultsController;
          }
       }
@@ -99,8 +109,23 @@ namespace DNN.Modules.Survey
          get
          {
             if (_surveyBusinessController == null)
+            {
                _surveyBusinessController = new SurveyBusinessController();
+            }
+
             return _surveyBusinessController;
+         }
+      }
+
+      protected PortalSecurity PortalSecurity
+      {
+         get
+         {
+            if (_portalSecurity == null)
+            {
+               _portalSecurity = new PortalSecurity();
+            }
+            return _portalSecurity;
          }
       }
 
@@ -182,9 +207,13 @@ namespace DNN.Modules.Survey
          {
             object surveyType = Settings["SurveyType"];
             if (surveyType == null)
+            {
                return SurveyType.Survey;
+            }
             else
+            {
                return (SurveyType)Convert.ToInt32(surveyType);
+            }
          }
       }
 
@@ -194,9 +223,13 @@ namespace DNN.Modules.Survey
          {
             object surveyClosingDate = Settings["SurveyClosingDate"];
             if (surveyClosingDate == null)
+            {
                return DateTime.MinValue;
+            }
             else
+            {
                return Convert.ToDateTime(surveyClosingDate);
+            }
          }
       }
 
@@ -206,9 +239,13 @@ namespace DNN.Modules.Survey
          {
             object showClosingDateMessage = Settings["ShowClosingDateMessage"];
             if (showClosingDateMessage == null)
+            {
                return false;
+            }
             else
+            {
                return Convert.ToBoolean(showClosingDateMessage);
+            }
          }
       }
 
@@ -218,9 +255,13 @@ namespace DNN.Modules.Survey
          {
             object privacyConfirmation = Settings["PrivacyConfirmation"];
             if (privacyConfirmation == null)
+            {
                return false;
+            }
             else
+            {
                return Convert.ToBoolean(privacyConfirmation);
+            }
          }
       }
 
@@ -230,9 +271,13 @@ namespace DNN.Modules.Survey
          {
             object useCaptcha = Settings["UseCaptcha"];
             if (useCaptcha == null)
+            {
                return UseCaptcha.Never;
+            }
             else
+            {
                return (UseCaptcha)Convert.ToInt32(useCaptcha);
+            }
          }
       }
 
@@ -243,9 +288,43 @@ namespace DNN.Modules.Survey
          {
             object resultsVersion = Settings["ResultsVersion"];
             if (resultsVersion == null)
+            {
                return 0;
+            }
             else
+            {
                return Convert.ToInt32(resultsVersion);
+            }
+         }
+      }
+      protected Separator Separator
+      {
+         get
+         {
+            object separator = Settings["Separator"];
+            if (separator == null)
+            {
+               return Separator.SemiColon;
+            }
+            else
+            {
+               return (Separator)Convert.ToInt32(separator);
+            }
+         }
+      }
+      protected TextQualifier TextQualifier
+      {
+         get
+         {
+            object textQualifier = Settings["TextQualifier"];
+            if (textQualifier == null)
+            {
+               return TextQualifier.None;
+            }
+            else
+            {
+               return (TextQualifier)Convert.ToInt32(textQualifier);
+            }
          }
       }
       #endregion
@@ -440,7 +519,7 @@ namespace DNN.Modules.Survey
                         surveyResult.SurveyOptionID = surveyTextBox.SurveyOptionID;
                         surveyResult.UserID = (UserId < 1 ? (int?)null : UserId);
                         surveyResult.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
-                        surveyResult.TextAnswer = surveyTextBox.Text;
+                        surveyResult.TextAnswer = PortalSecurity.InputFilter(surveyTextBox.Text, PortalSecurity.FilterFlag.MultiLine | PortalSecurity.FilterFlag.NoAngleBrackets | PortalSecurity.FilterFlag.NoMarkup | PortalSecurity.FilterFlag.NoScripting | PortalSecurity.FilterFlag.NoSQL);
                         surveyResult.IsCorrect = true;
                         surveyResult.ResultUserID = resultUserID;
                         surveyResults.Add(surveyResult);
@@ -503,7 +582,7 @@ namespace DNN.Modules.Survey
       protected void ExportToCsvButton_Click(object sender, EventArgs e)
 
       {
-         string csv = SurveyBusinessController.CSVExport(ModuleId, Localization.SharedResourceFile);
+         string csv = SurveyBusinessController.CSVExport(ModuleId, Localization.SharedResourceFile, Separator, TextQualifier);
          Response.Clear();
          Response.Charset = string.Empty;
          Response.AddHeader("content-disposition", string.Format("attachment; filename=Survey_Results_{0}_{1:yyyy-MM-dd-hhmmss}.csv", ModuleId, DateTime.Now));
@@ -699,7 +778,7 @@ namespace DNN.Modules.Survey
             case "ExportToCsv":
                try
                {
-                  string csv = SurveyBusinessController.CSVExport(ModuleId, Localization.SharedResourceFile);
+                  string csv = SurveyBusinessController.CSVExport(ModuleId, Localization.SharedResourceFile, Separator, TextQualifier);
                   Response.Clear();
                   Response.Charset = string.Empty;
                   Response.AddHeader("content-disposition", string.Format("attachment; filename=Survey_Results_{0}_{1:yyyy-MM-dd-hhmmss}.csv", ModuleId, DateTime.Now));

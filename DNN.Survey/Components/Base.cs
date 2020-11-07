@@ -50,6 +50,21 @@ namespace DNN.Modules.Survey.Components
       Quiz = 1
    }
 
+   public enum Separator
+   {
+      SemiColon = 0,
+      Comma = 1,
+      Space = 2,
+      Tab = 3
+   }
+
+   public enum TextQualifier
+   {
+      None = 0,
+      DoubleQuote = 1,
+      SingleQuote = 2
+   }
+
    public static class Base
    {
       public const string DEFAULT_SURVEY_RESULTS_TEMPLATE = "[SURVEY_OPTION_NAME]&nbsp;([SURVEY_OPTION_VOTES])&nbsp;<img src=\"[SURVEY_OPTION_IMAGEPATH]/red.gif\" width=\"[SURVEY_OPTION_GRAPH_WIDTH]\" border=\"0\" height=\"15\" alt=\"\" />&nbsp;[SURVEY_OPTION_PERCENTAGE]%<br />";

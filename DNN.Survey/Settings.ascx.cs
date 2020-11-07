@@ -113,6 +113,44 @@ namespace DNN.Modules.Survey
             UpdateBooleanSetting("ShowClosingDateMessage", value);
          }
       }
+      protected Separator Separator
+      {
+         get
+         {
+            object separator = ModuleSettings["Separator"];
+            if (separator == null)
+            {
+               return Separator.SemiColon;
+            }
+            else
+            {
+               return (Separator)Convert.ToInt32(separator);
+            }
+         }
+         set
+         {
+            UpdateIntegerSetting("Separator", Convert.ToInt32(value));
+         }
+      }
+      protected TextQualifier TextQualifier
+      {
+         get
+         {
+            object textQualifier = ModuleSettings["TextQualifier"];
+            if (textQualifier == null)
+            {
+               return TextQualifier.None;
+            }
+            else
+            {
+               return (TextQualifier)Convert.ToInt32(textQualifier);
+            }
+         }
+         set
+         {
+            UpdateIntegerSetting("TextQualifier", Convert.ToInt32(value));
+         }
+      }
       #endregion
 
       #region Page Events
@@ -129,9 +167,9 @@ namespace DNN.Modules.Survey
       #region Settings Events
       public override void LoadSettings()
       {
-         foreach (ListItem li in SurveyTypeRadioButtonList.Items)
+         foreach (SurveyType surveyType in (SurveyType[]) Enum.GetValues(typeof(SurveyType)))
          {
-            li.Text = Localization.GetString(string.Format("SurveyType.{0}.Text", Enum.GetName(typeof(SurveyType), Convert.ToInt32(li.Value))), LocalResourceFile);
+            SurveyTypeRadioButtonList.Items.Add(new ListItem(Localization.GetString(string.Format("SurveyType.{0}.Text", Enum.GetName(typeof(SurveyType), surveyType)), LocalResourceFile), Convert.ToInt32(surveyType).ToString()));
          }
          SurveyTypeRadioButtonList.SelectedValue = Convert.ToInt32(SurveyType).ToString();
 
@@ -143,11 +181,23 @@ namespace DNN.Modules.Survey
          PrivacyConfirmationCheckBox.Checked = PrivacyConfirmation;
          ShowClosingDateMessageCheckBox.Checked = ShowClosingDateMessage;
 
-         foreach (ListItem li in UseCaptchaRadioButtonList.Items)
+         foreach (UseCaptcha useCaptcha in (UseCaptcha[]) Enum.GetValues(typeof(UseCaptcha)))
          {
-            li.Text = Localization.GetString(string.Format("UseCaptcha.{0}.Text", Enum.GetName(typeof(UseCaptcha), Convert.ToInt32(li.Value))), LocalResourceFile);
+            UseCaptchaRadioButtonList.Items.Add(new ListItem(Localization.GetString(string.Format("UseCaptcha.{0}.Text", Enum.GetName(typeof(UseCaptcha), useCaptcha)), LocalResourceFile), Convert.ToInt32(useCaptcha).ToString()));
          }
          UseCaptchaRadioButtonList.SelectedValue = Convert.ToInt32(UseCaptcha).ToString();
+
+         foreach (Separator separator in (Separator[]) Enum.GetValues(typeof(Separator)))
+         {
+            CSVSeparatorDropDownlist.Items.Add(new ListItem(Localization.GetString(string.Format("Separator.{0}.Text", Enum.GetName(typeof(Separator), separator)), LocalResourceFile), Convert.ToInt32(separator).ToString()));
+         }
+         CSVSeparatorDropDownlist.SelectedValue = ((int)Separator).ToString();
+
+         foreach (TextQualifier textQualifier in (TextQualifier[]) Enum.GetValues(typeof(TextQualifier)))
+         {
+            CSVTextQualifierDropDownList.Items.Add(new ListItem(Localization.GetString(string.Format("TextQualifier.{0}.Text", Enum.GetName(typeof(TextQualifier), textQualifier)), LocalResourceFile), Convert.ToInt32(textQualifier).ToString()));
+         }
+         CSVTextQualifierDropDownList.SelectedValue = ((int)TextQualifier).ToString();
 
          base.LoadSettings();
       }
@@ -168,7 +218,8 @@ namespace DNN.Modules.Survey
          PrivacyConfirmation = PrivacyConfirmationCheckBox.Checked;
          ShowClosingDateMessage = ShowClosingDateMessageCheckBox.Checked;
          UseCaptcha = (UseCaptcha)Convert.ToInt32(UseCaptchaRadioButtonList.SelectedValue);
-
+         TextQualifier = (TextQualifier)Convert.ToInt32(CSVTextQualifierDropDownList.SelectedValue);
+         Separator = (Separator)Convert.ToInt32(CSVSeparatorDropDownlist.SelectedValue);
          base.UpdateSettings();
       }
       #endregion
@@ -245,9 +296,16 @@ namespace DNN.Modules.Survey
       {
          if (isTabModuleSetting)
          {
-            if (settingValue != null)
+            if (settingValue.HasValue)
             {
-               ModuleController.Instance.UpdateTabModuleSetting(TabModuleId, settingName, settingValue.ToString());
+               if (settingValue.Value == 0)
+               {
+                  ModuleController.Instance.DeleteTabModuleSetting(TabModuleId, settingName);
+               }
+               else
+               {
+                  ModuleController.Instance.UpdateTabModuleSetting(TabModuleId, settingName, settingValue.ToString());
+               }
             }
             else
             {
@@ -256,9 +314,16 @@ namespace DNN.Modules.Survey
          }
          else
          {
-            if (settingValue != null)
+            if (settingValue.HasValue)
             {
-               ModuleController.Instance.UpdateModuleSetting(ModuleId, settingName, settingValue.ToString());
+               if (settingValue.Value == 0)
+               {
+                  ModuleController.Instance.DeleteModuleSetting(ModuleId, settingName);
+               }
+               else
+               {
+                  ModuleController.Instance.UpdateModuleSetting(ModuleId, settingName, settingValue.ToString());
+               }
             }
             else
             {

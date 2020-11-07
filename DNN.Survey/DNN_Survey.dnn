@@ -1,6 +1,6 @@
 ﻿<dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="DNN_Survey" type="Module" version="09.00.01">
+    <package name="DNN_Survey" type="Module" version="09.01.00">
       <friendlyName>Survey</friendlyName>
       <description>
         <![CDATA[
@@ -17,7 +17,7 @@
       <license src="Documentation\License.html" />
       <releaseNotes src="Documentation\ReleaseNotes.html" />
       <dependencies>
-        <dependency type="CoreVersion">08.00.00</dependency>
+        <dependency type="CoreVersion">09.04.04</dependency>
       </dependencies>
       <components>
         <component type="Config">
@@ -664,15 +664,20 @@
                      <name>04.70.00.SqlDataProvider</name>
                      <version>04.70.00</version>
                   </script -->
-            <script type="Install">
-              <path>Providers\DataProviders\SqlDataProvider</path>
-              <name>09.00.00.SqlDataProvider</name>
-              <version>09.00.00</version>
-            </script>
-            <script type="UnInstall">
+             <script type="Install">
+                <path>Providers\DataProviders\SqlDataProvider</path>
+                <name>09.00.00.SqlDataProvider</name>
+                <version>09.00.00</version>
+             </script>
+             <script type="Install">
+                <path>Providers\DataProviders\SqlDataProvider</path>
+                <name>09.01.00.SqlDataProvider</name>
+                <version>09.01.00</version>
+             </script>
+             <script type="UnInstall">
               <path>Providers\DataProviders\SqlDataProvider</path>
               <name>Uninstall.SqlDataProvider</name>
-              <version>09.00.01</version>
+              <version>09.01.00</version>
             </script>
           </scripts>
         </component>
@@ -760,7 +765,7 @@
             <attributes>
               <businessControllerClass>DNN.Modules.Survey.Components.Controllers.SurveyBusinessController</businessControllerClass>
               <desktopModuleID>[DESKTOPMODULEID]</desktopModuleID>
-              <upgradeVersionsList>03.01.00,03.03.00,04.00.20,04.00.60,04.00.70,04.00.85,04.01.00,04.05.00,04.06.00,04.07.00,09.00.00,09.00.01</upgradeVersionsList>
+              <upgradeVersionsList>03.01.00,03.03.00,04.00.20,04.00.60,04.00.70,04.00.85,04.01.00,04.05.00,04.06.00,04.07.00,09.00.00,09.01.00,09.01.00</upgradeVersionsList>
             </attributes>
           </eventMessage>
         </component>
@@ -770,7 +775,7 @@
             <assembly>
               <path>bin</path>
               <name>DNN.Modules.Survey.dll</name>
-              <version>9.0.1.0</version>
+              <version>9.1.0.0</version>
             </assembly>
           </assemblies>
         </component>

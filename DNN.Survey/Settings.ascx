@@ -5,6 +5,7 @@
 <dnn:DnnCssInclude runat="server" FilePath="~/DesktopModules/Survey/css/Settings.css" />
 
 <div class="dnnForm" id="SurveySettings">
+   <h2 id="GeneralSettings" class="dnnFormSectionHead"><a href="#"><asp:Label ID="GeneralSettingsLabel" runat="server" ResourceKey="GeneralSettings" /></a></h2>
    <fieldset>
       <div class="dnnFormItem">
          <dnn:Label ID="SurveyTypeLabel" runat="server"
@@ -15,8 +16,6 @@
             CssClass="dnnFormRadioButtons"
             RepeatDirection="Horizontal"
             RepeatColumns="2">
-            <asp:ListItem Value="0" />
-            <asp:ListItem Value="1" />
          </asp:RadioButtonList>
       </div>
       <div class="dnnFormItem">
@@ -27,6 +26,9 @@
          <asp:TextBox ID="SurveyClosingDateTextBox" runat="server"
             CssClass="surveyDatePicker" />
       </div>
+   </fieldset>
+   <h2 id="AppearanceSecurityOptions" class="dnnFormSectionHead"><a href="#"><asp:Label ID="AppearanceSecurityOptionsLabel" runat="server" ResourceKey="AppearanceSecurityOptions" /></a></h2>
+   <fieldset>
       <div class="dnnFormItem">
          <dnn:Label ID="ShowClosingDateMessageLabel" runat="server"
             ControlName="ShowClosingDateMessageCheckBox"
@@ -47,10 +49,22 @@
             CssClass="dnnFormRadioButtons"
             RepeatDirection="Horizontal"
             RepeatColumns="3">
-            <asp:ListItem Value="0" />
-            <asp:ListItem Value="1" />
-            <asp:ListItem Value="2" />
          </asp:RadioButtonList>
+      </div>
+   </fieldset>
+   <h2 id="CSVExportOptions" class="dnnFormSectionHead"><a href="#"><asp:Label ID="CSVExportOptionsLabel" runat="server" ResourceKey="CSVExportOptions" /></a></h2>
+   <fieldset>
+      <div class="dnnFormItem">
+         <dnn:Label ID="CSVSeparatorLabel" runat="server"
+            ControlName="CSVSeparatorDropDownlist"
+            ResourceKey="Separator" />
+         <asp:DropDownList ID="CSVSeparatorDropDownlist" runat="server" />
+      </div>
+      <div class="dnnFormItem">
+         <dnn:Label ID="CSVTextQualifierLabel" runat="server"
+            ControlName="CSVTextQualifierDropDownList"
+            ResourceKey="TextQualifier" />
+         <asp:DropDownList ID="CSVTextQualifierDropDownList" runat="server" />
       </div>
    </fieldset>
 </div>
