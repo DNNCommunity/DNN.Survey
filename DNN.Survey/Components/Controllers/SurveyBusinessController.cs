@@ -366,12 +366,12 @@ namespace DNN.Modules.Survey.Components.Controllers
       public string CSVExport(int moduleID, string resourceFile, Separator separator, TextQualifier textQualifier)
       {
          StringBuilder csvBuilder = new StringBuilder();
-         csvBuilder.Append(string.Format("{0}SurveyID{0}{1}{0}Question{0}{1}{0}Question Type{0}{1}{0}Statistical{0}{1}{0}Answer{0}{1}{0}Votes{0}{1}{0}Correct Answer{0}{1}{0}UserID{0}{1}{0}IP Address{0}{1}{0}GUID{0}{1}{0}Date\r\n", GetTextQualifierCharacter(textQualifier), GetSeparatorCharacter(separator)));
+         csvBuilder.Append(string.Format("{0}SurveyID{0}{1}{0}Question{0}{1}{0}Question Type{0}{1}{0}Statistical{0}{1}{0}Answer{0}{1}{0}Votes{0}{1}{0}Correct Answer{0}{1}{0}UserID{0}{1}{0}IP Address{0}{1}{0}GUID{0}{1}{0}Date{0}\r\n", GetTextQualifierCharacter(textQualifier), GetSeparatorCharacter(separator)));
 
          List<SurveysExportInfo> surveys = SurveysExportController.GetAll(moduleID);
          foreach (SurveysExportInfo survey in surveys)
          {
-            csvBuilder.Append(string.Format("{0}{2}{0}{1}{0}{3}{0}{1}{0}{4}{0}{1}{0}{5}{0}{1}{0}{6}{0}{1}{0}{7}{0}{1}{0}{8}{0}{1}{0}{9}{0}{1}{0}{10}{0}{1}{0}{11}{0}{1}{0}{12:yyyy-MM-dd hh:mm:ss}\r\n",
+            csvBuilder.Append(string.Format("{0}{2}{0}{1}{0}{3}{0}{1}{0}{4}{0}{1}{0}{5}{0}{1}{0}{6}{0}{1}{0}{7}{0}{1}{0}{8}{0}{1}{0}{9}{0}{1}{0}{10}{0}{1}{0}{11}{0}{1}{0}{12:yyyy-MM-dd hh:mm:ss}{0}\r\n",
                GetTextQualifierCharacter(textQualifier),
                GetSeparatorCharacter(separator),
                survey.SurveyID,
