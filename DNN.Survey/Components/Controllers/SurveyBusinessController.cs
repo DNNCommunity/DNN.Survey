@@ -378,7 +378,7 @@ namespace DNN.Modules.Survey.Components.Controllers
                survey.Question,
                Localization.GetString(string.Format("QuestionType.{0}.Text", Enum.GetName(typeof(QuestionType), survey.OptionType), resourceFile)),
                survey.IsStatistical,
-               (survey.OptionType == QuestionType.Text ? survey.TextAnswer : survey.OptionName),
+               (survey.OptionType == QuestionType.Text ? EscapeTextQualifier(survey.TextAnswer, textQualifier) : survey.OptionName),
                survey.Votes,
                survey.IsCorrect,
                survey.UserID,
@@ -388,7 +388,20 @@ namespace DNN.Modules.Survey.Components.Controllers
          }
          return csvBuilder.ToString();
       }
-      private char GetSeparatorCharacter(Separator separator)
+
+        private string EscapeTextQualifier(string textAnswer, TextQualifier textQualifier)
+        {
+            var escapedAnswer = textAnswer;
+            string qualifier = GetTextQualifierCharacter(textQualifier).ToString();
+            if (textAnswer.Contains(qualifier))
+            {
+                escapedAnswer = textAnswer.Replace(qualifier, string.Format("{0}{0}", qualifier));
+            }
+
+            return escapedAnswer;
+        }
+
+        private char GetSeparatorCharacter(Separator separator)
       {
          char separatorCharacter;
          switch (separator)
