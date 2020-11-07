@@ -17,7 +17,7 @@
       <license src="Documentation\License.html" />
       <releaseNotes src="Documentation\ReleaseNotes.html" />
       <dependencies>
-        <dependency type="CoreVersion">09.04.04</dependency>
+        <dependency type="CoreVersion">09.04.00</dependency>
       </dependencies>
       <components>
         <component type="Config">
