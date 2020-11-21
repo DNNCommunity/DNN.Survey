@@ -149,7 +149,7 @@ select SurveyID,
        {databaseOwner}{objectQualifier}Users.FirstName + ' ' + {databaseOwner}{objectQualifier}Users.LastName AS CreatedByUser,
        CreatedDate,
        ( select sum(Votes) from {databaseOwner}{objectQualifier}SurveyOptions where {databaseOwner}{objectQualifier}SurveyOptions.SurveyID = {databaseOwner}{objectQualifier}Surveys.SurveyID ) AS Votes
-from   {databaseOwner}{objectQualifier}{databaseOwner}Surveys
+from   {databaseOwner}{objectQualifier}Surveys
 left outer join {databaseOwner}{objectQualifier}Users on {databaseOwner}{objectQualifier}Surveys.CreatedByUser = {databaseOwner}{objectQualifier}Users.UserID
 where  SurveyID = @SurveyID
 and    ModuleID = @ModuleID
