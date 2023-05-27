@@ -1,6 +1,5 @@
-﻿#addin nuget:?package=SharpZipLib
-#addin nuget:?package=Cake.Compression
-
+﻿#addin nuget:?package=SharpZipLib&version=1.4.2
+#addin nuget:?package=Cake.Compression&version=0.2.6
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -85,7 +84,10 @@ Task("ReleasePackage")
 	Zip("./Install/Package", "./Install/" + "Dnn.Modules.Survey_" + version + "_Install.zip");
 	
 	// CLEANUP TEMP FOLDER
-	DeleteDirectory("./Install/Package", true);
+	DeleteDirectory("./Install/Package", new DeleteDirectorySettings{
+		Recursive = true,
+		Force = true
+	});
 });
 
 Task("Default")
