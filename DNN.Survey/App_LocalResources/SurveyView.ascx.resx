@@ -153,6 +153,9 @@
   <data name="HasVoted.Text" xml:space="preserve">
     <value>Thank you for your participation.</value>
   </data>
+  <data name="ModuleHelp.Text" xml:space="preserve">
+    <value>Need help? See the &lt;a href="https://dnn-survey.readme.io/docs" target="_blank"&gt;module documentation&lt;/a&gt;.</value>
+  </data>
   <data name="MustBeSignedIn.Text" xml:space="preserve">
     <value>You must sign in to vote in this survey.</value>
   </data>

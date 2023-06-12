@@ -1,6 +1,11 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SurveyView.ascx.cs" Inherits="DNN.Modules.Survey.SurveyView" %>
 <%@ Register TagPrefix="dnn" TagName="Label" Src="~/controls/LabelControl.ascx" %>
 
+<asp:Panel ID="ModuleHelpPanel" runat="server"
+   CssClass="dnnFormMessage dnnFormInfo">
+   <asp:Label ID="ModuleHelpLabel" runat="server" ResourceKey="ModuleHelp" />
+</asp:Panel>
+
 <div class="dnnForm">
    <asp:Label ID="SurveyMessageLabel" runat="server"
       EnableViewState="false"

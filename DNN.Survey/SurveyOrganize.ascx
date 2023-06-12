@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SurveyOrganize.ascx.cs" Inherits="DNN.Modules.Survey.SurveyOrganize" %>
 <%@ Register TagPrefix="dnn" Assembly="DotNetNuke.Web" Namespace="DotNetNuke.Web.UI.WebControls" %>
 
-<div class="dnnFormMessage dnnFormInfo"><asp:Label ID="SortHelpLabel" runat="server" ResourceKey="OrganizeHelp" /></div>
+<div class="dnnFormMessage dnnFormInfo"><asp:Label ID="ModuleHelpLabel" runat="server" ResourceKey="ModuleHelp" /></div>
 
 <asp:DataGrid ID="QuestionsGrid" runat="server"
    AutoGenerateColumns ="false"
