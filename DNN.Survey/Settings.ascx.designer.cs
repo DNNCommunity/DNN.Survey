@@ -15,154 +15,163 @@ namespace DNN.Modules.Survey
    {
 
       /// <summary>
-      /// GeneralSettingsLabel-Steuerelement
+      /// ModuleHelpLabel-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.Label ModuleHelpLabel;
+
+      /// <summary>
+      /// GeneralSettingsLabel-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::System.Web.UI.WebControls.Label GeneralSettingsLabel;
 
       /// <summary>
-      /// SurveyTypeLabel-Steuerelement
+      /// SurveyTypeLabel-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::DotNetNuke.UI.UserControls.LabelControl SurveyTypeLabel;
 
       /// <summary>
-      /// SurveyTypeRadioButtonList-Steuerelement
+      /// SurveyTypeRadioButtonList-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::System.Web.UI.WebControls.RadioButtonList SurveyTypeRadioButtonList;
 
       /// <summary>
-      /// SurveyClosingDateLabel-Steuerelement
+      /// SurveyClosingDateLabel-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::DotNetNuke.UI.UserControls.LabelControl SurveyClosingDateLabel;
 
       /// <summary>
-      /// SurveyClosingDateTextBox-Steuerelement
+      /// SurveyClosingDateTextBox-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::System.Web.UI.WebControls.TextBox SurveyClosingDateTextBox;
 
       /// <summary>
-      /// AppearanceSecurityOptionsLabel-Steuerelement
+      /// AppearanceSecurityOptionsLabel-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::System.Web.UI.WebControls.Label AppearanceSecurityOptionsLabel;
 
       /// <summary>
-      /// ShowClosingDateMessageLabel-Steuerelement
+      /// ShowClosingDateMessageLabel-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::DotNetNuke.UI.UserControls.LabelControl ShowClosingDateMessageLabel;
 
       /// <summary>
-      /// ShowClosingDateMessageCheckBox-Steuerelement
+      /// ShowClosingDateMessageCheckBox-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::System.Web.UI.WebControls.CheckBox ShowClosingDateMessageCheckBox;
 
       /// <summary>
-      /// PrivacyConfirmationLabel-Steuerelement
+      /// PrivacyConfirmationLabel-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::DotNetNuke.UI.UserControls.LabelControl PrivacyConfirmationLabel;
 
       /// <summary>
-      /// PrivacyConfirmationCheckBox-Steuerelement
+      /// PrivacyConfirmationCheckBox-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::System.Web.UI.WebControls.CheckBox PrivacyConfirmationCheckBox;
 
       /// <summary>
-      /// UseCaptchaLabel-Steuerelement
+      /// UseCaptchaLabel-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::DotNetNuke.UI.UserControls.LabelControl UseCaptchaLabel;
 
       /// <summary>
-      /// UseCaptchaRadioButtonList-Steuerelement
+      /// UseCaptchaRadioButtonList-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::System.Web.UI.WebControls.RadioButtonList UseCaptchaRadioButtonList;
 
       /// <summary>
-      /// CSVExportOptionsLabel-Steuerelement
+      /// CSVExportOptionsLabel-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::System.Web.UI.WebControls.Label CSVExportOptionsLabel;
 
       /// <summary>
-      /// CSVSeparatorLabel-Steuerelement
+      /// CSVSeparatorLabel-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::DotNetNuke.UI.UserControls.LabelControl CSVSeparatorLabel;
 
       /// <summary>
-      /// CSVSeparatorDropDownlist-Steuerelement
+      /// CSVSeparatorDropDownlist-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::System.Web.UI.WebControls.DropDownList CSVSeparatorDropDownlist;
 
       /// <summary>
-      /// CSVTextQualifierLabel-Steuerelement
+      /// CSVTextQualifierLabel-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::DotNetNuke.UI.UserControls.LabelControl CSVTextQualifierLabel;
 
       /// <summary>
-      /// CSVTextQualifierDropDownList-Steuerelement
+      /// CSVTextQualifierDropDownList-Steuerelement.
       /// </summary>
       /// <remarks>
-      /// Automatisch generiertes Feld
+      /// Automatisch generiertes Feld.
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::System.Web.UI.WebControls.DropDownList CSVTextQualifierDropDownList;

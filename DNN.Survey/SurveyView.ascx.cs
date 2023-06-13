@@ -422,15 +422,9 @@ namespace DNN.Modules.Survey
                }
             }
 
-            if (HasViewResultsPermission)
-               ViewResultsButton.Visible = true;
-            else
-               ViewResultsButton.Visible = false;
-
-            if (HasEditPermission)
-            {
-               ExportToCsvButton.Visible = true;
-            }
+            ViewResultsButton.Visible = HasViewResultsPermission;
+            ExportToCsvButton.Visible = HasEditPermission;
+            ModuleHelpPanel.Visible = HasEditPermission;
             base.OnLoad(e);
          }
          catch (Exception ex)

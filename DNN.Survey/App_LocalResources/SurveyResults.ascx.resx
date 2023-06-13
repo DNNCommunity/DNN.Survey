@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ControlTitle_surveyresults.text" xml:space="preserve">
+    <value>DNN Survey Results</value>
+  </data>
   <data name="CorrectAnswer.Text" xml:space="preserve">
     <value>(Correct answer)</value>
+  </data>
+  <data name="ModuleHelp.Text" xml:space="preserve">
+    <value>Need help? See the &lt;a href="https://dnn-survey.readme.io/docs/view-results" target="_blank"&gt;module documentation&lt;/a&gt;.</value>
   </data>
   <data name="ResultsNotPublicMessage.Text" xml:space="preserve">
     <value>You are not allowed to view the results, sorry...</value>

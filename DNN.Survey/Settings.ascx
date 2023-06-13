@@ -4,6 +4,8 @@
 
 <dnn:DnnCssInclude runat="server" FilePath="~/DesktopModules/Survey/css/Settings.css" />
 
+<div class="dnnFormMessage dnnFormInfo"><asp:Label ID="ModuleHelpLabel" runat="server" ResourceKey="ModuleHelp" /></div>
+
 <div class="dnnForm" id="SurveySettings">
    <h2 id="GeneralSettings" class="dnnFormSectionHead"><a href="#"><asp:Label ID="GeneralSettingsLabel" runat="server" ResourceKey="GeneralSettings" /></a></h2>
    <fieldset>
