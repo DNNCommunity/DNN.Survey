@@ -21,9 +21,7 @@
 using DNN.Modules.Survey.Components;
 using DNN.Modules.Survey.Components.Controllers;
 using DNN.Modules.Survey.Components.Entities;
-using DNN.Modules.Survey.Components.UI;
 using DNN.Modules.Survey.Controls;
-using DotNetNuke.Common;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Framework.JavaScriptLibraries;
 using DotNetNuke.Security;
@@ -34,11 +32,13 @@ using DotNetNuke.Web.Client.ClientResourceManagement;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Web.UI.WebControls;
 
 namespace DNN.Modules.Survey
 {
    public partial class SurveyResults : PortalModuleBase
    {
+      #region "Private Properties
       private ModulePermissionCollection _modulePermissionCollection = null;
       private SurveysController _surveysController = null;
       private SurveyResultsController _surveyResultsController = null;
@@ -141,25 +141,29 @@ namespace DNN.Modules.Survey
          }
       }
 
-   protected bool HasEditPermission
-   {
-      get
-      {
-         return ModulePermissionController.HasModulePermission(ModulePermissionCollection, ModuleSecurity.EDIT_PERMISSION);
-      }
-   }
-
-
-   #region Settings
-   protected DateTime SurveyClosingDate
+      protected bool HasEditPermission
       {
          get
          {
-               object surveyClosingDate = Settings["SurveyClosingDate"];
-               if (surveyClosingDate == null)
-                  return DateTime.MinValue;
-               else
-                  return Convert.ToDateTime(surveyClosingDate);
+            return ModulePermissionController.HasModulePermission(ModulePermissionCollection, ModuleSecurity.EDIT_PERMISSION);
+         }
+      }
+      #endregion
+
+      #region Settings
+      protected DateTime SurveyClosingDate
+      {
+         get
+         {
+            object surveyClosingDate = Settings["SurveyClosingDate"];
+            if (surveyClosingDate == null)
+            {
+               return DateTime.MinValue;
+            }
+            else
+            {
+               return Convert.ToDateTime(surveyClosingDate);
+            }
          }
       }
 
@@ -168,11 +172,31 @@ namespace DNN.Modules.Survey
          // This is: If the results are cleared, this number increases - therefore the cookie changes and users can vote again.
          get
          {
-               object resultsVersion = Settings["ResultsVersion"];
-               if (resultsVersion == null)
-                  return 0;
-               else
-                  return Convert.ToInt32(resultsVersion);
+            object resultsVersion = Settings["ResultsVersion"];
+            if (resultsVersion == null)
+            {
+               return 0;
+            }
+            else
+            {
+               return Convert.ToInt32(resultsVersion);
+            }
+         }
+      }
+
+      protected SurveyType SurveyType
+      {
+         get
+         {
+            object surveyType = Settings["SurveyType"];
+            if (surveyType == null)
+            {
+               return SurveyType.Survey;
+            }
+            else
+            {
+               return (SurveyType)Convert.ToInt32(surveyType);
+            }
          }
       }
       #endregion
@@ -221,34 +245,69 @@ namespace DNN.Modules.Survey
 
          foreach (SurveysInfo survey in surveys)
          {
-               List<SurveyResultInfo> result = SurveyResultsController.Get(survey.SurveyID);
-               StringBuilder labelBuilder = new StringBuilder();
-               StringBuilder dataBuilder = new StringBuilder();
-               StringBuilder bgColorsBuilder = new StringBuilder();
-               StringBuilder bColorsBuilder = new StringBuilder();
-               foreach (SurveyResultInfo r in result)
-               {
-                  labelBuilder.Append(string.Format("\"{0}\"", String.Format("{0}{1}", ClientAPI.GetSafeJSString(r.OptionName), r.IsCorrect ? string.Format(" {0}", Localization.GetString("CorrectAnswer.Text", LocalResourceFile)) : string.Empty)));
-                  dataBuilder.Append(r.Votes);
-                  bgColorsBuilder.Append(string.Format("\"{0}\"", Base.GetColor(result.IndexOf(r), (!(r.IsCorrect)))));
-                  bColorsBuilder.Append(string.Format("\"{0}\"", r.IsCorrect ? "rgba(0,170,0,1)" : Base.GetColor(result.IndexOf(r), false)));
-                  if (result.IndexOf(r) < result.Count - 1)
-                  {
-                     labelBuilder.Append(",");
-                     dataBuilder.Append(",");
-                     bgColorsBuilder.Append(",");
-                     bColorsBuilder.Append(",");
-                  }
-               }
+            List<SurveyResultInfo> result = SurveyResultsController.Get(survey.SurveyID);
+            StringBuilder labelBuilder = new StringBuilder();
+            StringBuilder dataBuilder = new StringBuilder();
 
-               CanvasControl canvas = (CanvasControl)LoadControl("Controls/CanvasControl.ascx");
-               canvas.Header = survey.Question;
-               canvas.Labels = labelBuilder.ToString();
-               canvas.Data = dataBuilder.ToString();
-               canvas.BackgroundColors = bgColorsBuilder.ToString();
-               canvas.BorderColors = bColorsBuilder.ToString();
-               canvas.ChartType = survey.ChartType;
-               ChartPlaceHolder.Controls.Add(canvas);
+            switch (survey.ChartType)
+            {
+               case ChartType.List:
+                  labelBuilder.Append(string.Format("<h3>{0}</h3>", survey.Question));
+                  ChartPlaceHolder.Controls.Add(new Label() { Text = labelBuilder.ToString() });
+                  dataBuilder.Append("<ul>");
+                  foreach (SurveyResultInfo r in result)
+                  {
+                     dataBuilder.Append(string.Format("<li>{0}{1} ({2})</li>", r.IsCorrect ? string.Format("{0}: ", Localization.GetString("CorrectAnswer.Text", LocalResourceFile)) : string.Empty, ClientAPI.GetSafeJSString(r.OptionName), r.Votes));
+                  }
+                  dataBuilder.Append("</ul>");
+                  ChartPlaceHolder.Controls.Add(new Label() { Text = dataBuilder.ToString() });
+                  break;
+               case ChartType.Table:
+                  labelBuilder.Append(string.Format("<h3>{0}</h3>", survey.Question));
+                  ChartPlaceHolder.Controls.Add(new Label() { Text = labelBuilder.ToString() });
+                  dataBuilder.Append("<table class=\"dnnGrid surveyResultsTable\"><tbody>");
+                  dataBuilder.Append(string.Format("<tr class=\"dnnGridHeader surveyResultsGridHeader\">"));
+                  dataBuilder.Append(string.Format("<td>{0}</td><td>{1}</td>", Localization.GetString("Question", LocalResourceFile), Localization.GetString("Answer", LocalResourceFile)));
+                  dataBuilder.Append("</tr>");
+                  int lineNumber = 1;
+                  foreach (SurveyResultInfo r in result)
+                  {
+                     dataBuilder.Append(string.Format("<tr class=\"{0}\">", lineNumber % 2 == 1 ? "dnnGridItem surveyGridItem" : "dnnGridAltItem surveyGridAltItem"));
+                     dataBuilder.Append(string.Format("<td class=\"surveyQuestionsRow\">{0}</td><td class=\"surveyVotesRow\">{1}</td>", r.OptionName, r.Votes));
+                     dataBuilder.Append("</tr>");
+                     lineNumber++;
+                  }
+                  dataBuilder.Append("<tbody></table>");
+                  ChartPlaceHolder.Controls.Add(new Label() { Text = dataBuilder.ToString() });
+                  break;
+               default:
+                  StringBuilder bgColorsBuilder = new StringBuilder();
+                  StringBuilder bColorsBuilder = new StringBuilder();
+                  foreach (SurveyResultInfo r in result)
+                  {
+                     labelBuilder.Append(string.Format("\"{0}\"", String.Format("{0}{1}", ClientAPI.GetSafeJSString(r.OptionName), r.IsCorrect ? string.Format("<span class=\"surveyCorrectAnswer\">{0}<span>", Localization.GetString("CorrectAnswer.Text", LocalResourceFile)) : string.Empty)));
+                     dataBuilder.Append(r.Votes);
+                     bgColorsBuilder.Append(string.Format("\"{0}\"", Base.GetColor(result.IndexOf(r), (!(r.IsCorrect)))));
+                     bColorsBuilder.Append(string.Format("\"{0}\"", r.IsCorrect ? "rgba(0,170,0,1)" : Base.GetColor(result.IndexOf(r), false)));
+                     if (result.IndexOf(r) < result.Count - 1)
+                     {
+                        labelBuilder.Append(",");
+                        dataBuilder.Append(",");
+                        bgColorsBuilder.Append(",");
+                        bColorsBuilder.Append(",");
+                     }
+                  }
+
+                  CanvasControl canvas = (CanvasControl)LoadControl("Controls/CanvasControl.ascx");
+                  canvas.Header = survey.Question;
+                  canvas.Labels = labelBuilder.ToString();
+                  canvas.Data = dataBuilder.ToString();
+                  canvas.BackgroundColors = bgColorsBuilder.ToString();
+                  canvas.BorderColors = bColorsBuilder.ToString();
+                  canvas.ChartType = survey.ChartType;
+                  ChartPlaceHolder.Controls.Add(canvas);
+                  break;
+            }
          }
 
          base.OnPreRender(e);

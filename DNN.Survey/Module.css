@@ -39,3 +39,36 @@ div.surveyQuizResult
    font-size: 18px !important;
    font-weight: bold;
 }
+
+table.surveyResultsTable
+{
+   width: 98%;
+   padding: 0;
+   border: 0;
+   font-size: 1.2em;
+}
+
+tr.surveyResultsGridHeader {
+   vertical-align: top;
+   padding: 0.5em;
+   font-weight: bold;
+}
+
+tr.surveyGridItem {
+   background-color: #ffffff;
+}
+
+tr.surveyGridAltItem {
+   background-color: #f1f1f1;
+}
+
+td.surveyQuestionsRow {
+   padding: 0.5em;
+   width: 90%;
+}
+
+td.surveyVotesRow {
+   text-align: right;
+   padding: 0.5em;
+   width: 10%;
+}
