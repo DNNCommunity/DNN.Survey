@@ -17,13 +17,13 @@ CREATE PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Count
 AS
 BEGIN
    SELECT
-	   COUNT(*)
+      COUNT(DISTINCT sr.ResultUserID)
    FROM
       {databaseOwner}{objectQualifier}Surveys s
       INNER JOIN {databaseOwner}{objectQualifier}SurveyOptions so ON so.SurveyID = s.SurveyID
       INNER JOIN {databaseOwner}{objectQualifier}SurveyResults sr ON sr.SurveyOptionID = so.SurveyOptionID
    WHERE
-      s.ModuleID = @ModuleID
+      ModuleID = @ModuleID
 END
 GO
 
