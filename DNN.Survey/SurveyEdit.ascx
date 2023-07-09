@@ -5,6 +5,8 @@
 
 <dnn:DnnCssInclude runat="server" FilePath="Module.css" PathNameAlias="SkinPath" />
 
+<div class="dnnFormMessage dnnFormInfo"><asp:Label ID="ModuleHelpLabel" runat="server" ResourceKey="ModuleHelp" /></div>
+
 <div class="dnnForm" id="SurveyEditPanel">
    <div class="dnnFormItem dnnFormHelp dnnClear">
       <p><asp:Label runat="server" ResourceKey="RequiredFields" CssClass="dnnFormRequired" /></p>

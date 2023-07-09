@@ -144,11 +144,20 @@
   <data name="ChartType.HorizontalBar.Text" xml:space="preserve">
     <value>Horizontal Bar</value>
   </data>
+  <data name="ChartType.List.Text" xml:space="preserve">
+    <value>List</value>
+  </data>
   <data name="ChartType.Pie.Text" xml:space="preserve">
     <value>Pie</value>
   </data>
+  <data name="ChartType.Table.Text" xml:space="preserve">
+    <value>Table</value>
+  </data>
   <data name="ChartType.Text" xml:space="preserve">
     <value>Chart</value>
+  </data>
+  <data name="ControlTitle_edit.Text" xml:space="preserve">
+    <value>Add/Edit Survey Question</value>
   </data>
   <data name="CorrectAnswer.Help" xml:space="preserve">
     <value>If it is the correct answer, activate the checkbox.</value>
@@ -167,6 +176,9 @@
   </data>
   <data name="IsStatistical.Text" xml:space="preserve">
     <value>Statistical question</value>
+  </data>
+  <data name="ModuleHelp.Text" xml:space="preserve">
+    <value>Need help? See the &lt;a href="https://dnn-survey.readme.io/docs/addedit-questions" target="_blank"&gt;module documentation&lt;/a&gt;.</value>
   </data>
   <data name="NoAnswersProvided.Text" xml:space="preserve">
     <value>You can't add a single- or multiple-choice questions and don't provide an answer.</value>

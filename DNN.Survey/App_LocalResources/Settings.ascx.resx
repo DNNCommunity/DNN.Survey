@@ -204,4 +204,7 @@
   <data name="Separator.Text" xml:space="preserve">
     <value>Separator</value>
   </data>
+  <data name="ModuleHelp.Text" xml:space="preserve">
+    <value>Need help? See the &lt;a href="https://dnn-survey.readme.io/docs/module-settings" target="_blank"&gt;module documentation&lt;/a&gt;.</value>
+  </data>
 </root>

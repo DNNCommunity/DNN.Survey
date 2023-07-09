@@ -34,7 +34,9 @@ namespace DNN.Modules.Survey.Components
       Bar = 0,
       HorizontalBar = 1,
       Pie = 2,
-      Doughnut = 3
+      Doughnut = 3,
+      List = 4,
+      Table = 5
    }
 
    public enum UseCaptcha

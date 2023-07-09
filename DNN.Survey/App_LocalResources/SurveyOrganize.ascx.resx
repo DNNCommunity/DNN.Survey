@@ -117,8 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="OrganizeHelp.Text" xml:space="preserve">
-    <value>Drag and drop the questions to sort, or click the recycle bin image to delete the question.</value>
+  <data name="ControlTitle_organize.Text" xml:space="preserve">
+    <value>Organize survey questions</value>
+  </data>
+  <data name="ModuleHelp.Text" xml:space="preserve">
+    <value>Drag and drop the questions to sort, or click the recycle bin image to delete the question.&lt;br /&gt;More help can be found in the &lt;a href="https://dnn-survey.readme.io/docs/organize-survey-questions" target="_blank"&gt;module ducumentation&lt;/a&gt;.</value>
   </data>
   <data name="Question.Header" xml:space="preserve">
     <value>Question</value>

@@ -1,0 +1,32 @@
+/************************************************************/
+/*****                  SqlDataProvider                 *****/
+/*****                 Version: 09.02.00                *****/
+/*****                                                  *****/
+/*****  Note: To manually execute this script you must  *****/
+/*****        perform a search and replace operation    *****/
+/*****        for {databaseOwner} and {objectQualifier} *****/
+/*****                                                  *****/
+/************************************************************/
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Count') AND type = N'P')
+   DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Count
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Count
+   @ModuleID int
+AS
+BEGIN
+   SELECT
+      COUNT(DISTINCT sr.ResultUserID)
+   FROM
+      {databaseOwner}{objectQualifier}Surveys s
+      INNER JOIN {databaseOwner}{objectQualifier}SurveyOptions so ON so.SurveyID = s.SurveyID
+      INNER JOIN {databaseOwner}{objectQualifier}SurveyResults sr ON sr.SurveyOptionID = so.SurveyOptionID
+   WHERE
+      ModuleID = @ModuleID
+END
+GO
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/

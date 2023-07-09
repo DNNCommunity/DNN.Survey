@@ -55,6 +55,7 @@ namespace DNN.Modules.Survey
       private PortalSecurity _portalSecurity = null;
 
       private string _cookie;
+      private int? _countResults;
 
       protected ModulePermissionCollection ModulePermissionCollection
       {
@@ -198,6 +199,18 @@ namespace DNN.Modules.Survey
             return (authorizedUsersOnly);
          }
       }
+
+      protected int CountResults
+      {
+         get
+         {
+            if (!(_countResults.HasValue))
+            {
+               _countResults = SurveyResultsController.GetCount(ModuleId);
+            }
+            return _countResults.Value;
+         }
+      }
       #endregion
 
       #region Settings
@@ -338,7 +351,7 @@ namespace DNN.Modules.Survey
             // Add Question
             actions.Add(GetNextActionID(), Localization.GetString("AddQuestion.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, string.Empty, EditUrl(), false, SecurityAccessLevel.Edit, true, false);
             actions.Add(GetNextActionID(), Localization.GetString("OrganizeQuestions.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, IconController.IconURL("ViewStats"), EditUrl("Organize"), false, SecurityAccessLevel.Edit, true, false);
-            if (HasViewResultsPermission)
+            if (HasViewResultsPermission && (CountResults > 0))
             {
                // View Results
                actions.Add(GetNextActionID(), Localization.GetString("ViewResults.Action", LocalResourceFile), ModuleActionType.AddContent, string.Empty, IconController.IconURL("View"), EditUrl("SurveyResults"), false, SecurityAccessLevel.View, true, false);
@@ -422,15 +435,11 @@ namespace DNN.Modules.Survey
                }
             }
 
-            if (HasViewResultsPermission)
-               ViewResultsButton.Visible = true;
-            else
-               ViewResultsButton.Visible = false;
-
-            if (HasEditPermission)
-            {
-               ExportToCsvButton.Visible = true;
-            }
+            ViewResultsButton.Visible = (HasViewResultsPermission && (CountResults > 0));
+            ExportToCsvButton.Visible = (HasEditPermission && (CountResults > 0));
+            ModuleHelpPanel.Visible = HasEditPermission;
+            CountResultsPanel.Visible = HasViewResultsPermission;
+            CountResultsLabel.Text = string.Format(Localization.GetString("CountResults", LocalResourceFile), CountResults);
             base.OnLoad(e);
          }
          catch (Exception ex)

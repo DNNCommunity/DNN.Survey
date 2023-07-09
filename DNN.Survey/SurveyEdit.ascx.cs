@@ -292,7 +292,22 @@ namespace DNN.Modules.Survey
                AnswersGrid.DataBind();
                MaxViewOrder = Answers.Count;
                ChartTypeChanged = true;
+               if ((Survey.OptionType == QuestionType.RadioButtons) || (Survey.OptionType == QuestionType.CheckBoxes))
+               {
+                  foreach (ListItem li in ChartTypeDropDownList.Items)
+                  {
+                     li.Enabled = true;
+                  }
+               }
+               else
+               {
+                  foreach (ListItem li in ChartTypeDropDownList.Items)
+                  {
+                     li.Enabled = ((li.Value == Convert.ToInt32(ChartType.List).ToString()) || (li.Value == Convert.ToInt32(ChartType.Table).ToString()));
+                  }
+               }
             }
+
             if (SurveyType == SurveyType.Quiz)
             {
                IsStatisticalPanel.Visible = true;
@@ -571,6 +586,10 @@ namespace DNN.Modules.Survey
                IsStatisticalCheckBox.Enabled = true;
                CorrectAnswerPanel.Visible = true;
             }
+            foreach (ListItem li in ChartTypeDropDownList.Items)
+            {
+               li.Enabled = true;
+            }
          }
          else
          {
@@ -579,7 +598,7 @@ namespace DNN.Modules.Survey
             TextAnswerPanel.Visible = true;
             if (!(ChartTypeChanged))
             {
-               ChartTypeDropDownList.SelectedValue = Convert.ToInt32(ChartType.HorizontalBar).ToString();
+               ChartTypeDropDownList.SelectedValue = Convert.ToInt32(ChartType.List).ToString();
                ChartTypeChanged = false;
             }
             if (SurveyType == SurveyType.Quiz)
@@ -588,6 +607,10 @@ namespace DNN.Modules.Survey
                IsStatisticalCheckBox.Checked = true;
                IsStatisticalCheckBox.Enabled = false;
                CorrectAnswerPanel.Visible = false;
+            }
+            foreach (ListItem li in ChartTypeDropDownList.Items)
+            {
+               li.Enabled = ((li.Value == Convert.ToInt32(ChartType.List).ToString()) || (li.Value == Convert.ToInt32(ChartType.Table).ToString()));
             }
          }
       }

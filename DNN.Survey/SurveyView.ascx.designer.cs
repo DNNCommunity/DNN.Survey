@@ -7,72 +7,110 @@
 // </automatisch generiert>
 //------------------------------------------------------------------------------
 
-namespace DNN.Modules.Survey {
-    
-    
-    public partial class SurveyView {
-        
-        /// <summary>
-        /// SurveyMessageLabel-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label SurveyMessageLabel;
-        
-        /// <summary>
-        /// ContactByFaxOnly-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::DotNetNuke.UI.UserControls.LabelControl ContactByFaxOnly;
-        
-        /// <summary>
-        /// ContactByFaxOnlyCheckBox-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox ContactByFaxOnlyCheckBox;
-        
-        /// <summary>
-        /// SurveyPlaceHolder-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder SurveyPlaceHolder;
-        
-        /// <summary>
-        /// SubmitSurveyButton-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton SubmitSurveyButton;
-        
-        /// <summary>
-        /// ViewResultsButton-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton ViewResultsButton;
-        
-        /// <summary>
-        /// ExportToCsvButton-Steuerelement
-        /// </summary>
-        /// <remarks>
-        /// Automatisch generiertes Feld
-        /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton ExportToCsvButton;
-    }
+namespace DNN.Modules.Survey
+{
+
+
+   public partial class SurveyView
+   {
+
+      /// <summary>
+      /// ModuleHelpPanel-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.Panel ModuleHelpPanel;
+
+      /// <summary>
+      /// ModuleHelpLabel-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.Label ModuleHelpLabel;
+
+      /// <summary>
+      /// SurveyMessageLabel-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.Label SurveyMessageLabel;
+
+      /// <summary>
+      /// ContactByFaxOnly-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::DotNetNuke.UI.UserControls.LabelControl ContactByFaxOnly;
+
+      /// <summary>
+      /// ContactByFaxOnlyCheckBox-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.CheckBox ContactByFaxOnlyCheckBox;
+
+      /// <summary>
+      /// SurveyPlaceHolder-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.PlaceHolder SurveyPlaceHolder;
+
+      /// <summary>
+      /// SubmitSurveyButton-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.LinkButton SubmitSurveyButton;
+
+      /// <summary>
+      /// ViewResultsButton-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.LinkButton ViewResultsButton;
+
+      /// <summary>
+      /// ExportToCsvButton-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.LinkButton ExportToCsvButton;
+
+      /// <summary>
+      /// CountResultsPanel-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.Panel CountResultsPanel;
+
+      /// <summary>
+      /// CountResultsLabel-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.Label CountResultsLabel;
+   }
 }

@@ -1,5 +1,10 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SurveyResults.ascx.cs" Inherits="DNN.Modules.Survey.SurveyResults" %>
 
+<asp:Panel ID="ModuleHelpPanel" runat="server"
+   CssClass="dnnFormMessage dnnFormInfo">
+   <asp:Label ID="ModuleHelpLabel" runat="server" ResourceKey="ModuleHelp" />
+</asp:Panel>
+
 <div class="dnnForm">
    <asp:Label ID="SurveyMessageLabel" runat="server"
       EnableViewState="false"
