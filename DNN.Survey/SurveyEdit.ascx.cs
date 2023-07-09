@@ -292,19 +292,19 @@ namespace DNN.Modules.Survey
                AnswersGrid.DataBind();
                MaxViewOrder = Answers.Count;
                ChartTypeChanged = true;
-            }
-            if ((Survey.OptionType == QuestionType.RadioButtons) || (Survey.OptionType == QuestionType.CheckBoxes))
-            {
-               foreach (ListItem li in ChartTypeDropDownList.Items)
+               if ((Survey.OptionType == QuestionType.RadioButtons) || (Survey.OptionType == QuestionType.CheckBoxes))
                {
-                  li.Enabled = true;
+                  foreach (ListItem li in ChartTypeDropDownList.Items)
+                  {
+                     li.Enabled = true;
+                  }
                }
-            }
-            else
-            {
-               foreach (ListItem li in ChartTypeDropDownList.Items)
+               else
                {
-                  li.Enabled = ((li.Value == Convert.ToInt32(ChartType.List).ToString()) || (li.Value == Convert.ToInt32(ChartType.Table).ToString()));
+                  foreach (ListItem li in ChartTypeDropDownList.Items)
+                  {
+                     li.Enabled = ((li.Value == Convert.ToInt32(ChartType.List).ToString()) || (li.Value == Convert.ToInt32(ChartType.Table).ToString()));
+                  }
                }
             }
 
