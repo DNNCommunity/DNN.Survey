@@ -94,5 +94,23 @@ namespace DNN.Modules.Survey
       /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
       /// </remarks>
       protected global::System.Web.UI.WebControls.LinkButton ExportToCsvButton;
+
+      /// <summary>
+      /// CountResultsPanel-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.Panel CountResultsPanel;
+
+      /// <summary>
+      /// CountResultsLabel-Steuerelement.
+      /// </summary>
+      /// <remarks>
+      /// Automatisch generiertes Feld.
+      /// Zum Ändern Felddeklaration aus der Designerdatei in eine Code-Behind-Datei verschieben.
+      /// </remarks>
+      protected global::System.Web.UI.WebControls.Label CountResultsLabel;
    }
 }

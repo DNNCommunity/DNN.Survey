@@ -240,6 +240,7 @@
     <Content Include="cake.config" />
     <None Include="packages.config" />
     <Content Include="Providers\DataProviders\SqlDataProvider\09.01.00.SqlDataProvider" />
+    <Content Include="Providers\DataProviders\SqlDataProvider\09.02.00.SqlDataProvider" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
