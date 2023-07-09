@@ -1,6 +1,6 @@
 ﻿/************************************************************/
 /*****             Uninstall.SqlDataProvider            *****/
-/*****                 Version: 09.00.00                *****/
+/*****                 Version: 09.02.00                *****/
 /*****                                                  *****/
 /*****  Note: To manually execute this script you must  *****/
 /*****        perform a search and replace operation    *****/
@@ -54,6 +54,10 @@ GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Get') AND type = N'P')
 DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Get
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}SurveyResults_Count') AND type = N'P')
+   DROP PROCEDURE {databaseOwner}{objectQualifier}SurveyResults_Count
 GO
 
 IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}vSurveys_CsvExport') AND type = N'V')

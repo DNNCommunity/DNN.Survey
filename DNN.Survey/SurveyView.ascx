@@ -52,4 +52,9 @@
             Visible="false" />
       </li>
    </ul>
+
+   <asp:Panel ID="CountResultsPanel" runat="server"
+      CssClass="dnnFormMessage dnnFormInfo">
+      <asp:Label ID="CountResultsLabel" runat="server" />
+   </asp:Panel>
 </div>

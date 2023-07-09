@@ -82,6 +82,16 @@ namespace DNN.Modules.Survey.Components.Controllers
          }
          return surveyResult.ToList<SurveyResultInfo>();
       }
+
+      public int GetCount(int moduleID)
+      {
+         int count = 0;
+         using (IDataContext ctx = DataContext.Instance())
+         {
+            count = ctx.ExecuteScalar<int>(CommandType.StoredProcedure, "{databaseOwner}{objectQualifier}SurveyResults_Count", moduleID);
+         }
+         return count;
+      }
       #endregion
    }
 }

@@ -144,6 +144,9 @@
   <data name="CorrectAnswers.Text" xml:space="preserve">
     <value>Correct answers</value>
   </data>
+  <data name="CountResults.Text" xml:space="preserve">
+    <value>The survey has been submitted {0} times.</value>
+  </data>
   <data name="DeleteResults.Action" xml:space="preserve">
     <value>Delete results</value>
   </data>
