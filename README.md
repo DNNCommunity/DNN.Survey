@@ -10,6 +10,6 @@ The DNN Survey module allows you to create surveys and quizes on your DNN (forme
 * Survey results can be downloaded as a CSV file to be processed with any reporting tool of your choice. To give maximum flexibility, the separator and delimiter can be set in the module settings.
 ## System requirements
 * .Net Framework 4.7.2 or higher
-* [DNN Platform version 09.04.00 or higher](https://github.com/dnnsoftware/Dnn.Platform/releases/tag/v9.4.0)
+* [DNN Platform version 09.11.00 or higher](https://github.com/dnnsoftware/Dnn.Platform/releases/tag/v9.11.0)
 ## More information
 This project is documented on [dnn-survey.readme.io](https://dnn-survey.readme.io)
