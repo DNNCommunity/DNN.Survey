@@ -794,7 +794,7 @@
         </component>
         <component type="ResourceFile">
           <resourceFiles>
-            <baseBath>bin</baseBath>
+            <basePath>bin</basePath>
             <resourceFile>
               <name>Symbols.zip</name>
             </resourceFile>
